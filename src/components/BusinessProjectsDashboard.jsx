@@ -8,46 +8,52 @@ import {
   Building2, 
   TrendingUp, 
   Sparkles, 
-  AlertTriangle, 
   CheckCircle2, 
   Clock, 
   SlidersHorizontal, 
   Bot, 
-  FileText, 
   Download, 
   Printer, 
-  HelpCircle, 
   Search, 
-  ArrowRight, 
-  Info, 
   Eye, 
   Edit3, 
   Layers, 
-  Coins, 
   ShieldAlert, 
   X, 
-  PlusCircle, 
   History, 
-  BarChart3,
+  Calendar,
+  Activity,
+  Package,
+  Hammer,
+  Truck,
   Check,
-  Percent,
-  RefreshCw
+  ArrowRight,
+  Info,
+  DollarSign,
+  PieChart
 } from 'lucide-react';
 
 export const BusinessProjectsDashboard = () => {
   const { 
     businessProjects, 
     updateBusinessProject, 
-    addBusinessProject, 
     projectChangeHistory, 
     formatMoney, 
     currency 
   } = useApp();
 
-  // Active Tab View: 'grid' | 'investor' | 'ai-parser' | 'audit-log'
+  // Active Sub-View: 'grid' | 'investor' | 'timeline' | 'ai-parser' | 'audit-log'
   const [activeSubView, setActiveSubView] = useState('grid');
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Per-Card Tab State (Map of projectId -> 'overview' | 'costs' | 'timeline' | 'activity')
+  const [cardActiveTab, setCardActiveTab] = useState({
+    'proj-unavukadai': 'overview',
+    'proj-carpenterbullet': 'overview',
+    'proj-wooden-laptop-case': 'overview',
+    'proj-bamboo-cup': 'overview'
+  });
 
   // Bamboo Cup Scenario Toggle (100 vs 150 units)
   const [bambooScenario, setBambooScenario] = useState(100);
@@ -66,6 +72,11 @@ export const BusinessProjectsDashboard = () => {
   const [aiAnalysisResult, setAiAnalysisResult] = useState(null);
   const [aiTargetProjectId, setAiTargetProjectId] = useState('proj-carpenterbullet');
   const [isApplyingAi, setIsApplyingAi] = useState(false);
+
+  // Helper: Set card tab
+  const setProjectCardTab = (projectId, tab) => {
+    setCardActiveTab(prev => ({ ...prev, [projectId]: tab }));
+  };
 
   // Trigger AI parsing on current text
   const handleRunAiAnalysis = () => {
@@ -118,7 +129,7 @@ export const BusinessProjectsDashboard = () => {
     updateBusinessProject(
       editingProject.id, 
       updated, 
-      `Manual assumption edit: daily ads ₹${updated.dailyAdBudget}, ${updated.campaignDurationDays} days`
+      `Assumption edit: daily ads ₹${updated.dailyAdBudget}, ${updated.campaignDurationDays} days`
     );
     setEditingProject(null);
   };
@@ -161,7 +172,7 @@ export const BusinessProjectsDashboard = () => {
     setIsApplyingAi(true);
     setTimeout(() => {
       setIsApplyingAi(false);
-      alert(`AI Assumptions successfully verified and saved to ${target.name}!`);
+      alert(`AI Assumptions successfully saved to ${target.name}!`);
       setActiveSubView('grid');
     }, 600);
   };
@@ -174,45 +185,34 @@ export const BusinessProjectsDashboard = () => {
       'Category',
       'Status',
       'Capital Requested (INR)',
-      'Daily Ad Budget (INR)',
-      'Campaign Days',
       'Total Ad Spend (INR)',
-      'Sales/Order Target',
-      'Selling Price / Commission (INR)',
-      'Projected Revenue (INR)',
-      'Direct Costs (INR)',
-      'Projected Gross Profit (INR)',
-      'Remaining After Ads (INR)',
-      'Projected Net Profit (INR)',
+      'Direct / Production Costs (INR)',
+      'Other Setup / Operating Costs (INR)',
+      'Total Project Cost (INR)',
       'Amount Spent to Date (INR)',
-      'Actual Revenue Collected (INR)',
-      'Actual Operating Profit/Loss (INR)'
+      'Remaining Capital to Deploy (INR)',
+      'Projected Revenue (INR)',
+      'Projected Net Profit (INR)',
+      'Timeline Completion (%)'
     ];
 
     const rows = businessProjects.map(proj => {
       const fin = calculateProjectFinancials(proj);
-      const targetUnits = proj.productionTarget || proj.totalOrderTarget || proj.campaignSalesTarget || 0;
-      const priceOrComm = proj.commissionPerCompletedSale || proj.proposedSellingPrice || proj.avgSellingPricePerUnit || 0;
-
       return [
         proj.id,
         `"${proj.name}"`,
         `"${proj.category}"`,
         proj.status,
         fin.capitalRequested,
-        proj.dailyAdBudget,
-        proj.campaignDurationDays,
         fin.totalAdSpend,
-        targetUnits,
-        priceOrComm,
-        fin.projectedRevenue,
         fin.directCosts,
-        fin.projectedGrossProfit,
-        fin.remainingAfterAds,
-        fin.projectedNetProfit,
+        fin.nonAdExpenses,
+        fin.totalAllCosts,
         fin.actualSpent,
-        fin.actualRevenue,
-        fin.actualOperatingProfit
+        fin.remainingCapitalToDeploy,
+        fin.projectedRevenue,
+        fin.projectedNetProfit,
+        `${fin.timelineProgressPercent}%`
       ];
     });
 
@@ -220,7 +220,7 @@ export const BusinessProjectsDashboard = () => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `rbi_business_projects_financials_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute('download', `rbi_complete_projects_audit_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -238,11 +238,12 @@ export const BusinessProjectsDashboard = () => {
     const fin = calculateProjectFinancials(p);
     acc.totalCapitalRequested += fin.capitalRequested;
     acc.totalAdSpend += fin.totalAdSpend;
-    acc.totalProjectedRevenue += fin.projectedRevenue;
     acc.totalActualSpent += fin.actualSpent;
+    acc.totalRemainingDeploy += fin.remainingCapitalToDeploy;
+    acc.totalProjectedRevenue += fin.projectedRevenue;
     acc.totalActualRevenue += fin.actualRevenue;
     return acc;
-  }, { totalCapitalRequested: 0, totalAdSpend: 0, totalProjectedRevenue: 0, totalActualSpent: 0, totalActualRevenue: 0 });
+  }, { totalCapitalRequested: 0, totalAdSpend: 0, totalActualSpent: 0, totalRemainingDeploy: 0, totalProjectedRevenue: 0, totalActualRevenue: 0 });
 
   return (
     <div className="container" style={{ padding: '24px 20px', maxWidth: '1280px', margin: '0 auto' }}>
@@ -250,7 +251,7 @@ export const BusinessProjectsDashboard = () => {
       {/* Platform Title Banner */}
       <div 
         style={{
-          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%)',
+          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.85) 100%)',
           borderRadius: '20px',
           padding: '28px 32px',
           border: '1px solid rgba(245, 158, 11, 0.25)',
@@ -262,11 +263,11 @@ export const BusinessProjectsDashboard = () => {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
               <span className="badge badge-gold" style={{ fontSize: '0.75rem', padding: '4px 10px' }}>
-                AI-POWERED BUSINESS PORTFOLIO
+                FULL AUDIT & TIMELINE SUITE
               </span>
               <span style={{ fontSize: '0.8rem', color: '#10b981', display: 'flex', alignItems: 'center', gap: '5px' }}>
                 <span className="live-pulse-dot" style={{ width: '6px', height: '6px', background: '#10b981' }}></span>
-                4 Verified Business Engines
+                Live Milestone Tracking
               </span>
             </div>
 
@@ -274,7 +275,7 @@ export const BusinessProjectsDashboard = () => {
               Business Investment & Project Dashboard
             </h1>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', margin: 0, maxWidth: '820px', lineHeight: '1.5' }}>
-              Independent financial modelling for <strong>UnavuKadai Jasai</strong>, <strong>CarpenterBullet</strong>, <strong>Wooden Laptop Case</strong>, and <strong>Bamboo Cup</strong>. Strictly audits capital requested, ad spend, verified revenue, and prevents unverified profit promises.
+              Complete transparency for investors: Tracks <strong>Materials, Labour, Logistics, Tooling, & Ads</strong> across all 4 projects with stage-by-stage <strong>Milestone Timelines</strong> and real-time execution updates.
             </p>
           </div>
 
@@ -289,7 +290,7 @@ export const BusinessProjectsDashboard = () => {
               style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', borderRadius: '10px' }}
             >
               <Bot size={16} className="text-amber-400" />
-              <span>AI Data Entry Assistant</span>
+              <span>AI Data Entry</span>
             </button>
 
             <button 
@@ -298,7 +299,7 @@ export const BusinessProjectsDashboard = () => {
               style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', borderRadius: '10px' }}
             >
               <Download size={15} />
-              <span>Export Excel / CSV</span>
+              <span>Export Audit CSV</span>
             </button>
 
             <button 
@@ -307,35 +308,35 @@ export const BusinessProjectsDashboard = () => {
               style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', borderRadius: '10px' }}
             >
               <Printer size={15} />
-              <span>Print PDF</span>
+              <span>Print Report</span>
             </button>
           </div>
         </div>
 
-        {/* Portfolio Top Metrics Bar */}
+        {/* Portfolio Top Metrics Bar (Full Picture) */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '14px', marginTop: '24px' }}>
           <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Capital Requested (4 Proj)</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Total Capital Requested</div>
             <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#fbbf24', marginTop: '4px' }}>{formatMoney(portfolioAggregates.totalCapitalRequested)}</div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>Fully allocated into segregated accounts</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>Full project budgets combined</div>
           </div>
 
           <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Planned Total Ad Spend</div>
-            <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#38bdf8', marginTop: '4px' }}>{formatMoney(portfolioAggregates.totalAdSpend)}</div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>Meta, Google & Print channels</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Capital Spent to Date</div>
+            <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#e2e8f0', marginTop: '4px' }}>{formatMoney(portfolioAggregates.totalActualSpent)}</div>
+            <div style={{ fontSize: '0.72rem', color: '#10b981', marginTop: '2px' }}>Verified against vendor bills</div>
           </div>
 
           <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Projected Target Revenue</div>
-            <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#10b981', marginTop: '4px' }}>{formatMoney(portfolioAggregates.totalProjectedRevenue)}</div>
-            <div style={{ fontSize: '0.72rem', color: '#cbd5e1', marginTop: '2px' }}>*Based on target volumes (Projections)</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Remaining Capital to Deploy</div>
+            <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#38bdf8', marginTop: '4px' }}>{formatMoney(portfolioAggregates.totalRemainingDeploy)}</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '2px' }}>Ready for next milestone stages</div>
           </div>
 
           <div style={{ background: 'rgba(255, 255, 255, 0.03)', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Revenue Collected to Date</div>
-            <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#e2e8f0', marginTop: '4px' }}>{formatMoney(portfolioAggregates.totalActualRevenue)}</div>
-            <div style={{ fontSize: '0.72rem', color: '#10b981', marginTop: '2px' }}>Spent: {formatMoney(portfolioAggregates.totalActualSpent)} verified</div>
+            <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Actual Revenue Collected</div>
+            <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#10b981', marginTop: '4px' }}>{formatMoney(portfolioAggregates.totalActualRevenue)}</div>
+            <div style={{ fontSize: '0.72rem', color: '#cbd5e1', marginTop: '2px' }}>Deposited in platform escrow</div>
           </div>
         </div>
 
@@ -352,7 +353,7 @@ export const BusinessProjectsDashboard = () => {
             style={{ borderRadius: '8px' }}
           >
             <Layers size={15} />
-            <span>Project Cards (4)</span>
+            <span>Interactive Project Cards</span>
           </button>
 
           <button 
@@ -361,7 +362,16 @@ export const BusinessProjectsDashboard = () => {
             style={{ borderRadius: '8px' }}
           >
             <Eye size={15} />
-            <span>Investor Diligence View</span>
+            <span>Full Costs & Diligence</span>
+          </button>
+
+          <button 
+            onClick={() => setActiveSubView('timeline')}
+            className={`btn btn-sm ${activeSubView === 'timeline' ? 'btn-primary' : 'btn-ghost'}`}
+            style={{ borderRadius: '8px' }}
+          >
+            <Calendar size={15} />
+            <span>Master Milestones Timeline</span>
           </button>
 
           <button 
@@ -373,7 +383,7 @@ export const BusinessProjectsDashboard = () => {
             style={{ borderRadius: '8px' }}
           >
             <Bot size={15} />
-            <span>AI Natural Language Parser</span>
+            <span>AI Parser</span>
           </button>
 
           <button 
@@ -382,7 +392,7 @@ export const BusinessProjectsDashboard = () => {
             style={{ borderRadius: '8px' }}
           >
             <History size={15} />
-            <span>Audit Trail Log</span>
+            <span>Audit Log</span>
           </button>
         </div>
 
@@ -432,14 +442,14 @@ export const BusinessProjectsDashboard = () => {
       </div>
 
       {/* ========================================================================= */}
-      {/* SUB-VIEW 1: PROJECT CARDS GRID */}
+      {/* SUB-VIEW 1: PROJECT CARDS WITH IN-CARD TABS (FULL COSTS, TIMELINE & ACTIVITY) */}
       {/* ========================================================================= */}
       {activeSubView === 'grid' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '22px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(370px, 1fr))', gap: '22px' }}>
           {filteredProjects.map(project => {
-            // Check if project is Bamboo Cup to apply scenario
             const customUnits = project.id === 'proj-bamboo-cup' ? bambooScenario : null;
             const financials = calculateProjectFinancials(project, customUnits);
+            const currentTab = cardActiveTab[project.id] || 'overview';
 
             return (
               <div 
@@ -456,19 +466,23 @@ export const BusinessProjectsDashboard = () => {
                   position: 'relative'
                 }}
               >
-                {/* Header */}
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                  {/* Header Title & Status */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
                     <div>
-                      <span className="badge" style={{ 
-                        fontSize: '0.7rem', 
-                        background: project.status === 'Active' ? 'rgba(16, 185, 129, 0.15)' : project.status === 'Testing' ? 'rgba(56, 189, 248, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                        color: project.status === 'Active' ? '#10b981' : project.status === 'Testing' ? '#38bdf8' : '#fbbf24',
-                        marginBottom: '4px',
-                        display: 'inline-block'
-                      }}>
-                        {project.status.toUpperCase()}
-                      </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <span className="badge" style={{ 
+                          fontSize: '0.7rem', 
+                          background: project.status === 'Active' ? 'rgba(16, 185, 129, 0.15)' : project.status === 'Testing' ? 'rgba(56, 189, 248, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                          color: project.status === 'Active' ? '#10b981' : project.status === 'Testing' ? '#38bdf8' : '#fbbf24',
+                          display: 'inline-block'
+                        }}>
+                          {project.status.toUpperCase()}
+                        </span>
+                        <span style={{ fontSize: '0.72rem', color: '#10b981', fontWeight: '700' }}>
+                          {financials.timelineProgressPercent}% Completed
+                        </span>
+                      </div>
                       <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#fff', margin: '4px 0' }}>
                         {project.name}
                       </h2>
@@ -487,174 +501,310 @@ export const BusinessProjectsDashboard = () => {
                     </button>
                   </div>
 
-                  <p style={{ fontSize: '0.84rem', color: '#94a3b8', margin: '8px 0 16px 0', lineHeight: '1.45' }}>
+                  <p style={{ fontSize: '0.84rem', color: '#94a3b8', margin: '6px 0 14px 0', lineHeight: '1.45' }}>
                     {project.description}
                   </p>
 
-                  {/* Special Bamboo Cup 100 vs 150 Scenario Toggle */}
+                  {/* Bamboo Cup 100 vs 150 Scenario Toggle */}
                   {project.id === 'proj-bamboo-cup' && (
                     <div style={{ 
                       background: 'rgba(245, 158, 11, 0.08)', 
-                      padding: '10px 14px', 
+                      padding: '8px 12px', 
                       borderRadius: '10px', 
                       border: '1px solid rgba(245, 158, 11, 0.2)',
-                      marginBottom: '16px' 
+                      marginBottom: '14px',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
                     }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#fbbf24' }}>
-                          Production Scenario:
-                        </span>
-                        <div style={{ display: 'flex', gap: '6px' }}>
-                          <button
-                            type="button"
-                            onClick={() => setBambooScenario(100)}
-                            style={{
-                              padding: '3px 8px',
-                              borderRadius: '6px',
-                              fontSize: '0.72rem',
-                              fontWeight: '700',
-                              border: bambooScenario === 100 ? '1px solid #fbbf24' : '1px solid rgba(255,255,255,0.1)',
-                              background: bambooScenario === 100 ? '#fbbf24' : 'transparent',
-                              color: bambooScenario === 100 ? '#000' : '#fff',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            100 Cups
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setBambooScenario(150)}
-                            style={{
-                              padding: '3px 8px',
-                              borderRadius: '6px',
-                              fontSize: '0.72rem',
-                              fontWeight: '700',
-                              border: bambooScenario === 150 ? '1px solid #fbbf24' : '1px solid rgba(255,255,255,0.1)',
-                              background: bambooScenario === 150 ? '#fbbf24' : 'transparent',
-                              color: bambooScenario === 150 ? '#000' : '#fff',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            150 Cups
-                          </button>
-                        </div>
-                      </div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-                        {bambooScenario === 100 ? 'Revenue: ₹49,900 | Stated Unit Profit: ₹19,900' : 'Revenue: ₹74,850 | Stated Unit Profit: ₹29,850'}
+                      <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#fbbf24' }}>
+                        Production Scenario:
+                      </span>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                          type="button"
+                          onClick={() => setBambooScenario(100)}
+                          style={{
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            fontSize: '0.72rem',
+                            fontWeight: '700',
+                            border: bambooScenario === 100 ? '1px solid #fbbf24' : '1px solid rgba(255,255,255,0.1)',
+                            background: bambooScenario === 100 ? '#fbbf24' : 'transparent',
+                            color: bambooScenario === 100 ? '#000' : '#fff',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          100 Cups
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setBambooScenario(150)}
+                          style={{
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            fontSize: '0.72rem',
+                            fontWeight: '700',
+                            border: bambooScenario === 150 ? '1px solid #fbbf24' : '1px solid rgba(255,255,255,0.1)',
+                            background: bambooScenario === 150 ? '#fbbf24' : 'transparent',
+                            color: bambooScenario === 150 ? '#000' : '#fff',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          150 Cups
+                        </button>
                       </div>
                     </div>
                   )}
 
-                  {/* Core Metrics Grid */}
+                  {/* In-Card Interactive Tabs (What Investors Need to See) */}
                   <div style={{ 
-                    background: 'rgba(0, 0, 0, 0.25)', 
-                    borderRadius: '12px', 
-                    padding: '14px', 
-                    border: '1px solid rgba(255, 255, 255, 0.05)',
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '12px',
-                    marginBottom: '16px'
+                    display: 'flex', 
+                    gap: '4px', 
+                    background: 'rgba(0, 0, 0, 0.35)', 
+                    padding: '3px', 
+                    borderRadius: '8px', 
+                    marginBottom: '14px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)'
                   }}>
-                    <div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Required Investment</div>
-                      <div style={{ fontSize: '1rem', fontWeight: '800', color: '#fbbf24' }}>{formatMoney(financials.capitalRequested)}</div>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Daily Ad Budget</div>
-                      <div style={{ fontSize: '1rem', fontWeight: '800', color: '#38bdf8' }}>{formatMoney(project.dailyAdBudget)}/day</div>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Campaign Duration</div>
-                      <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#fff' }}>{project.campaignDurationDays} Days</div>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Total Ad Spend</div>
-                      <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#38bdf8' }}>{formatMoney(financials.totalAdSpend)}</div>
-                    </div>
-
-                    {/* Model-Specific Targets */}
-                    {project.type === 'COMMISSION_MARKETPLACE' ? (
-                      <>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Target Leads / Day</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#fff' }}>15–20 leads</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Completed Sales Target</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#10b981' }}>{project.campaignSalesTarget} sales</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Commission / Sale</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#fbbf24' }}>₹{project.commissionPerCompletedSale}</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Remaining After Ads</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#10b981' }}>{formatMoney(financials.remainingAfterAds)}</div>
-                        </div>
-                      </>
-                    ) : project.type === 'SERVICE_ORDER' ? (
-                      <>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Daily Order Target</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#fff' }}>{project.dailyOrderTarget} orders/day</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Total Target Orders</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#10b981' }}>{project.totalOrderTarget} orders</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Avg Order Value</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#fbbf24' }}>{formatMoney(project.avgSellingPricePerUnit)}</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Unit Cost + Delivery</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#e2e8f0' }}>₹{project.directCostPerUnit + project.deliveryCostPerUnit}</div>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Selling Price / Unit</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#fbbf24' }}>₹{project.proposedSellingPrice}</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Cost Per Unit</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#e2e8f0' }}>₹{project.totalDirectCostPerUnit}</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Production / Target</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#fff' }}>{customUnits || project.productionTarget} units</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Remaining After Ads</div>
-                          <div style={{ fontSize: '0.92rem', fontWeight: '700', color: '#10b981' }}>{formatMoney(financials.remainingAfterAds)}</div>
-                        </div>
-                      </>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => setProjectCardTab(project.id, 'overview')}
+                      style={{
+                        flex: 1,
+                        padding: '6px 4px',
+                        borderRadius: '6px',
+                        fontSize: '0.72rem',
+                        fontWeight: '700',
+                        border: 'none',
+                        background: currentTab === 'overview' ? 'rgba(245, 158, 11, 0.2)' : 'transparent',
+                        color: currentTab === 'overview' ? '#fbbf24' : 'var(--text-muted)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Overview
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setProjectCardTab(project.id, 'costs')}
+                      style={{
+                        flex: 1,
+                        padding: '6px 4px',
+                        borderRadius: '6px',
+                        fontSize: '0.72rem',
+                        fontWeight: '700',
+                        border: 'none',
+                        background: currentTab === 'costs' ? 'rgba(56, 189, 248, 0.2)' : 'transparent',
+                        color: currentTab === 'costs' ? '#38bdf8' : 'var(--text-muted)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      All Costs
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setProjectCardTab(project.id, 'timeline')}
+                      style={{
+                        flex: 1,
+                        padding: '6px 4px',
+                        borderRadius: '6px',
+                        fontSize: '0.72rem',
+                        fontWeight: '700',
+                        border: 'none',
+                        background: currentTab === 'timeline' ? 'rgba(16, 185, 129, 0.2)' : 'transparent',
+                        color: currentTab === 'timeline' ? '#10b981' : 'var(--text-muted)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Timeline
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setProjectCardTab(project.id, 'activity')}
+                      style={{
+                        flex: 1,
+                        padding: '6px 4px',
+                        borderRadius: '6px',
+                        fontSize: '0.72rem',
+                        fontWeight: '700',
+                        border: 'none',
+                        background: currentTab === 'activity' ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+                        color: currentTab === 'activity' ? '#fff' : 'var(--text-muted)',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Live Work
+                    </button>
                   </div>
 
-                  {/* Financial Results Bar */}
-                  <div style={{ 
-                    background: 'rgba(16, 185, 129, 0.05)', 
-                    border: '1px solid rgba(16, 185, 129, 0.2)', 
-                    borderRadius: '12px', 
-                    padding: '12px 14px',
-                    marginBottom: '16px' 
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Expected Revenue:</span>
-                      <strong style={{ fontSize: '0.95rem', color: '#fff' }}>{formatMoney(financials.projectedRevenue)}</strong>
+                  {/* TAB 1: OVERVIEW & UNIT ECONOMICS */}
+                  {currentTab === 'overview' && (
+                    <div>
+                      <div style={{ 
+                        background: 'rgba(0, 0, 0, 0.25)', 
+                        borderRadius: '12px', 
+                        padding: '12px', 
+                        border: '1px solid rgba(255, 255, 255, 0.05)',
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '10px',
+                        marginBottom: '14px'
+                      }}>
+                        <div>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Capital Budget</div>
+                          <div style={{ fontSize: '0.98rem', fontWeight: '800', color: '#fbbf24' }}>{formatMoney(financials.capitalRequested)}</div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Advertising Spend</div>
+                          <div style={{ fontSize: '0.98rem', fontWeight: '800', color: '#38bdf8' }}>{formatMoney(financials.totalAdSpend)}</div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Materials & Operations</div>
+                          <div style={{ fontSize: '0.98rem', fontWeight: '700', color: '#cbd5e1' }}>{formatMoney(financials.directCosts + financials.nonAdExpenses)}</div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Remaining to Deploy</div>
+                          <div style={{ fontSize: '0.98rem', fontWeight: '700', color: '#10b981' }}>{formatMoney(financials.remainingCapitalToDeploy)}</div>
+                        </div>
+                      </div>
+
+                      {/* Financial Projection Box */}
+                      <div style={{ 
+                        background: 'rgba(16, 185, 129, 0.05)', 
+                        border: '1px solid rgba(16, 185, 129, 0.2)', 
+                        borderRadius: '12px', 
+                        padding: '12px 14px',
+                        marginBottom: '14px' 
+                      }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Target Revenue:</span>
+                          <strong style={{ fontSize: '0.92rem', color: '#fff' }}>{formatMoney(financials.projectedRevenue)}</strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Gross Margin:</span>
+                          <strong style={{ fontSize: '0.92rem', color: '#38bdf8' }}>{formatMoney(financials.projectedGrossProfit)}</strong>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Projected Net Profit:</span>
+                          <strong style={{ fontSize: '0.98rem', color: '#10b981' }}>{formatMoney(financials.projectedNetProfit)}</strong>
+                        </div>
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Gross Profit:</span>
-                      <strong style={{ fontSize: '0.95rem', color: '#38bdf8' }}>{formatMoney(financials.projectedGrossProfit)}</strong>
+                  )}
+
+                  {/* TAB 2: FULL COST BREAKDOWN (WHERE EVERY RUPEE GOES) */}
+                  {currentTab === 'costs' && (
+                    <div style={{ marginBottom: '14px' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#38bdf8', marginBottom: '8px' }}>
+                        Itemized Expense Allocation:
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {(project.expenseBreakdown || []).map((exp, idx) => (
+                          <div 
+                            key={idx}
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              padding: '8px 10px',
+                              borderRadius: '8px',
+                              background: 'rgba(255, 255, 255, 0.02)',
+                              border: '1px solid rgba(255, 255, 255, 0.04)',
+                              fontSize: '0.78rem'
+                            }}
+                          >
+                            <div>
+                              <div style={{ color: '#fff', fontWeight: '600' }}>{exp.item}</div>
+                              <div style={{ color: 'var(--text-muted)', fontSize: '0.68rem' }}>{exp.category} • {exp.progress}</div>
+                            </div>
+                            <strong style={{ color: '#fbbf24' }}>{formatMoney(exp.amount)}</strong>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 10px', marginTop: '6px', background: 'rgba(0, 0, 0, 0.3)', borderRadius: '8px', fontSize: '0.8rem' }}>
+                        <span style={{ color: 'var(--text-muted)' }}>Total Allocated:</span>
+                        <strong style={{ color: '#fff' }}>{formatMoney(financials.capitalRequested)}</strong>
+                      </div>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Projected Net Profit:</span>
-                      <strong style={{ fontSize: '1rem', color: '#10b981' }}>{formatMoney(financials.projectedNetProfit)}</strong>
+                  )}
+
+                  {/* TAB 3: PROJECT TIMELINE & MILESTONES (INVESTOR VISIBILITY) */}
+                  {currentTab === 'timeline' && (
+                    <div style={{ marginBottom: '14px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#10b981' }}>
+                          Execution Milestones ({financials.completedMilestones}/{financials.totalMilestones}):
+                        </span>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                          {project.campaignStartDate} to {project.campaignEndDate}
+                        </span>
+                      </div>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {(project.timeline || []).map((m, idx) => (
+                          <div 
+                            key={m.id}
+                            style={{
+                              padding: '8px 10px',
+                              borderRadius: '8px',
+                              background: m.status === 'COMPLETED' ? 'rgba(16, 185, 129, 0.08)' : m.status === 'IN_PROGRESS' ? 'rgba(56, 189, 248, 0.08)' : 'rgba(255, 255, 255, 0.02)',
+                              border: m.status === 'IN_PROGRESS' ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid rgba(255, 255, 255, 0.05)',
+                              fontSize: '0.76rem'
+                            }}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <strong style={{ color: m.status === 'COMPLETED' ? '#10b981' : m.status === 'IN_PROGRESS' ? '#38bdf8' : '#94a3b8' }}>
+                                {m.phase}
+                              </strong>
+                              <span className="badge" style={{ 
+                                fontSize: '0.62rem', 
+                                padding: '1px 5px',
+                                background: m.status === 'COMPLETED' ? '#10b981' : m.status === 'IN_PROGRESS' ? '#38bdf8' : '#475569',
+                                color: '#000'
+                              }}>
+                                {m.status}
+                              </span>
+                            </div>
+                            <div style={{ color: 'var(--text-muted)', fontSize: '0.68rem', marginTop: '2px' }}>{m.period}</div>
+                            <div style={{ color: '#cbd5e1', fontSize: '0.72rem', marginTop: '3px' }}>{m.deliverables}</div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
+
+                  {/* TAB 4: LIVE WORK (WHAT WE ARE DOING RIGHT NOW) */}
+                  {currentTab === 'activity' && (
+                    <div style={{ marginBottom: '14px' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#fff', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Activity size={14} className="text-emerald-400" />
+                        <span>Current Operational Sprint:</span>
+                      </div>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {(project.liveUpdates || []).map((upd, idx) => (
+                          <div 
+                            key={idx}
+                            style={{
+                              padding: '8px 10px',
+                              borderRadius: '8px',
+                              background: 'rgba(255, 255, 255, 0.02)',
+                              borderLeft: '3px solid #10b981',
+                              fontSize: '0.75rem'
+                            }}
+                          >
+                            <div style={{ color: '#e2e8f0', lineHeight: '1.4' }}>{upd.note}</div>
+                            <div style={{ color: 'var(--text-muted)', fontSize: '0.65rem', marginTop: '4px', display: 'flex', justifyContent: 'space-between' }}>
+                              <span>{upd.date} • {upd.time}</span>
+                              <span style={{ color: '#fbbf24' }}>{upd.author}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                 </div>
 
                 {/* Card Footer Actions */}
@@ -664,7 +814,7 @@ export const BusinessProjectsDashboard = () => {
                     className="btn btn-secondary btn-sm"
                     style={{ flex: 1, borderRadius: '8px', fontSize: '0.8rem', justifyContent: 'center' }}
                   >
-                    <Eye size={14} /> Investor Breakdown
+                    <Eye size={14} /> Full Investor Breakdown
                   </button>
                   <button 
                     onClick={() => handleOpenEdit(project)}
@@ -682,7 +832,7 @@ export const BusinessProjectsDashboard = () => {
       )}
 
       {/* ========================================================================= */}
-      {/* SUB-VIEW 2: INVESTOR DUE DILIGENCE VIEW */}
+      {/* SUB-VIEW 2: INVESTOR DUE DILIGENCE & COMPLETE COST ALLOCATION TABLE */}
       {/* ========================================================================= */}
       {activeSubView === 'investor' && (
         <div 
@@ -710,43 +860,43 @@ export const BusinessProjectsDashboard = () => {
             <ShieldAlert size={26} className="text-rose-400" style={{ flexShrink: 0 }} />
             <div>
               <h4 style={{ color: '#fff', margin: '0 0 2px 0', fontSize: '0.98rem', fontWeight: '800' }}>
-                Investor Capital Protection & Transparency Protocol
+                Investor Capital Segregation & Verification Standard
               </h4>
               <p style={{ color: '#fca5a5', fontSize: '0.82rem', margin: 0 }}>
-                This platform strictly distinguishes between capital invested, funds spent, revenue collected, and net profit. <strong>We do not promise guaranteed returns.</strong> Forecasts are labeled as estimates until verified by bank statements and sales invoices.
+                Every single cost—materials, labour, logistics, tooling, and ads—is itemized below. <strong>No guaranteed returns.</strong> Actual revenue is deposited in platform escrow and audited prior to dividend settlements.
               </p>
             </div>
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: '800', color: '#fff', margin: 0 }}>
-              Comparative Financial Due Diligence Table
+              Complete Cost & Capital Allocation Audit
             </h3>
             <button onClick={exportPortfolioCSV} className="btn btn-secondary btn-sm" style={{ borderRadius: '8px' }}>
-              <Download size={14} /> Export Table
+              <Download size={14} /> Export CSV
             </button>
           </div>
 
-          {/* Table */}
+          {/* Table Showing All Costs (Not Just Ads) */}
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.1)', color: 'var(--text-muted)', fontSize: '0.74rem', textTransform: 'uppercase' }}>
                   <th style={{ padding: '12px 14px' }}>Project</th>
-                  <th style={{ padding: '12px 14px' }}>Capital Requested</th>
+                  <th style={{ padding: '12px 14px' }}>Total Capital</th>
+                  <th style={{ padding: '12px 14px' }}>Ad Spend</th>
+                  <th style={{ padding: '12px 14px' }}>Materials / Direct</th>
+                  <th style={{ padding: '12px 14px' }}>Setup / Tech</th>
                   <th style={{ padding: '12px 14px' }}>Spent to Date</th>
+                  <th style={{ padding: '12px 14px' }}>Remaining Capital</th>
                   <th style={{ padding: '12px 14px' }}>Revenue Collected</th>
-                  <th style={{ padding: '12px 14px' }}>Verified Expenses</th>
-                  <th style={{ padding: '12px 14px' }}>Current Op Profit/Loss</th>
-                  <th style={{ padding: '12px 14px' }}>Forecast Revenue</th>
-                  <th style={{ padding: '12px 14px' }}>Forecast Net Profit</th>
-                  <th style={{ padding: '12px 14px', textAlign: 'right' }}>Action</th>
+                  <th style={{ padding: '12px 14px' }}>Milestone Progress</th>
+                  <th style={{ padding: '12px 14px', textAlign: 'right' }}>Diligence</th>
                 </tr>
               </thead>
               <tbody>
                 {businessProjects.map(proj => {
                   const fin = calculateProjectFinancials(proj);
-                  const isProfitPositive = fin.actualOperatingProfit >= 0;
 
                   return (
                     <tr 
@@ -760,31 +910,31 @@ export const BusinessProjectsDashboard = () => {
                       <td style={{ padding: '14px', fontWeight: '700', color: '#fbbf24' }}>
                         {formatMoney(fin.capitalRequested)}
                       </td>
-                      <td style={{ padding: '14px', color: '#e2e8f0' }}>
-                        {formatMoney(fin.actualSpent)}
+                      <td style={{ padding: '14px', color: '#38bdf8' }}>
+                        {formatMoney(fin.totalAdSpend)}
                       </td>
-                      <td style={{ padding: '14px', fontWeight: '700', color: '#10b981' }}>
-                        {formatMoney(fin.actualRevenue)}
+                      <td style={{ padding: '14px', color: '#cbd5e1' }}>
+                        {formatMoney(fin.directCosts)}
                       </td>
                       <td style={{ padding: '14px', color: '#94a3b8' }}>
-                        {formatMoney(fin.actualVerifiedExpenses)}
+                        {formatMoney(fin.nonAdExpenses)}
+                      </td>
+                      <td style={{ padding: '14px', color: '#e2e8f0', fontWeight: '600' }}>
+                        {formatMoney(fin.actualSpent)}
+                      </td>
+                      <td style={{ padding: '14px', color: '#10b981', fontWeight: '700' }}>
+                        {formatMoney(fin.remainingCapitalToDeploy)}
+                      </td>
+                      <td style={{ padding: '14px', color: '#10b981', fontWeight: '700' }}>
+                        {formatMoney(fin.actualRevenue)}
                       </td>
                       <td style={{ padding: '14px' }}>
-                        <span style={{ 
-                          fontWeight: '800', 
-                          color: isProfitPositive ? '#10b981' : '#f43f5e',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '4px'
-                        }}>
-                          {formatMoney(fin.actualOperatingProfit)}
-                        </span>
-                      </td>
-                      <td style={{ padding: '14px', color: '#38bdf8' }}>
-                        {formatMoney(fin.projectedRevenue)}*
-                      </td>
-                      <td style={{ padding: '14px', fontWeight: '700', color: '#10b981' }}>
-                        {formatMoney(fin.projectedNetProfit)}*
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <div style={{ width: '60px', height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                            <div style={{ width: `${fin.timelineProgressPercent}%`, height: '100%', background: '#10b981' }} />
+                          </div>
+                          <span style={{ fontSize: '0.75rem', color: '#fff', fontWeight: '700' }}>{fin.timelineProgressPercent}%</span>
+                        </div>
                       </td>
                       <td style={{ padding: '14px', textAlign: 'right' }}>
                         <button 
@@ -792,7 +942,7 @@ export const BusinessProjectsDashboard = () => {
                           className="btn btn-ghost btn-sm"
                           style={{ fontSize: '0.75rem', padding: '4px 8px', color: '#fbbf24' }}
                         >
-                          View Details
+                          View All
                         </button>
                       </td>
                     </tr>
@@ -801,15 +951,100 @@ export const BusinessProjectsDashboard = () => {
               </tbody>
             </table>
           </div>
-
-          <div style={{ marginTop: '16px', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-            *Asterisk denotes forward-looking estimates subject to cost verification and market conditions.
-          </div>
         </div>
       )}
 
       {/* ========================================================================= */}
-      {/* SUB-VIEW 3: AI NATURAL LANGUAGE PARSER & DATA ENTRY */}
+      {/* SUB-VIEW 3: MASTER MILESTONES & TIMELINE PIPELINE */}
+      {/* ========================================================================= */}
+      {activeSubView === 'timeline' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+          {businessProjects.map(proj => {
+            const fin = calculateProjectFinancials(proj);
+
+            return (
+              <div 
+                key={proj.id}
+                style={{
+                  background: 'var(--card-bg, #0b1120)',
+                  borderRadius: '18px',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  padding: '24px 28px',
+                  boxShadow: '0 8px 30px rgba(0, 0, 0, 0.4)'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '18px' }}>
+                  <div>
+                    <span className="badge badge-gold" style={{ fontSize: '0.7rem', padding: '2px 8px', marginBottom: '4px' }}>
+                      {proj.status.toUpperCase()}
+                    </span>
+                    <h3 style={{ fontSize: '1.3rem', fontWeight: '800', color: '#fff', margin: '4px 0' }}>
+                      {proj.name}: Project Timeline & Milestones
+                    </h3>
+                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                      Sprint: {proj.campaignStartDate} to {proj.campaignEndDate} ({proj.campaignDurationDays} Days)
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Progress Completion</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: '800', color: '#10b981' }}>{fin.timelineProgressPercent}% Completed</div>
+                  </div>
+                </div>
+
+                {/* Milestones Flow */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+                  {(proj.timeline || []).map((m, idx) => (
+                    <div 
+                      key={m.id}
+                      style={{
+                        padding: '14px',
+                        borderRadius: '12px',
+                        background: m.status === 'COMPLETED' ? 'rgba(16, 185, 129, 0.08)' : m.status === 'IN_PROGRESS' ? 'rgba(56, 189, 248, 0.08)' : 'rgba(255, 255, 255, 0.02)',
+                        border: m.status === 'IN_PROGRESS' ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid rgba(255, 255, 255, 0.06)',
+                        position: 'relative'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                        <span style={{ fontSize: '0.7rem', fontWeight: '700', color: 'var(--text-muted)' }}>
+                          Step {idx + 1}
+                        </span>
+                        <span className="badge" style={{ 
+                          fontSize: '0.62rem',
+                          background: m.status === 'COMPLETED' ? '#10b981' : m.status === 'IN_PROGRESS' ? '#38bdf8' : '#475569',
+                          color: '#000',
+                          padding: '1px 6px'
+                        }}>
+                          {m.status}
+                        </span>
+                      </div>
+
+                      <strong style={{ display: 'block', fontSize: '0.85rem', color: '#fff', marginBottom: '4px' }}>
+                        {m.phase}
+                      </strong>
+                      <div style={{ fontSize: '0.72rem', color: '#38bdf8', marginBottom: '6px' }}>
+                        {m.period}
+                      </div>
+                      <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0, lineHeight: '1.4' }}>
+                        {m.deliverables}
+                      </p>
+
+                      <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px dashed rgba(255, 255, 255, 0.08)', fontSize: '0.72rem', display: 'flex', justifyContent: 'space-between' }}>
+                        <span style={{ color: 'var(--text-muted)' }}>Budget:</span>
+                        <strong style={{ color: '#fbbf24' }}>{formatMoney(m.allocatedBudget)}</strong>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* SUB-VIEW 4: AI NATURAL LANGUAGE PARSER & DATA ENTRY */}
       {/* ========================================================================= */}
       {activeSubView === 'ai-parser' && (
         <div 
@@ -873,7 +1108,6 @@ export const BusinessProjectsDashboard = () => {
             </button>
           </div>
 
-          {/* Textarea Input */}
           <div style={{ marginBottom: '18px' }}>
             <textarea
               rows={4}
@@ -894,7 +1128,6 @@ export const BusinessProjectsDashboard = () => {
             />
           </div>
 
-          {/* Target Project Dropdown & Parse Button */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Target Business Project:</span>
@@ -928,7 +1161,7 @@ export const BusinessProjectsDashboard = () => {
             </button>
           </div>
 
-          {/* AI Analysis Preview Box */}
+          {/* AI Analysis Preview */}
           {aiAnalysisResult && (
             <div 
               style={{
@@ -950,7 +1183,6 @@ export const BusinessProjectsDashboard = () => {
                 </span>
               </div>
 
-              {/* Extracted Values Grid */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px', marginBottom: '18px' }}>
                 <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px 12px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Daily Ad Budget</div>
@@ -974,68 +1206,13 @@ export const BusinessProjectsDashboard = () => {
                 </div>
 
                 <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px 12px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Daily Leads Target</div>
-                  <div style={{ fontSize: '1rem', fontWeight: '800', color: '#cbd5e1', marginTop: '2px' }}>
-                    {aiAnalysisResult.extractedValues.leadsPerDay || '—'}
-                  </div>
-                </div>
-
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px 12px', borderRadius: '8px' }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Sales Target</div>
                   <div style={{ fontSize: '1rem', fontWeight: '800', color: '#10b981', marginTop: '2px' }}>
                     {aiAnalysisResult.extractedValues.totalSalesTarget ? `${aiAnalysisResult.extractedValues.totalSalesTarget} units` : '—'}
                   </div>
                 </div>
-
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px 12px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Commission / Selling Price</div>
-                  <div style={{ fontSize: '1rem', fontWeight: '800', color: '#fbbf24', marginTop: '2px' }}>
-                    {aiAnalysisResult.extractedValues.commissionPerSale ? `₹${aiAnalysisResult.extractedValues.commissionPerSale} (Comm)` : aiAnalysisResult.extractedValues.sellingPrice ? `₹${aiAnalysisResult.extractedValues.sellingPrice} (Price)` : '—'}
-                  </div>
-                </div>
-
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px 12px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Projected Revenue</div>
-                  <div style={{ fontSize: '1rem', fontWeight: '800', color: '#10b981', marginTop: '2px' }}>
-                    {aiAnalysisResult.extractedValues.projectedRevenue ? formatMoney(aiAnalysisResult.extractedValues.projectedRevenue) : '—'}
-                  </div>
-                </div>
-
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px 12px', borderRadius: '8px' }}>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Remaining After Ads</div>
-                  <div style={{ fontSize: '1rem', fontWeight: '800', color: '#fbbf24', marginTop: '2px' }}>
-                    {aiAnalysisResult.extractedValues.remainingAfterAds ? formatMoney(aiAnalysisResult.extractedValues.remainingAfterAds) : '—'}
-                  </div>
-                </div>
               </div>
 
-              {/* Clarification & Warning Notes */}
-              {aiAnalysisResult.clarificationQuestions && aiAnalysisResult.clarificationQuestions.length > 0 && (
-                <div style={{ marginBottom: '16px' }}>
-                  {aiAnalysisResult.clarificationQuestions.map((q, idx) => (
-                    <div 
-                      key={idx}
-                      style={{
-                        background: 'rgba(245, 158, 11, 0.08)',
-                        border: '1px solid rgba(245, 158, 11, 0.25)',
-                        borderRadius: '10px',
-                        padding: '10px 14px',
-                        fontSize: '0.8rem',
-                        color: '#fef08a',
-                        display: 'flex',
-                        alignItems: 'flex-start',
-                        gap: '8px',
-                        marginBottom: '6px'
-                      }}
-                    >
-                      <Info size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
-                      <span>{q}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Confirmation Action Button */}
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '16px' }}>
                 <button
                   type="button"
@@ -1052,7 +1229,7 @@ export const BusinessProjectsDashboard = () => {
                   style={{ borderRadius: '8px', padding: '8px 18px', fontWeight: '700' }}
                   disabled={isApplyingAi}
                 >
-                  {isApplyingAi ? 'Saving Assumptions...' : 'Confirm & Apply to Project'}
+                  {isApplyingAi ? 'Saving...' : 'Confirm & Apply to Project'}
                 </button>
               </div>
 
@@ -1062,7 +1239,7 @@ export const BusinessProjectsDashboard = () => {
       )}
 
       {/* ========================================================================= */}
-      {/* SUB-VIEW 4: AUDIT TRAIL LOG */}
+      {/* SUB-VIEW 5: AUDIT TRAIL LOG */}
       {/* ========================================================================= */}
       {activeSubView === 'audit-log' && (
         <div 
@@ -1136,7 +1313,7 @@ export const BusinessProjectsDashboard = () => {
                   Edit Project Assumptions: {editingProject.name}
                 </h3>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                  All financial metrics automatically recalculate upon update.
+                  All metrics automatically recalculate upon saving.
                 </span>
               </div>
               <button onClick={() => setEditingProject(null)} className="btn btn-ghost btn-sm" style={{ padding: '4px' }}>
@@ -1259,13 +1436,12 @@ export const BusinessProjectsDashboard = () => {
                 </div>
               )}
 
-              {/* Action Buttons */}
               <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                 <button type="button" onClick={() => setEditingProject(null)} className="btn btn-secondary" style={{ flex: 1, borderRadius: '10px' }}>
                   Cancel
                 </button>
                 <button type="submit" className="btn btn-primary" style={{ flex: 1, borderRadius: '10px' }}>
-                  Save & Recalculate
+                  Save Assumptions
                 </button>
               </div>
 
@@ -1284,15 +1460,15 @@ export const BusinessProjectsDashboard = () => {
             <div 
               className="modal-content" 
               onClick={(e) => e.stopPropagation()}
-              style={{ maxWidth: '640px', width: '100%', padding: '28px', borderRadius: '20px' }}
+              style={{ maxWidth: '680px', width: '100%', padding: '28px', borderRadius: '20px' }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
                 <div>
                   <h3 style={{ fontSize: '1.35rem', color: '#fff', margin: 0, fontWeight: '800' }}>
-                    Investor Summary: {investorModalProject.name}
+                    Investor Diligence: {investorModalProject.name}
                   </h3>
                   <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                    Category: {investorModalProject.category}
+                    {investorModalProject.category} • Sprint: {investorModalProject.campaignStartDate} to {investorModalProject.campaignEndDate}
                   </span>
                 </div>
                 <button onClick={() => setInvestorModalProject(null)} className="btn btn-ghost btn-sm" style={{ padding: '4px' }}>
@@ -1300,15 +1476,15 @@ export const BusinessProjectsDashboard = () => {
                 </button>
               </div>
 
-              {/* Capital & Use of Funds */}
-              <div style={{ background: 'rgba(255, 255, 255, 0.03)', borderRadius: '14px', padding: '16px', marginBottom: '18px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              {/* Complete Cost Itemization */}
+              <div style={{ background: 'rgba(255, 255, 255, 0.03)', borderRadius: '14px', padding: '16px', marginBottom: '16px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <h4 style={{ fontSize: '0.88rem', fontWeight: '700', color: '#fbbf24', margin: '0 0 10px 0' }}>
-                  Planned Use of Funds & Expense Itemization:
+                  Full Cost Allocation & Deployment Status:
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {(investorModalProject.expenseBreakdown || []).map((item, idx) => (
                     <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem' }}>
-                      <span style={{ color: '#cbd5e1' }}>• {item.item}</span>
+                      <span style={{ color: '#cbd5e1' }}>• {item.item} <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>({item.progress})</span></span>
                       <strong style={{ color: '#fff' }}>{formatMoney(item.amount)}</strong>
                     </div>
                   ))}
@@ -1319,42 +1495,42 @@ export const BusinessProjectsDashboard = () => {
                 </div>
               </div>
 
-              {/* Actuals vs Projections */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '18px' }}>
-                <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '14px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Actuals to Date</div>
-                  <div style={{ marginTop: '8px', fontSize: '0.82rem', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <div>Spent: <strong style={{ color: '#fff' }}>{formatMoney(fin.actualSpent)}</strong></div>
-                    <div>Revenue: <strong style={{ color: '#10b981' }}>{formatMoney(fin.actualRevenue)}</strong></div>
-                    <div>Operating P/L: <strong style={{ color: fin.actualOperatingProfit >= 0 ? '#10b981' : '#f43f5e' }}>{formatMoney(fin.actualOperatingProfit)}</strong></div>
-                  </div>
+              {/* Deployment & Spending Balance */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '16px' }}>
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '10px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Spent to Date</div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: '800', color: '#e2e8f0', marginTop: '2px' }}>{formatMoney(fin.actualSpent)}</div>
                 </div>
-
-                <div style={{ background: 'rgba(0, 0, 0, 0.3)', padding: '14px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Forecast (Unverified)</div>
-                  <div style={{ marginTop: '8px', fontSize: '0.82rem', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <div>Projected Rev: <strong style={{ color: '#38bdf8' }}>{formatMoney(fin.projectedRevenue)}</strong></div>
-                    <div>Gross Profit: <strong style={{ color: '#fff' }}>{formatMoney(fin.projectedGrossProfit)}</strong></div>
-                    <div>Net Profit: <strong style={{ color: '#10b981' }}>{formatMoney(fin.projectedNetProfit)}</strong></div>
-                  </div>
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '10px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Remaining to Deploy</div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: '800', color: '#10b981', marginTop: '2px' }}>{formatMoney(fin.remainingCapitalToDeploy)}</div>
+                </div>
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '10px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Collected Revenue</div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: '800', color: '#38bdf8', marginTop: '2px' }}>{formatMoney(fin.actualRevenue)}</div>
                 </div>
               </div>
 
-              {/* Risks & Assumptions */}
-              <div style={{ marginBottom: '18px' }}>
-                <h4 style={{ fontSize: '0.82rem', fontWeight: '700', color: '#fff', margin: '0 0 8px 0' }}>
-                  Audited Risks & Underlying Assumptions:
+              {/* Milestones Pipeline Summary */}
+              <div style={{ marginBottom: '16px' }}>
+                <h4 style={{ fontSize: '0.82rem', fontWeight: '700', color: '#10b981', margin: '0 0 8px 0' }}>
+                  Stage Milestones Progression ({fin.completedMilestones}/{fin.totalMilestones} Completed):
                 </h4>
-                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.45' }}>
-                  {(investorModalProject.risksAndAssumptions || []).map((risk, idx) => (
-                    <li key={idx} style={{ marginBottom: '6px' }}>{risk}</li>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                  {(investorModalProject.timeline || []).map((m, idx) => (
+                    <div key={m.id} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', padding: '6px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.02)' }}>
+                      <span style={{ color: '#e2e8f0' }}>{idx + 1}. {m.phase}</span>
+                      <span className="badge" style={{ fontSize: '0.62rem', padding: '1px 5px', background: m.status === 'COMPLETED' ? '#10b981' : '#38bdf8', color: '#000' }}>
+                        {m.status}
+                      </span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
 
               <div style={{ textAlign: 'right' }}>
                 <button onClick={() => setInvestorModalProject(null)} className="btn btn-secondary btn-sm" style={{ borderRadius: '8px' }}>
-                  Close Summary
+                  Close Diligence View
                 </button>
               </div>
 
