@@ -938,6 +938,77 @@ export const AppProvider = ({ children }) => {
     triggerConfetti();
   };
 
+  // Direct Business Project Investment Engine
+  const investInBusinessProject = ({ projectId, investorName, email, phone, amount, paymentMethod, note }) => {
+    const numAmount = parseFloat(amount);
+    if (isNaN(numAmount) || numAmount <= 0) return null;
+
+    const project = businessProjects.find(p => p.id === projectId);
+    if (!project) return null;
+
+    const certId = `RBI-INV-${Math.floor(100000 + Math.random() * 900000)}`;
+    const newInvestment = {
+      id: certId,
+      projectId: project.id,
+      projectName: project.name,
+      category: project.category,
+      investorName: investorName?.trim() || 'Verified Backer',
+      email: email?.trim() || '',
+      phone: phone?.trim() || '',
+      amount: numAmount,
+      paymentMethod: paymentMethod || 'UPI',
+      date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      timestamp: Date.now(),
+      expectedYield: project.expectedTermYield || "14.5% Net Yield",
+      payoutTimeline: project.payoutTimeline || "Sprint Completion",
+      note: note?.trim() || `Capital allocation into ${project.name}`,
+      status: 'CONFIRMED'
+    };
+
+    // Update Project State
+    setBusinessProjects(prev => prev.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          capitalRaised: (Number(p.capitalRaised) || 0) + numAmount,
+          investorsCount: (Number(p.investorsCount) || 0) + 1
+        };
+      }
+      return p;
+    }));
+
+    // Add to project investments list
+    setProjectInvestments(prev => [newInvestment, ...prev]);
+
+    // Record Central Transaction
+    const systemTxn = {
+      id: newInvestment.id,
+      timestamp: new Date().toISOString(),
+      type: 'PROJECT_INVESTMENT',
+      description: `Investment in ${project.name} by ${newInvestment.investorName} (${paymentMethod})`,
+      amount: numAmount,
+      status: 'COMPLETED',
+      category: 'PROJECT_DEAL'
+    };
+    setTransactions(prev => [systemTxn, ...prev]);
+
+    // Add to Change History
+    const historyEntry = {
+      id: `hist-${Date.now()}`,
+      projectId: project.id,
+      timestamp: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      user: newInvestment.investorName,
+      action: 'Capital Invested',
+      note: `Received ₹${numAmount.toLocaleString('en-IN')} investment via ${paymentMethod}`
+    };
+    setProjectChangeHistory(prev => [historyEntry, ...prev]);
+
+    // Trigger celebration
+    triggerConfetti();
+
+    return newInvestment;
+  };
+
   return (
     <AppContext.Provider value={{
       activeTab,
@@ -968,6 +1039,7 @@ export const AppProvider = ({ children }) => {
       projectChangeHistory,
       updateBusinessProject,
       addBusinessProject,
+      investInBusinessProject,
       startups,
       setStartups,
       projectDeals,

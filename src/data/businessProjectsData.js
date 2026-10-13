@@ -27,6 +27,15 @@ export const INITIAL_BUSINESS_PROJECTS = [
     ],
     statedTotalBudget: 4000,
     capitalRequested: 4000,
+    capitalRaised: 2400,
+    minInvestment: 500,
+    investorsCount: 4,
+    expectedTermYield: "14.2% Net Term Yield",
+    payoutTimeline: "Oct 22, 2026 (6-Day Sprint)",
+    upiId: "rbi.invest@okhdfcbank",
+    bankAccount: "50200084729103",
+    ifsc: "HDFC0001234",
+    bankName: "HDFC Bank Escrow",
 
     // Targets & Unit Economics
     dailyOrderTarget: 10,
@@ -133,7 +142,16 @@ export const INITIAL_BUSINESS_PROJECTS = [
       { item: "Carpenter Guild Vetting & Background Checks", amount: 1000, category: "Guild Onboarding", verified: true, progress: "Ongoing" }
     ],
     statedTotalBudget: 13000,
-    capitalRequested: 10000, // ₹10,000 ad capital requested, operating costs co-funded by founders
+    capitalRequested: 10000,
+    capitalRaised: 6500,
+    minInvestment: 1000,
+    investorsCount: 5,
+    expectedTermYield: "15.0% Commission Pool Yield",
+    payoutTimeline: "Nov 25, 2026 (40-Day Sprint)",
+    upiId: "rbi.invest@okhdfcbank",
+    bankAccount: "50200084729103",
+    ifsc: "HDFC0001234",
+    bankName: "HDFC Bank Escrow",
 
     // Target Metrics
     targetLeadsPerDayMin: 15,
@@ -240,6 +258,15 @@ export const INITIAL_BUSINESS_PROJECTS = [
     ],
     statedTotalBudget: 99500, // Total cost for 150 units batch
     capitalRequested: 99500,
+    capitalRaised: 38000,
+    minInvestment: 2500,
+    investorsCount: 7,
+    expectedTermYield: "18.5% Net Term Yield",
+    payoutTimeline: "Dec 15, 2026 (Batch Fulfillment)",
+    upiId: "rbi.invest@okhdfcbank",
+    bankAccount: "50200084729103",
+    ifsc: "HDFC0001234",
+    bankName: "HDFC Bank Escrow",
 
     // Unit Economics
     proposedSellingPrice: 1200,
@@ -354,6 +381,15 @@ export const INITIAL_BUSINESS_PROJECTS = [
     ],
     statedTotalBudget: 46000,
     capitalRequested: 46000,
+    capitalRaised: 21500,
+    minInvestment: 1000,
+    investorsCount: 6,
+    expectedTermYield: "16.0% Net Term Yield",
+    payoutTimeline: "Dec 05, 2026 (Batch Distribution)",
+    upiId: "rbi.invest@okhdfcbank",
+    bankAccount: "50200084729103",
+    ifsc: "HDFC0001234",
+    bankName: "HDFC Bank Escrow",
 
     // Unit Economics
     proposedSellingPrice: 499,
@@ -528,6 +564,10 @@ export const calculateProjectFinancials = (project, customScenarioUnits = null) 
   const completedMilestones = (project.timeline || []).filter(m => m.status === 'COMPLETED').length;
   const timelineProgressPercent = totalMilestones > 0 ? Math.round((completedMilestones / totalMilestones) * 100) : 0;
 
+  const capitalRaised = Number(project.capitalRaised || 0);
+  const fundingPercent = Math.min(Math.round((capitalRaised / (capitalRequested || 1)) * 100), 100);
+  const remainingFundingNeeded = Math.max(capitalRequested - capitalRaised, 0);
+
   return {
     totalAdSpend,
     nonAdExpenses,
@@ -542,6 +582,13 @@ export const calculateProjectFinancials = (project, customScenarioUnits = null) 
     actualVerifiedExpenses,
     actualOperatingProfit,
     capitalRequested,
+    capitalRaised,
+    fundingPercent,
+    remainingFundingNeeded,
+    investorsCount: Number(project.investorsCount || 0),
+    minInvestment: Number(project.minInvestment || 500),
+    expectedTermYield: project.expectedTermYield || "14.5% Net Term Yield",
+    payoutTimeline: project.payoutTimeline || "Sprint Completion",
     remainingCapitalToDeploy,
     timelineProgressPercent,
     completedMilestones,

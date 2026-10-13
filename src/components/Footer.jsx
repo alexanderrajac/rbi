@@ -96,28 +96,44 @@ export const Footer = () => {
             <h4 style={{ color: '#fff', fontSize: '0.95rem', marginBottom: '14px' }}>Platform Navigation</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <li>
-                <button onClick={() => setActiveTab('marketplace')} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
-                  Share Marketplace (Invest)
+                <button onClick={() => {
+                  setActiveTab('projects');
+                  const el = document.getElementById('projects-grid');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
+                  Active Business Projects
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('portfolio')} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
-                  Investor Portfolio & Wallet
+                <button onClick={() => {
+                  setActiveTab('projects');
+                  const el = document.getElementById('how-it-works-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
+                  How It Works
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('raise')} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
-                  Raise Capital (Founder Portal)
+                <button onClick={() => {
+                  setActiveTab('projects');
+                  const el = document.getElementById('investor-protection-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
+                  Escrow & Investor Protection
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('ai-oracle')} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
-                  Valuation Suite & Due Diligence
+                <button onClick={() => {
+                  setActiveTab('projects');
+                  const el = document.getElementById('my-investments-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
+                  My Investments & Certificates
                 </button>
               </li>
               <li>
                 <button onClick={() => setActiveTab('admin')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#34d399' }}>
-                  Central Admin Management Gate
+                  Admin Portal
                 </button>
               </li>
             </ul>
