@@ -46,7 +46,7 @@ export const Navbar = () => {
   const totalCartCount = cart.reduce((sum, item) => sum + item.shares, 0);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--border-color)] bg-[#070b14]/95 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-[#e2e8f0] bg-white/95 backdrop-blur-xl shadow-sm">
       {/* Main Navbar */}
       <div className="container" style={{ padding: '14px 24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>

@@ -938,6 +938,110 @@ export const AppProvider = ({ children }) => {
     triggerConfetti();
   };
 
+  // Admin Project Milestones Controls
+  const updateProjectMilestone = (projectId, milestoneId, updatedData) => {
+    setBusinessProjects(prev => prev.map(p => {
+      if (p.id === projectId) {
+        const updatedTimeline = (p.timeline || []).map(m => {
+          if (m.id === milestoneId) {
+            return { ...m, ...updatedData };
+          }
+          return m;
+        });
+        return { ...p, timeline: updatedTimeline };
+      }
+      return p;
+    }));
+
+    const historyEntry = {
+      id: `hist-ms-${Date.now()}`,
+      projectId,
+      timestamp: new Date().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      user: user?.name || "Administrator",
+      action: "Milestone Updated",
+      note: `Milestone ${milestoneId} status set to ${updatedData.status || 'updated'}`
+    };
+    setProjectChangeHistory(prev => [historyEntry, ...prev]);
+
+    // If milestone is marked completed, automatically append a live operational notice
+    if (updatedData.status === 'COMPLETED') {
+      const completionNote = `Milestone marked as COMPLETED by Administrator. Verified escrow capital allocated for this sprint.`;
+      addProjectLiveUpdate(projectId, completionNote, user?.name || "Operations Lead");
+    }
+  };
+
+  const addProjectMilestone = (projectId, newMilestone) => {
+    const milestoneWithId = {
+      id: `ms-${Date.now()}`,
+      status: 'UPCOMING',
+      spent: 0,
+      ...newMilestone
+    };
+
+    setBusinessProjects(prev => prev.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          timeline: [...(p.timeline || []), milestoneWithId]
+        };
+      }
+      return p;
+    }));
+
+    const historyEntry = {
+      id: `hist-ms-add-${Date.now()}`,
+      projectId,
+      timestamp: new Date().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      user: user?.name || "Administrator",
+      action: "Milestone Added",
+      note: `New milestone "${newMilestone.phase}" added`
+    };
+    setProjectChangeHistory(prev => [historyEntry, ...prev]);
+  };
+
+  const deleteProjectMilestone = (projectId, milestoneId) => {
+    setBusinessProjects(prev => prev.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          timeline: (p.timeline || []).filter(m => m.id !== milestoneId)
+        };
+      }
+      return p;
+    }));
+  };
+
+  const addProjectLiveUpdate = (projectId, note, author = "Operations Team") => {
+    const newUpdate = {
+      date: new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }),
+      time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+      note,
+      author
+    };
+
+    setBusinessProjects(prev => prev.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          liveUpdates: [newUpdate, ...(p.liveUpdates || [])]
+        };
+      }
+      return p;
+    }));
+  };
+
   // Direct Business Project Investment Engine
   const investInBusinessProject = ({ projectId, investorName, email, phone, amount, paymentMethod, note }) => {
     const numAmount = parseFloat(amount);
@@ -1040,6 +1144,10 @@ export const AppProvider = ({ children }) => {
       updateBusinessProject,
       addBusinessProject,
       investInBusinessProject,
+      updateProjectMilestone,
+      addProjectMilestone,
+      deleteProjectMilestone,
+      addProjectLiveUpdate,
       startups,
       setStartups,
       projectDeals,

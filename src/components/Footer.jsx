@@ -7,8 +7,8 @@ export const Footer = () => {
 
   return (
     <footer style={{ 
-      borderTop: '1px solid var(--border-color)', 
-      background: 'rgba(6, 9, 17, 0.98)',
+      borderTop: '1px solid #e2e8f0', 
+      background: '#ffffff',
       padding: '48px 0 32px 0',
       fontSize: '0.85rem'
     }}>
@@ -16,8 +16,8 @@ export const Footer = () => {
         
         {/* Security & Partner Escrow Trust Bar */}
         <div style={{ 
-          background: 'rgba(255, 255, 255, 0.02)', 
-          border: '1px solid rgba(255, 255, 255, 0.06)', 
+          background: '#f8fafc', 
+          border: '1px solid #e2e8f0', 
           borderRadius: '16px', 
           padding: '18px 24px', 
           marginBottom: '36px',
@@ -28,27 +28,27 @@ export const Footer = () => {
           gap: '16px'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <ShieldCheck size={20} className="text-emerald-400" />
-            <span style={{ fontWeight: '700', color: '#fff', fontSize: '0.9rem' }}>
+            <ShieldCheck size={20} className="text-emerald-500" />
+            <span style={{ fontWeight: '700', color: '#0f172a', fontSize: '0.9rem' }}>
               Institutional Escrow & Depository Partners:
             </span>
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', alignItems: 'center', fontSize: '0.82rem', color: '#475569' }}>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
               <span className="live-pulse-dot" style={{ width: '6px', height: '6px' }}></span>
-              <strong style={{ color: '#fff' }}>ICICI Bank</strong> Partner Escrow
+              <strong style={{ color: '#0f172a' }}>ICICI Bank</strong> Partner Escrow
             </span>
-            <span style={{ color: 'var(--text-dim)' }}>•</span>
+            <span style={{ color: '#cbd5e1' }}>•</span>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <strong style={{ color: '#fff' }}>HDFC</strong> Depository Escrow
+              <strong style={{ color: '#0f172a' }}>HDFC</strong> Depository Escrow
             </span>
-            <span style={{ color: 'var(--text-dim)' }}>•</span>
+            <span style={{ color: '#cbd5e1' }}>•</span>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <strong style={{ color: '#fff' }}>Axis Bank</strong> Commercial Rails
+              <strong style={{ color: '#0f172a' }}>Axis Bank</strong> Commercial Rails
             </span>
-            <span style={{ color: 'var(--text-dim)' }}>•</span>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#38bdf8' }}>
+            <span style={{ color: '#cbd5e1' }}>•</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#0284c7' }}>
               <Lock size={13} />
               256-Bit Encrypted Ledger
             </span>
