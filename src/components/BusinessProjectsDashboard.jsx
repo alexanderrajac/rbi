@@ -38,7 +38,12 @@ import {
   Send,
   ChevronRight,
   Lock,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Upload,
+  AlertCircle,
+  CheckCircle,
+  Calculator,
+  UserCheck
 } from 'lucide-react';
 
 export const BusinessProjectsDashboard = () => {
@@ -50,13 +55,15 @@ export const BusinessProjectsDashboard = () => {
     addProjectMilestone,
     deleteProjectMilestone,
     addProjectLiveUpdate,
+    approveBusinessInvestment,
+    rejectBusinessInvestment,
     projectInvestments,
     formatMoney, 
     currency,
     user
   } = useApp();
 
-  // Active Filter
+  // Active Filter & Search
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -76,9 +83,23 @@ export const BusinessProjectsDashboard = () => {
   const [investorName, setInvestorName] = useState('');
   const [investorEmail, setInvestorEmail] = useState('');
   const [investorPhone, setInvestorPhone] = useState('');
-  const [investmentAmount, setInvestmentAmount] = useState('5000');
+  const [investmentAmount, setInvestmentAmount] = useState('500');
   const [paymentMethod, setPaymentMethod] = useState('UPI'); // 'UPI' | 'BANK' | 'CARD'
   const [investmentNote, setInvestmentNote] = useState('');
+  const [investorUtr, setInvestorUtr] = useState('');
+  const [screenshotPreview, setScreenshotPreview] = useState('');
+
+  // Submission Acknowledgment Modal State
+  const [submissionSuccessModal, setSubmissionSuccessModal] = useState(null);
+
+  // Admin Approval Desk Modal State
+  const [isAdminApprovalModalOpen, setIsAdminApprovalModalOpen] = useState(false);
+
+  // Screenshot Zoom Modal State
+  const [previewScreenshotUrl, setPreviewScreenshotUrl] = useState(null);
+
+  // Interactive Profit Calculator State (Default ₹500)
+  const [calcAmount, setCalcAmount] = useState('500');
 
   // UI Feedback States
   const [copiedUpi, setCopiedUpi] = useState(false);
@@ -118,14 +139,65 @@ export const BusinessProjectsDashboard = () => {
   // Quick Amount Presets
   const quickInvestmentPresets = [500, 1000, 2500, 5000, 10000, 25000];
 
+  // Helper: Calculate exact return & profit for any project & amount
+  const calculateInvestmentReturn = (project, amountVal) => {
+    const amt = parseFloat(amountVal) || 0;
+    let yieldRate = 0.145; // default 14.5%
+    let days = "8-Day Sprint";
+    if (project.id === 'proj-unavukadai') {
+      yieldRate = 0.142; // 14.2%
+      days = "6-Day Sprint";
+    } else if (project.id === 'proj-carpenterbullet') {
+      yieldRate = 0.150; // 15.0%
+      days = "7-Day Sprint";
+    } else if (project.id === 'proj-wooden-laptop-case') {
+      yieldRate = 0.168; // 16.8%
+      days = "10-Day Sprint";
+    } else if (project.id === 'proj-bamboo-cup') {
+      yieldRate = 0.145; // 14.5%
+      days = "8-Day Sprint";
+    }
+
+    const profit = Math.round(amt * yieldRate * 100) / 100;
+    const totalReturn = Math.round((amt + profit) * 100) / 100;
+    const yieldPercent = (yieldRate * 100).toFixed(1) + '%';
+
+    return {
+      invested: amt,
+      profit,
+      totalReturn,
+      yieldPercent,
+      days,
+      payoutTimeline: project.payoutTimeline || days
+    };
+  };
+
+  // Handle Screenshot Upload via FileReader
+  const handleScreenshotChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Screenshot image size exceeds 5MB. Please upload a smaller image.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setScreenshotPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   // Open Invest Modal
   const handleOpenInvest = (project) => {
     setInvestingProject(project);
-    setInvestmentAmount(project.minInvestment ? project.minInvestment.toString() : '1000');
+    setInvestmentAmount(project.minInvestment ? project.minInvestment.toString() : '500');
     setInvestmentNote(`Capital backing for ${project.name}`);
+    setInvestorUtr('');
+    setScreenshotPreview('');
   };
 
-  // Submit Investment
+  // Submit Investment (Awaiting Admin Approval)
   const handleConfirmInvestment = (e) => {
     e.preventDefault();
     if (!investingProject) return;
@@ -143,15 +215,19 @@ export const BusinessProjectsDashboard = () => {
       phone: investorPhone,
       amount: numAmount,
       paymentMethod,
+      utrNumber: investorUtr,
+      screenshotUrl: screenshotPreview,
       note: investmentNote
     });
 
     if (newInvestment) {
       setInvestingProject(null);
-      setActiveCertificate(newInvestment);
+      setSubmissionSuccessModal(newInvestment);
       setInvestorName('');
       setInvestorEmail('');
       setInvestorPhone('');
+      setInvestorUtr('');
+      setScreenshotPreview('');
     }
   };
 
@@ -243,6 +319,9 @@ export const BusinessProjectsDashboard = () => {
     return matchesCat && matchesSearch;
   });
 
+  // Pending investments waiting for Admin Approval
+  const pendingInvestments = (projectInvestments || []).filter(inv => inv.status === 'PENDING_APPROVAL');
+
   // Portfolio aggregates
   const portfolioAggregates = businessProjects.reduce((acc, p) => {
     const fin = calculateProjectFinancials(p);
@@ -256,7 +335,7 @@ export const BusinessProjectsDashboard = () => {
     <div className="container" style={{ padding: '32px 20px', maxWidth: '1280px', margin: '0 auto' }}>
       
       {/* ========================================================================= */}
-      {/* 1. PROFESSIONAL HERO BANNER (CLEAN WHITE THEME) */}
+      {/* 1. PROFESSIONAL HERO BANNER (CLEAN WHITE THEME + ADMIN APPROVAL BADGE) */}
       {/* ========================================================================= */}
       <div 
         style={{
@@ -265,48 +344,161 @@ export const BusinessProjectsDashboard = () => {
           padding: '36px 40px',
           border: '1px solid #e2e8f0',
           boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02)',
-          marginBottom: '32px'
+          marginBottom: '28px'
         }}
       >
-        <div style={{ maxWidth: '920px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#fef3c7', border: '1px solid #fde68a', borderRadius: '20px', padding: '4px 14px', marginBottom: '14px' }}>
-            <span className="live-pulse-dot" style={{ width: '7px', height: '7px' }}></span>
-            <span style={{ fontSize: '0.78rem', fontWeight: '700', color: '#92400e', letterSpacing: '0.04em' }}>
-              RBI VERIFIED BUSINESS INVESTMENT DESK • ESCROW BACKED
-            </span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
+          <div style={{ maxWidth: '860px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#fef3c7', border: '1px solid #fde68a', borderRadius: '20px', padding: '4px 14px', marginBottom: '14px' }}>
+              <span className="live-pulse-dot" style={{ width: '7px', height: '7px' }}></span>
+              <span style={{ fontSize: '0.78rem', fontWeight: '700', color: '#92400e', letterSpacing: '0.04em' }}>
+                RBI VERIFIED BUSINESS INVESTMENT DESK • ESCROW RING-FENCED
+              </span>
+            </div>
+
+            <h1 style={{ fontSize: '2.4rem', fontWeight: '900', color: '#0f172a', margin: '0 0 12px 0', letterSpacing: '-0.025em', lineHeight: '1.2' }}>
+              Invest in Real-World Business Ventures
+            </h1>
+            <p style={{ color: '#475569', fontSize: '1.02rem', margin: '0 0 24px 0', lineHeight: '1.6' }}>
+              Direct capital allocation into 4 verified businesses across <strong>Food Delivery & Cloud Kitchen</strong>, <strong>Carpentry Service Marketplaces</strong>, and <strong>Sustainable Eco-Friendly Manufacturing</strong>. Every rupee spent is audited, milestones trigger escrow disbursement, and investors receive direct sprint return settlements.
+            </p>
+
+            {/* Key Platform Numbers */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px' }}>
+              <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Active Businesses</div>
+                <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0f172a', marginTop: '2px' }}>4 Open Deals</div>
+              </div>
+              <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Total Capital Raised</div>
+                <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#059669', marginTop: '2px' }}>{formatMoney(portfolioAggregates.totalCapitalRaised)}</div>
+              </div>
+              <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Target Capital Goal</div>
+                <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#d97706', marginTop: '2px' }}>{formatMoney(portfolioAggregates.totalCapitalRequested)}</div>
+              </div>
+              <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Verified Backers</div>
+                <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0284c7', marginTop: '2px' }}>{portfolioAggregates.totalInvestors} Investors</div>
+              </div>
+            </div>
           </div>
 
-          <h1 style={{ fontSize: '2.4rem', fontWeight: '900', color: '#0f172a', margin: '0 0 12px 0', letterSpacing: '-0.025em', lineHeight: '1.2' }}>
-            Invest in Real-World Business Ventures
-          </h1>
-          <p style={{ color: '#475569', fontSize: '1.02rem', margin: '0 0 24px 0', lineHeight: '1.6' }}>
-            Direct capital allocation into 4 verified businesses across <strong>Food Delivery & Cloud Kitchen</strong>, <strong>Carpentry Service Marketplaces</strong>, and <strong>Sustainable Eco-Friendly Manufacturing</strong>. Every rupee spent is audited, milestones trigger escrow disbursement, and investors receive direct sprint return settlements.
-          </p>
-
-          {/* Key Platform Numbers */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px' }}>
-            <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-              <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Active Businesses</div>
-              <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0f172a', marginTop: '2px' }}>4 Open Deals</div>
+          {/* Admin Approval Quick Gate */}
+          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', minWidth: '240px' }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '8px' }}>
+              Admin Verification Desk
             </div>
-            <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-              <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Total Capital Raised</div>
-              <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#059669', marginTop: '2px' }}>{formatMoney(portfolioAggregates.totalCapitalRaised)}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+              <span className={`badge ${pendingInvestments.length > 0 ? 'badge-gold' : 'badge-emerald'}`} style={{ fontSize: '0.8rem', padding: '4px 10px' }}>
+                {pendingInvestments.length} Pending Approval
+              </span>
             </div>
-            <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-              <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Target Capital Goal</div>
-              <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#d97706', marginTop: '2px' }}>{formatMoney(portfolioAggregates.totalCapitalRequested)}</div>
-            </div>
-            <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-              <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Verified Backers</div>
-              <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0284c7', marginTop: '2px' }}>{portfolioAggregates.totalInvestors} Investors</div>
-            </div>
+            <button
+              onClick={() => setIsAdminApprovalModalOpen(true)}
+              className="btn btn-secondary btn-sm"
+              style={{ width: '100%', borderRadius: '10px', fontWeight: '700', gap: '6px' }}
+            >
+              <UserCheck size={15} className="text-amber-500" />
+              <span>Review Submissions</span>
+            </button>
           </div>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 2. FILTER & SEARCH BAR */}
+      {/* 2. PROFIT RATIO & ₹500 RETURN BREAKDOWN CALCULATOR */}
+      {/* ========================================================================= */}
+      <div 
+        style={{
+          background: 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)',
+          borderRadius: '18px',
+          padding: '24px 28px',
+          border: '1px solid #bbf7d0',
+          marginBottom: '28px',
+          boxShadow: '0 4px 18px rgba(5, 150, 105, 0.05)'
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Calculator size={20} className="text-emerald-500" />
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
+                Transparent Profit Ratio & Return Calculator
+              </h3>
+            </div>
+            <p style={{ color: '#475569', fontSize: '0.86rem', margin: '4px 0 0 0' }}>
+              See exact net profit and total returns for backing any project with <strong>₹{calcAmount || '500'}</strong>:
+            </p>
+          </div>
+
+          {/* Quick Amount Inputs */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: '600' }}>Test Amount:</span>
+            {[500, 1000, 2500, 5000].map(amt => (
+              <button
+                key={amt}
+                onClick={() => setCalcAmount(amt.toString())}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: '8px',
+                  fontSize: '0.78rem',
+                  fontWeight: '700',
+                  border: calcAmount === amt.toString() ? '1px solid #059669' : '1px solid #cbd5e1',
+                  background: calcAmount === amt.toString() ? '#059669' : '#ffffff',
+                  color: calcAmount === amt.toString() ? '#ffffff' : '#0f172a',
+                  cursor: 'pointer'
+                }}
+              >
+                ₹{amt}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 4 Projects Return Cards */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '14px' }}>
+          {businessProjects.map(proj => {
+            const ret = calculateInvestmentReturn(proj, calcAmount);
+            return (
+              <div 
+                key={proj.id}
+                style={{
+                  background: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '14px',
+                  padding: '16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <strong style={{ fontSize: '0.92rem', color: '#0f172a' }}>{proj.name}</strong>
+                  <span className="badge badge-emerald" style={{ fontSize: '0.68rem' }}>
+                    +{ret.yieldPercent}
+                  </span>
+                </div>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', paddingTop: '4px', borderTop: '1px dashed #e2e8f0' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>If you invest ₹{calcAmount}:</span>
+                  <span style={{ fontSize: '1.15rem', fontWeight: '900', color: '#059669' }}>
+                    ₹{ret.totalReturn}
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#475569' }}>
+                  <span>Net Profit: <strong style={{ color: '#d97706' }}>+₹{ret.profit}</strong></span>
+                  <span>Timeline: <strong>{ret.days}</strong></span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ========================================================================= */}
+      {/* 3. FILTER & SEARCH BAR */}
       {/* ========================================================================= */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '26px' }}>
         
@@ -365,13 +557,14 @@ export const BusinessProjectsDashboard = () => {
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. BUSINESS PROJECT CARDS (CLEAN WHITE THEME + DETAILED OVERVIEW & ADMIN) */}
+      {/* 4. BUSINESS PROJECT CARDS (WITH PROFIT RATIO & APPROVAL WORKFLOW) */}
       {/* ========================================================================= */}
       <div id="projects-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px' }}>
         {filteredProjects.map(project => {
           const customUnits = project.id === 'proj-bamboo-cup' ? bambooScenario : null;
           const financials = calculateProjectFinancials(project, customUnits);
           const currentTab = cardActiveTab[project.id] || 'overview';
+          const sample500 = calculateInvestmentReturn(project, 500);
 
           return (
             <div 
@@ -429,57 +622,15 @@ export const BusinessProjectsDashboard = () => {
                   {project.description}
                 </p>
 
-                {/* Bamboo Cup 100 vs 150 Scenario Toggle */}
-                {project.id === 'proj-bamboo-cup' && (
-                  <div style={{ 
-                    background: '#fffbeb', 
-                    padding: '8px 12px', 
-                    borderRadius: '10px', 
-                    border: '1px solid #fde68a',
-                    marginBottom: '16px',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center'
-                  }}>
-                    <span style={{ fontSize: '0.76rem', fontWeight: '700', color: '#92400e' }}>
-                      Production Batch Size:
-                    </span>
-                    <div style={{ display: 'flex', gap: '6px' }}>
-                      <button
-                        type="button"
-                        onClick={() => setBambooScenario(100)}
-                        style={{
-                          padding: '4px 9px',
-                          borderRadius: '6px',
-                          fontSize: '0.72rem',
-                          fontWeight: '700',
-                          border: bambooScenario === 100 ? '1px solid #d97706' : '1px solid #cbd5e1',
-                          background: bambooScenario === 100 ? '#d97706' : '#ffffff',
-                          color: bambooScenario === 100 ? '#ffffff' : '#475569',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        100 Cups
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setBambooScenario(150)}
-                        style={{
-                          padding: '4px 9px',
-                          borderRadius: '6px',
-                          fontSize: '0.72rem',
-                          fontWeight: '700',
-                          border: bambooScenario === 150 ? '1px solid #d97706' : '1px solid #cbd5e1',
-                          background: bambooScenario === 150 ? '#d97706' : '#ffffff',
-                          color: bambooScenario === 150 ? '#ffffff' : '#475569',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        150 Cups
-                      </button>
-                    </div>
+                {/* Return on ₹500 Snapshot Pill */}
+                <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '10px', padding: '8px 12px', marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.76rem', color: '#065f46', fontWeight: '600' }}>
+                    Invest ₹500 → Return:
+                  </span>
+                  <div style={{ fontSize: '0.85rem', fontWeight: '800', color: '#065f46' }}>
+                    ₹{sample500.totalReturn} <span style={{ fontSize: '0.72rem', color: '#d97706' }}>(+₹{sample500.profit} in {sample500.days})</span>
                   </div>
-                )}
+                </div>
 
                 {/* Live Funding Progress Bar */}
                 <div style={{ 
@@ -763,7 +914,7 @@ export const BusinessProjectsDashboard = () => {
       </div>
 
       {/* ========================================================================= */}
-      {/* 4. HOW IT WORKS SECTION (NORMAL & PROFESSIONAL WHITE THEME) */}
+      {/* 5. HOW IT WORKS SECTION (NORMAL & PROFESSIONAL WHITE THEME) */}
       {/* ========================================================================= */}
       <div 
         id="how-it-works-section"
@@ -813,9 +964,9 @@ export const BusinessProjectsDashboard = () => {
             <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#ecfdf5', color: '#065f46', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
               3
             </div>
-            <h4 style={{ color: '#0f172a', fontSize: '1rem', margin: '0 0 6px 0', fontWeight: '700' }}>Invest via UPI / Bank</h4>
+            <h4 style={{ color: '#0f172a', fontSize: '1rem', margin: '0 0 6px 0', fontWeight: '700' }}>Pay via UPI & Attach Screenshot</h4>
             <p style={{ color: '#475569', fontSize: '0.82rem', margin: 0, lineHeight: '1.5' }}>
-              Scan dynamic QR or transfer to segregated bank escrow account with zero platform fees.
+              Scan QR to pay UPI ID <strong>8248651695-3@ybl</strong>, enter your UTR number, and upload screenshot.
             </p>
           </div>
 
@@ -823,16 +974,16 @@ export const BusinessProjectsDashboard = () => {
             <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#f3e8ff', color: '#6b21a8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
               4
             </div>
-            <h4 style={{ color: '#0f172a', fontSize: '1rem', margin: '0 0 6px 0', fontWeight: '700' }}>Receive Certificate & Yield</h4>
+            <h4 style={{ color: '#0f172a', fontSize: '1rem', margin: '0 0 6px 0', fontWeight: '700' }}>Admin Approval & Certificate</h4>
             <p style={{ color: '#475569', fontSize: '0.82rem', margin: 0, lineHeight: '1.5' }}>
-              Get your official digital allocation certificate immediately and receive capital returns post-sprint.
+              Admin verifies the payment against bank escrow rails, approves allocation, and issues your certificate.
             </p>
           </div>
         </div>
       </div>
 
       {/* ========================================================================= */}
-      {/* 5. INVESTOR PROTECTION & ESCROW ASSURANCE */}
+      {/* 6. INVESTOR PROTECTION & ESCROW ASSURANCE */}
       {/* ========================================================================= */}
       <div 
         id="investor-protection-section"
@@ -858,7 +1009,7 @@ export const BusinessProjectsDashboard = () => {
             </h3>
           </div>
           <p style={{ color: '#475569', fontSize: '0.88rem', margin: 0, lineHeight: '1.6' }}>
-            All investor funds are held in segregated, audited escrow accounts. Capital is disbursed in strict tranches only upon verified milestone completion (materials purchase invoice, production run proof, dispatch bilty). In the event a project does not meet targets, 100% of unspent funds are returned to backers.
+            All investor funds are held in segregated, audited escrow accounts. Capital is disbursed in strict tranches only upon verified milestone completion. In the event a project does not meet targets, 100% of unspent funds are returned to backers.
           </p>
         </div>
 
@@ -875,7 +1026,7 @@ export const BusinessProjectsDashboard = () => {
       </div>
 
       {/* ========================================================================= */}
-      {/* 6. MY INVESTMENTS & DIGITAL CERTIFICATES */}
+      {/* 7. MY INVESTMENTS & DIGITAL CERTIFICATES */}
       {/* ========================================================================= */}
       <div 
         id="my-investments-section"
@@ -929,9 +1080,21 @@ export const BusinessProjectsDashboard = () => {
                       {inv.projectName}
                     </h4>
                   </div>
-                  <span className="badge badge-emerald" style={{ fontSize: '0.7rem' }}>
-                    {inv.status || 'CONFIRMED'}
-                  </span>
+                  
+                  {/* Status Badge */}
+                  {inv.status === 'CONFIRMED' ? (
+                    <span className="badge badge-emerald" style={{ fontSize: '0.7rem' }}>
+                      ✓ Verified & Allocated
+                    </span>
+                  ) : inv.status === 'REJECTED' ? (
+                    <span className="badge badge-rose" style={{ fontSize: '0.7rem' }}>
+                      ✕ Rejected
+                    </span>
+                  ) : (
+                    <span className="badge badge-gold" style={{ fontSize: '0.7rem' }}>
+                      ⏳ Awaiting Admin Approval
+                    </span>
+                  )}
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', padding: '12px', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px' }}>
@@ -953,17 +1116,39 @@ export const BusinessProjectsDashboard = () => {
                   </div>
                 </div>
 
+                {/* Attached Screenshot or UTR info */}
+                {(inv.utrNumber || inv.screenshotUrl) && (
+                  <div style={{ fontSize: '0.75rem', background: '#ffffff', padding: '8px 10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                    {inv.utrNumber && <div><span style={{ color: '#64748b' }}>UTR:</span> <strong style={{ color: '#0f172a' }}>{inv.utrNumber}</strong></div>}
+                    {inv.screenshotUrl && (
+                      <button
+                        type="button"
+                        onClick={() => setPreviewScreenshotUrl(inv.screenshotUrl)}
+                        style={{ background: 'none', border: 'none', color: '#0284c7', cursor: 'pointer', padding: 0, fontWeight: '700', fontSize: '0.72rem', marginTop: '4px' }}
+                      >
+                        👁 View Attached Payment Screenshot
+                      </button>
+                    )}
+                  </div>
+                )}
+
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                  <span style={{ fontSize: '0.72rem', color: '#64748b' }}>Issued: {inv.date}</span>
-                  <button
-                    type="button"
-                    onClick={() => setActiveCertificate(inv)}
-                    className="btn btn-secondary btn-sm"
-                    style={{ borderRadius: '8px', fontSize: '0.75rem', gap: '5px' }}
-                  >
-                    <FileText size={13} className="text-amber-500" />
-                    <span>View Certificate</span>
-                  </button>
+                  <span style={{ fontSize: '0.72rem', color: '#64748b' }}>Submitted: {inv.date}</span>
+                  {inv.status === 'CONFIRMED' ? (
+                    <button
+                      type="button"
+                      onClick={() => setActiveCertificate(inv)}
+                      className="btn btn-secondary btn-sm"
+                      style={{ borderRadius: '8px', fontSize: '0.75rem', gap: '5px' }}
+                    >
+                      <FileText size={13} className="text-amber-500" />
+                      <span>View Certificate</span>
+                    </button>
+                  ) : (
+                    <span style={{ fontSize: '0.72rem', color: '#d97706', fontWeight: '600' }}>
+                      Admin verification in progress
+                    </span>
+                  )}
                 </div>
               </div>
             ))}
@@ -990,27 +1175,31 @@ export const BusinessProjectsDashboard = () => {
       </div>
 
       {/* ========================================================================= */}
-      {/* MODAL 1: DIRECT "INVEST IN THIS BUSINESS" ACTION MODAL */}
+      {/* MODAL 1: DIRECT "INVEST IN THIS BUSINESS" MODAL (WITH SCREENSHOT & UTR) */}
       {/* ========================================================================= */}
       {investingProject && (() => {
         const fin = calculateProjectFinancials(investingProject);
+        const dynamicReturn = calculateInvestmentReturn(investingProject, investmentAmount);
+        const officialUpi = "8248651695-3@ybl";
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(`upi://pay?pa=${officialUpi}&pn=RoyalBankOfInvestment&am=${investmentAmount}&cu=INR`)}`;
+
         return (
           <div className="modal-overlay" onClick={() => setInvestingProject(null)}>
             <div 
               className="modal-content" 
               onClick={(e) => e.stopPropagation()}
-              style={{ maxWidth: '520px', width: '100%', padding: '28px', borderRadius: '20px' }}
+              style={{ maxWidth: '560px', width: '100%', padding: '28px', borderRadius: '20px' }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
                 <div>
-                  <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#059669', textTransform: 'uppercase' }}>
+                  <div style={{ fontSize: '0.74rem', fontWeight: '700', color: '#059669', textTransform: 'uppercase' }}>
                     Capital Allocation Desk
                   </div>
-                  <h3 style={{ fontSize: '1.35rem', color: '#0f172a', margin: '4px 0', fontWeight: '800' }}>
+                  <h3 style={{ fontSize: '1.35rem', color: '#0f172a', margin: '3px 0', fontWeight: '800' }}>
                     Invest in {investingProject.name}
                   </h3>
                   <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
-                    Target Yield: <strong style={{ color: '#d97706' }}>{fin.expectedTermYield}</strong> • Payout: {fin.payoutTimeline}
+                    Yield: <strong style={{ color: '#d97706' }}>{dynamicReturn.yieldPercent}</strong> • Payback: {dynamicReturn.days}
                   </div>
                 </div>
                 <button onClick={() => setInvestingProject(null)} className="btn btn-ghost btn-sm" style={{ padding: '4px' }}>
@@ -1018,7 +1207,7 @@ export const BusinessProjectsDashboard = () => {
                 </button>
               </div>
 
-              <form onSubmit={handleConfirmInvestment} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <form onSubmit={handleConfirmInvestment} style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '75vh', overflowY: 'auto', paddingRight: '4px' }}>
                 
                 {/* Amount Selector */}
                 <div>
@@ -1073,11 +1262,67 @@ export const BusinessProjectsDashboard = () => {
                   </div>
                 </div>
 
+                {/* Dynamic Return Breakdown Box (Explicit Return Calculation for Amount) */}
+                <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '12px', padding: '12px 16px' }}>
+                  <div style={{ fontSize: '0.74rem', fontWeight: '700', color: '#065f46', textTransform: 'uppercase', marginBottom: '4px' }}>
+                    Expected Return Breakdown ({dynamicReturn.days})
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                    <div>
+                      <span style={{ fontSize: '0.78rem', color: '#065f46' }}>You Invest:</span>
+                      <div style={{ fontSize: '1rem', fontWeight: '800', color: '#0f172a' }}>₹{dynamicReturn.invested}</div>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '0.78rem', color: '#065f46' }}>Net Profit (+{dynamicReturn.yieldPercent}):</span>
+                      <div style={{ fontSize: '1rem', fontWeight: '800', color: '#d97706' }}>+₹{dynamicReturn.profit}</div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '0.78rem', color: '#065f46' }}>Total Payout:</span>
+                      <div style={{ fontSize: '1.2rem', fontWeight: '900', color: '#065f46' }}>₹{dynamicReturn.totalReturn}</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Official UPI Payment Details Box */}
+                <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '12px', padding: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <QrCode size={18} className="text-amber-500" />
+                      <strong style={{ fontSize: '0.86rem', color: '#92400e' }}>Pay via UPI ID:</strong>
+                    </div>
+                    <button 
+                      type="button" 
+                      onClick={() => copyToClipboard(officialUpi, setCopiedUpi)}
+                      className="btn btn-secondary btn-sm" 
+                      style={{ padding: '3px 8px', fontSize: '0.72rem', color: copiedUpi ? '#059669' : '#d97706', gap: '4px' }}
+                    >
+                      <Copy size={12} />
+                      {copiedUpi ? 'Copied' : 'Copy UPI'}
+                    </button>
+                  </div>
+
+                  <div style={{ background: '#ffffff', border: '1px solid #fde68a', borderRadius: '8px', padding: '8px 12px', fontSize: '1.05rem', fontWeight: '900', color: '#0f172a', fontFamily: 'monospace', letterSpacing: '0.02em', textAlign: 'center' }}>
+                    {officialUpi}
+                  </div>
+
+                  {/* QR Code Display */}
+                  <div style={{ textAlign: 'center', marginTop: '12px' }}>
+                    <img 
+                      src={qrUrl} 
+                      alt="UPI QR Code" 
+                      style={{ width: '150px', height: '150px', borderRadius: '10px', border: '2px solid #e2e8f0', margin: '0 auto', display: 'block', background: '#fff' }}
+                    />
+                    <div style={{ fontSize: '0.72rem', color: '#64748b', marginTop: '6px' }}>
+                      Scan using Google Pay, PhonePe, Paytm, or BHIM UPI app
+                    </div>
+                  </div>
+                </div>
+
                 {/* Investor Details */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.76rem', color: '#64748b', marginBottom: '4px', fontWeight: '600' }}>
-                      Investor Full Name:
+                      Investor Full Name: *
                     </label>
                     <input 
                       type="text"
@@ -1090,7 +1335,7 @@ export const BusinessProjectsDashboard = () => {
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.76rem', color: '#64748b', marginBottom: '4px', fontWeight: '600' }}>
-                      WhatsApp / Phone:
+                      WhatsApp / Phone: *
                     </label>
                     <input 
                       type="tel"
@@ -1116,107 +1361,64 @@ export const BusinessProjectsDashboard = () => {
                   />
                 </div>
 
-                {/* Payment Mode Selector */}
+                {/* UTR / UPI Transaction Reference Input */}
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: '#0f172a', fontWeight: '700', marginBottom: '6px' }}>
-                    Select Payment Method:
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#0f172a', marginBottom: '4px', fontWeight: '700' }}>
+                    UPI Reference / UTR Number (12 Digits): *
                   </label>
-                  
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-                    <div 
-                      onClick={() => setPaymentMethod('UPI')}
-                      style={{
-                        padding: '10px 8px',
-                        borderRadius: '10px',
-                        border: paymentMethod === 'UPI' ? '2px solid #d97706' : '1px solid #e2e8f0',
-                        background: paymentMethod === 'UPI' ? '#fef3c7' : '#ffffff',
-                        textAlign: 'center',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <QrCode size={18} style={{ margin: '0 auto 4px auto', color: paymentMethod === 'UPI' ? '#d97706' : '#64748b' }} />
-                      <div style={{ fontSize: '0.75rem', fontWeight: '700', color: paymentMethod === 'UPI' ? '#92400e' : '#475569' }}>UPI / QR</div>
-                    </div>
+                  <input 
+                    type="text"
+                    placeholder="e.g. 428901238475"
+                    value={investorUtr}
+                    onChange={(e) => setInvestorUtr(e.target.value)}
+                    required
+                    style={{ width: '100%', padding: '9px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#ffffff', color: '#0f172a', fontSize: '0.88rem', fontFamily: 'monospace' }}
+                  />
+                  <span style={{ fontSize: '0.68rem', color: '#64748b' }}>Found in your GPay / PhonePe / Paytm transaction receipt.</span>
+                </div>
 
-                    <div 
-                      onClick={() => setPaymentMethod('BANK')}
-                      style={{
-                        padding: '10px 8px',
-                        borderRadius: '10px',
-                        border: paymentMethod === 'BANK' ? '2px solid #d97706' : '1px solid #e2e8f0',
-                        background: paymentMethod === 'BANK' ? '#fef3c7' : '#ffffff',
-                        textAlign: 'center',
-                        cursor: 'pointer'
-                      }}
+                {/* Payment Screenshot Upload */}
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.78rem', color: '#0f172a', marginBottom: '4px', fontWeight: '700' }}>
+                    Attach Payment Screenshot: *
+                  </label>
+                  <div style={{ border: '2px dashed #cbd5e1', borderRadius: '10px', padding: '14px', textAlign: 'center', background: '#f8fafc' }}>
+                    <input 
+                      type="file"
+                      accept="image/*"
+                      id="screenshot-file-input"
+                      onChange={handleScreenshotChange}
+                      style={{ display: 'none' }}
+                      required={!screenshotPreview}
+                    />
+                    <label 
+                      htmlFor="screenshot-file-input"
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'pointer', color: '#0284c7', fontWeight: '700', fontSize: '0.82rem' }}
                     >
-                      <Building2 size={18} style={{ margin: '0 auto 4px auto', color: paymentMethod === 'BANK' ? '#d97706' : '#64748b' }} />
-                      <div style={{ fontSize: '0.75rem', fontWeight: '700', color: paymentMethod === 'BANK' ? '#92400e' : '#475569' }}>Bank IMPS</div>
-                    </div>
+                      <Upload size={16} />
+                      {screenshotPreview ? 'Change Screenshot' : 'Upload Payment Screenshot (PNG/JPG)'}
+                    </label>
 
-                    <div 
-                      onClick={() => setPaymentMethod('CARD')}
-                      style={{
-                        padding: '10px 8px',
-                        borderRadius: '10px',
-                        border: paymentMethod === 'CARD' ? '2px solid #d97706' : '1px solid #e2e8f0',
-                        background: paymentMethod === 'CARD' ? '#fef3c7' : '#ffffff',
-                        textAlign: 'center',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <CreditCard size={18} style={{ margin: '0 auto 4px auto', color: paymentMethod === 'CARD' ? '#d97706' : '#64748b' }} />
-                      <div style={{ fontSize: '0.75rem', fontWeight: '700', color: paymentMethod === 'CARD' ? '#92400e' : '#475569' }}>Card/NetBank</div>
-                    </div>
+                    {screenshotPreview && (
+                      <div style={{ marginTop: '10px', position: 'relative', display: 'inline-block' }}>
+                        <img 
+                          src={screenshotPreview} 
+                          alt="Screenshot Preview" 
+                          style={{ maxWidth: '180px', maxHeight: '120px', borderRadius: '8px', border: '1px solid #cbd5e1' }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setScreenshotPreview('')}
+                          style={{ position: 'absolute', top: '-6px', right: '-6px', background: '#e11d48', color: '#fff', border: 'none', borderRadius: '50%', width: '20px', height: '20px', cursor: 'pointer', fontSize: '10px' }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                {/* Dynamic Payment Instruction */}
-                {paymentMethod === 'UPI' && (
-                  <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '10px', padding: '12px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '0.75rem', color: '#92400e', fontWeight: '600' }}>Escrow UPI ID:</span>
-                      <button 
-                        type="button" 
-                        onClick={() => copyToClipboard(investingProject.upiId || 'rbi.invest@okhdfcbank', setCopiedUpi)}
-                        className="btn btn-ghost btn-sm" 
-                        style={{ padding: '2px 6px', fontSize: '0.7rem', color: copiedUpi ? '#059669' : '#d97706' }}
-                      >
-                        {copiedUpi ? 'Copied' : 'Copy'}
-                      </button>
-                    </div>
-                    <div style={{ fontSize: '0.92rem', fontWeight: '800', color: '#0f172a', fontFamily: 'monospace', marginTop: '2px' }}>
-                      {investingProject.upiId || 'rbi.invest@okhdfcbank'}
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '4px' }}>
-                      Scan via Google Pay, PhonePe, Paytm or BHIM UPI mobile application.
-                    </div>
-                  </div>
-                )}
-
-                {paymentMethod === 'BANK' && (
-                  <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '10px', padding: '12px', fontSize: '0.8rem' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                      <div>
-                        <span style={{ color: '#075985', fontSize: '0.7rem', fontWeight: '600' }}>Bank Name:</span>
-                        <div style={{ fontWeight: '700', color: '#0f172a' }}>{investingProject.bankName || 'HDFC Bank Escrow'}</div>
-                      </div>
-                      <div>
-                        <span style={{ color: '#075985', fontSize: '0.7rem', fontWeight: '600' }}>A/C Number:</span>
-                        <div style={{ fontWeight: '700', color: '#0f172a', fontFamily: 'monospace' }}>{investingProject.bankAccount || '50200084729103'}</div>
-                      </div>
-                      <div>
-                        <span style={{ color: '#075985', fontSize: '0.7rem', fontWeight: '600' }}>IFSC Code:</span>
-                        <div style={{ fontWeight: '700', color: '#0f172a', fontFamily: 'monospace' }}>{investingProject.ifsc || 'HDFC0001234'}</div>
-                      </div>
-                      <div>
-                        <span style={{ color: '#075985', fontSize: '0.7rem', fontWeight: '600' }}>Account Type:</span>
-                        <div style={{ fontWeight: '700', color: '#0284c7' }}>Current / Segregated Escrow</div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Confirm Action Button */}
+                {/* Submit Action Button */}
                 <button 
                   type="submit"
                   className="btn btn-primary"
@@ -1231,12 +1433,12 @@ export const BusinessProjectsDashboard = () => {
                     gap: '8px'
                   }}
                 >
-                  <CheckCircle2 size={18} />
-                  <span>Confirm Investment of {formatMoney(parseFloat(investmentAmount) || 0)}</span>
+                  <Send size={18} />
+                  <span>Submit Payment Proof for Admin Approval</span>
                 </button>
 
                 <div style={{ textAlign: 'center', fontSize: '0.72rem', color: '#64748b' }}>
-                  🔒 Official Digital Allocation Certificate issued instantly upon confirmation.
+                  🔒 Admin verifies UTR against bank escrow ledger before confirming certificate.
                 </div>
 
               </form>
@@ -1246,7 +1448,220 @@ export const BusinessProjectsDashboard = () => {
       })()}
 
       {/* ========================================================================= */}
-      {/* MODAL 2: DETAILED OVERVIEW ABOUT INVESTMENTS (INVESTMENT MEMO & TERMS) */}
+      {/* MODAL 2: SUBMISSION ACKNOWLEDGMENT (AWAITING ADMIN APPROVAL) */}
+      {/* ========================================================================= */}
+      {submissionSuccessModal && (
+        <div className="modal-overlay" onClick={() => setSubmissionSuccessModal(null)}>
+          <div 
+            className="modal-content" 
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: '500px', width: '100%', padding: '32px', borderRadius: '20px', textAlign: 'center' }}
+          >
+            <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: '#fef3c7', color: '#92400e', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
+              <Clock size={28} />
+            </div>
+
+            <h3 style={{ fontSize: '1.4rem', fontWeight: '900', color: '#0f172a', margin: '0 0 8px 0' }}>
+              Payment Proof Submitted!
+            </h3>
+            <p style={{ color: '#475569', fontSize: '0.88rem', lineHeight: '1.5', margin: '0 0 20px 0' }}>
+              Your investment request for <strong>{submissionSuccessModal.projectName}</strong> has been logged.
+            </p>
+
+            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '16px', textAlign: 'left', marginBottom: '20px', fontSize: '0.82rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                <span style={{ color: '#64748b' }}>Reference ID:</span>
+                <strong style={{ color: '#0f172a', fontFamily: 'monospace' }}>{submissionSuccessModal.id}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                <span style={{ color: '#64748b' }}>Amount Submitted:</span>
+                <strong style={{ color: '#059669', fontSize: '0.95rem' }}>{formatMoney(submissionSuccessModal.amount)}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                <span style={{ color: '#64748b' }}>UTR / Ref No:</span>
+                <strong style={{ color: '#0f172a', fontFamily: 'monospace' }}>{submissionSuccessModal.utrNumber || 'Attached Screenshot'}</strong>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: '#64748b' }}>Escrow Status:</span>
+                <span className="badge badge-gold" style={{ fontSize: '0.65rem' }}>
+                  ⏳ Awaiting Admin Approval
+                </span>
+              </div>
+            </div>
+
+            <p style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: '1.45', margin: '0 0 20px 0' }}>
+              Admin is currently verifying the UTR with the escrow bank. Once approved, your official digital allocation certificate will be unlocked in <strong>"My Investments"</strong>.
+            </p>
+
+            <button
+              onClick={() => setSubmissionSuccessModal(null)}
+              className="btn btn-primary"
+              style={{ width: '100%', borderRadius: '10px', fontWeight: '700' }}
+            >
+              Done & Return to Projects
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODAL 3: ADMIN APPROVAL DESK (APPROVE / REJECT SUBMISSIONS) */}
+      {/* ========================================================================= */}
+      {isAdminApprovalModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsAdminApprovalModalOpen(false)}>
+          <div 
+            className="modal-content" 
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: '780px', width: '100%', padding: '28px', borderRadius: '20px' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', borderBottom: '1px solid #e2e8f0', paddingBottom: '14px' }}>
+              <div>
+                <div style={{ fontSize: '0.74rem', fontWeight: '700', color: '#d97706', textTransform: 'uppercase' }}>
+                  Administrative Desk
+                </div>
+                <h3 style={{ fontSize: '1.35rem', color: '#0f172a', margin: '2px 0', fontWeight: '800' }}>
+                  Pending Investment Approvals ({pendingInvestments.length})
+                </h3>
+              </div>
+              <button onClick={() => setIsAdminApprovalModalOpen(false)} className="btn btn-ghost btn-sm" style={{ padding: '4px' }}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <div style={{ maxHeight: '70vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '14px', paddingRight: '4px' }}>
+              {pendingInvestments.length > 0 ? (
+                pendingInvestments.map((inv) => (
+                  <div 
+                    key={inv.id}
+                    style={{
+                      background: '#f8fafc',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '14px',
+                      padding: '18px',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '12px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div>
+                        <span className="badge badge-gold" style={{ fontSize: '0.65rem', marginBottom: '4px' }}>
+                          Ref: {inv.id}
+                        </span>
+                        <h4 style={{ fontSize: '1.15rem', fontWeight: '800', color: '#0f172a', margin: '2px 0' }}>
+                          {inv.projectName}
+                        </h4>
+                        <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                          Investor: <strong style={{ color: '#0f172a' }}>{inv.investorName}</strong> • Phone: {inv.phone || 'N/A'} • Email: {inv.email || 'N/A'}
+                        </div>
+                      </div>
+
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '1.25rem', fontWeight: '900', color: '#059669' }}>
+                          {formatMoney(inv.amount)}
+                        </div>
+                        <span style={{ fontSize: '0.72rem', color: '#64748b' }}>via {inv.paymentMethod}</span>
+                      </div>
+                    </div>
+
+                    {/* UTR & Screenshot row */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#ffffff', padding: '10px 14px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                      <div>
+                        <span style={{ fontSize: '0.72rem', color: '#64748b' }}>UTR / Reference:</span>
+                        <div style={{ fontSize: '0.9rem', fontWeight: '800', color: '#0f172a', fontFamily: 'monospace' }}>
+                          {inv.utrNumber || 'N/A'}
+                        </div>
+                      </div>
+
+                      {inv.screenshotUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setPreviewScreenshotUrl(inv.screenshotUrl)}
+                          className="btn btn-secondary btn-sm"
+                          style={{ fontSize: '0.75rem', gap: '5px' }}
+                        >
+                          <Eye size={13} className="text-sky-500" />
+                          <span>View Screenshot Proof</span>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', paddingTop: '8px', borderTop: '1px dashed #e2e8f0' }}>
+                      <button
+                        type="button"
+                        onClick={() => rejectBusinessInvestment(inv.id, "Payment verification unconfirmed")}
+                        className="btn btn-ghost btn-sm"
+                        style={{ color: '#e11d48', fontWeight: '700', fontSize: '0.8rem' }}
+                      >
+                        ✕ Reject
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => approveBusinessInvestment(inv.id)}
+                        className="btn btn-primary btn-sm"
+                        style={{ fontWeight: '700', fontSize: '0.82rem', gap: '6px' }}
+                      >
+                        <CheckCircle2 size={15} />
+                        <span>✓ Approve & Issue Allocation Certificate</span>
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div style={{ textAlign: 'center', padding: '40px', background: '#f8fafc', borderRadius: '14px', border: '1px dashed #cbd5e1' }}>
+                  <CheckCircle size={36} style={{ color: '#059669', margin: '0 auto 10px auto' }} />
+                  <h4 style={{ color: '#0f172a', fontSize: '1rem', margin: '0 0 4px 0', fontWeight: '700' }}>
+                    All Submissions Cleared
+                  </h4>
+                  <p style={{ color: '#64748b', fontSize: '0.82rem', margin: 0 }}>
+                    There are no pending investments waiting for admin approval right now.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div style={{ marginTop: '16px', paddingTop: '12px', borderTop: '1px solid #e2e8f0', textAlign: 'right' }}>
+              <button 
+                type="button" 
+                onClick={() => setIsAdminApprovalModalOpen(false)}
+                className="btn btn-secondary btn-sm"
+                style={{ borderRadius: '8px' }}
+              >
+                Close Desk
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODAL 4: SCREENSHOT PREVIEW MODAL */}
+      {/* ========================================================================= */}
+      {previewScreenshotUrl && (
+        <div className="modal-overlay" onClick={() => setPreviewScreenshotUrl(null)}>
+          <div 
+            className="modal-content" 
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: '540px', width: '100%', padding: '24px', borderRadius: '16px', textAlign: 'center' }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+              <h4 style={{ margin: 0, color: '#0f172a', fontWeight: '800' }}>Payment Screenshot Proof</h4>
+              <button onClick={() => setPreviewScreenshotUrl(null)} className="btn btn-ghost btn-sm" style={{ padding: '4px' }}>
+                <X size={18} />
+              </button>
+            </div>
+            <img 
+              src={previewScreenshotUrl} 
+              alt="Payment Proof" 
+              style={{ width: '100%', maxHeight: '70vh', objectFit: 'contain', borderRadius: '10px', border: '1px solid #e2e8f0' }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODAL 5: DETAILED OVERVIEW ABOUT INVESTMENTS (INVESTMENT MEMO & TERMS) */}
       {/* ========================================================================= */}
       {detailedOverviewProject && (() => {
         const fin = calculateProjectFinancials(detailedOverviewProject);
@@ -1393,7 +1808,7 @@ export const BusinessProjectsDashboard = () => {
       })()}
 
       {/* ========================================================================= */}
-      {/* MODAL 3: ADMIN MILESTONE & LIVE OPERATIONS MANAGER */}
+      {/* MODAL 6: ADMIN MILESTONE & LIVE OPERATIONS MANAGER */}
       {/* ========================================================================= */}
       {adminMilestoneProject && (
         <div className="modal-overlay" onClick={() => setAdminMilestoneProject(null)}>
@@ -1584,7 +1999,7 @@ export const BusinessProjectsDashboard = () => {
       )}
 
       {/* ========================================================================= */}
-      {/* MODAL 4: OFFICIAL DIGITAL INVESTMENT CERTIFICATE (INSTITUTIONAL GRADE) */}
+      {/* MODAL 7: OFFICIAL DIGITAL INVESTMENT CERTIFICATE (INSTITUTIONAL GRADE) */}
       {/* ========================================================================= */}
       {activeCertificate && (
         <div className="modal-overlay" onClick={() => setActiveCertificate(null)}>
@@ -1664,7 +2079,7 @@ export const BusinessProjectsDashboard = () => {
 
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#64748b' }}>Payment Channel:</span>
-                  <span style={{ color: '#0f172a' }}>{activeCertificate.paymentMethod}</span>
+                  <span style={{ color: '#0f172a' }}>{activeCertificate.paymentMethod} (UTR: {activeCertificate.utrNumber || 'Verified'})</span>
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -1708,7 +2123,7 @@ export const BusinessProjectsDashboard = () => {
       )}
 
       {/* ========================================================================= */}
-      {/* MODAL 5: EDIT PROJECT ASSUMPTIONS (ADMIN) */}
+      {/* MODAL 8: EDIT PROJECT ASSUMPTIONS (ADMIN) */}
       {/* ========================================================================= */}
       {editingProject && (
         <div className="modal-overlay" onClick={() => setEditingProject(null)}>

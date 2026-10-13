@@ -18,7 +18,7 @@ const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   // Production Data Version Migration: clears old mock cache
-  const DATA_VERSION = 'rbi_v3_clean_projects';
+  const DATA_VERSION = 'rbi_v4_upi_approval';
   if (typeof window !== 'undefined') {
     const currentVer = localStorage.getItem('rbi_data_version');
     if (currentVer !== DATA_VERSION) {
@@ -124,7 +124,7 @@ export const AppProvider = ({ children }) => {
       organizer: "Alexander Rajasingh",
       targetAmount: 500000,
       description: "Direct community and investor fund collection for immediate working capital, project inventory, and expansion operations.",
-      upiId: "royalbank.invest@okhdfcbank",
+      upiId: "8248651695-3@ybl",
       bankName: "HDFC Bank / RBI Institutional Vault",
       accountNumber: "50200084729103",
       ifscCode: "HDFC0001234",
@@ -1042,8 +1042,8 @@ export const AppProvider = ({ children }) => {
     }));
   };
 
-  // Direct Business Project Investment Engine
-  const investInBusinessProject = ({ projectId, investorName, email, phone, amount, paymentMethod, note }) => {
+  // Direct Business Project Investment Engine (Submits for Admin Approval)
+  const investInBusinessProject = ({ projectId, investorName, email, phone, amount, paymentMethod, utrNumber, screenshotUrl, note }) => {
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) return null;
 
@@ -1061,56 +1061,101 @@ export const AppProvider = ({ children }) => {
       phone: phone?.trim() || '',
       amount: numAmount,
       paymentMethod: paymentMethod || 'UPI',
+      utrNumber: utrNumber?.trim() || '',
+      screenshotUrl: screenshotUrl || '',
       date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
       timestamp: Date.now(),
       expectedYield: project.expectedTermYield || "14.5% Net Yield",
       payoutTimeline: project.payoutTimeline || "Sprint Completion",
       note: note?.trim() || `Capital allocation into ${project.name}`,
-      status: 'CONFIRMED'
+      status: 'PENDING_APPROVAL' // Requires Admin Verification of screenshot / UTR before allocation
     };
-
-    // Update Project State
-    setBusinessProjects(prev => prev.map(p => {
-      if (p.id === projectId) {
-        return {
-          ...p,
-          capitalRaised: (Number(p.capitalRaised) || 0) + numAmount,
-          investorsCount: (Number(p.investorsCount) || 0) + 1
-        };
-      }
-      return p;
-    }));
 
     // Add to project investments list
     setProjectInvestments(prev => [newInvestment, ...prev]);
 
-    // Record Central Transaction
-    const systemTxn = {
-      id: newInvestment.id,
-      timestamp: new Date().toISOString(),
-      type: 'PROJECT_INVESTMENT',
-      description: `Investment in ${project.name} by ${newInvestment.investorName} (${paymentMethod})`,
-      amount: numAmount,
-      status: 'COMPLETED',
-      category: 'PROJECT_DEAL'
-    };
-    setTransactions(prev => [systemTxn, ...prev]);
-
     // Add to Change History
     const historyEntry = {
-      id: `hist-${Date.now()}`,
+      id: `hist-sub-${Date.now()}`,
       projectId: project.id,
       timestamp: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
       user: newInvestment.investorName,
-      action: 'Capital Invested',
-      note: `Received ₹${numAmount.toLocaleString('en-IN')} investment via ${paymentMethod}`
+      action: 'Payment Submitted (Pending Admin Review)',
+      note: `Received ₹${numAmount.toLocaleString('en-IN')} payment submission via ${paymentMethod} (UTR: ${utrNumber || 'Screenshot attached'}). Awaiting Admin Escrow Approval.`
     };
     setProjectChangeHistory(prev => [historyEntry, ...prev]);
 
-    // Trigger celebration
-    triggerConfetti();
-
     return newInvestment;
+  };
+
+  // Admin Approval: Confirms payment screenshot & allocates capital into project
+  const approveBusinessInvestment = (investmentId) => {
+    let approvedInv = null;
+    setProjectInvestments(prev => prev.map(inv => {
+      if (inv.id === investmentId) {
+        approvedInv = { ...inv, status: 'CONFIRMED' };
+        return approvedInv;
+      }
+      return inv;
+    }));
+
+    if (approvedInv) {
+      // Increment Project Capital Raised and Backer Count
+      setBusinessProjects(prev => prev.map(p => {
+        if (p.id === approvedInv.projectId) {
+          return {
+            ...p,
+            capitalRaised: (Number(p.capitalRaised) || 0) + approvedInv.amount,
+            investorsCount: (Number(p.investorsCount) || 0) + 1
+          };
+        }
+        return p;
+      }));
+
+      // Record System Ledger Transaction
+      const systemTxn = {
+        id: approvedInv.id,
+        timestamp: new Date().toISOString(),
+        type: 'PROJECT_INVESTMENT',
+        description: `Verified & Approved investment in ${approvedInv.projectName} by ${approvedInv.investorName} (${approvedInv.paymentMethod})`,
+        amount: approvedInv.amount,
+        status: 'COMPLETED',
+        category: 'PROJECT_DEAL'
+      };
+      setTransactions(prev => [systemTxn, ...prev]);
+
+      // Audit History Log
+      const historyEntry = {
+        id: `hist-app-${Date.now()}`,
+        projectId: approvedInv.projectId,
+        timestamp: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        user: user?.name || "Administrator",
+        action: 'Investment Approved & Allocated',
+        note: `Approved ₹${approvedInv.amount.toLocaleString('en-IN')} from ${approvedInv.investorName}. Escrow receipt confirmed and certificate issued.`
+      };
+      setProjectChangeHistory(prev => [historyEntry, ...prev]);
+
+      triggerConfetti();
+    }
+  };
+
+  // Admin Rejection
+  const rejectBusinessInvestment = (investmentId, reason = "Payment verification could not be validated") => {
+    setProjectInvestments(prev => prev.map(inv => {
+      if (inv.id === investmentId) {
+        return { ...inv, status: 'REJECTED', rejectionReason: reason };
+      }
+      return inv;
+    }));
+
+    const historyEntry = {
+      id: `hist-rej-${Date.now()}`,
+      timestamp: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      user: user?.name || "Administrator",
+      action: 'Investment Rejected',
+      note: `Investment ${investmentId} rejected: ${reason}`
+    };
+    setProjectChangeHistory(prev => [historyEntry, ...prev]);
   };
 
   return (
@@ -1148,6 +1193,8 @@ export const AppProvider = ({ children }) => {
       addProjectMilestone,
       deleteProjectMilestone,
       addProjectLiveUpdate,
+      approveBusinessInvestment,
+      rejectBusinessInvestment,
       startups,
       setStartups,
       projectDeals,
