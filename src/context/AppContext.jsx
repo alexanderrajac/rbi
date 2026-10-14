@@ -14,6 +14,16 @@ import {
 } from '../data/businessProjectsData';
 import confetti from 'canvas-confetti';
 import { supabase, signInWithGoogle, signOut } from '../lib/supabase';
+import { 
+  ADMIN_EMAIL, 
+  isSuperAdmin, 
+  fetchBusinessProjects, 
+  syncBusinessProjectToSupabase, 
+  fetchProjectInvestments, 
+  saveProjectInvestmentToSupabase, 
+  updateInvestmentStatusInSupabase, 
+  saveAuditLogToSupabase 
+} from '../lib/supabaseData';
 
 const AppContext = createContext();
 
@@ -68,18 +78,41 @@ export const AppProvider = ({ children }) => {
   const [supabaseUser, setSupabaseUser] = useState(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
+  // Sync Supabase Database and enforce Sovereign Admin
   useEffect(() => {
-    // Check active session on initial load
+    // 1. Initial live data fetch from Supabase
+    fetchBusinessProjects().then(fetchedProjects => {
+      if (fetchedProjects && fetchedProjects.length > 0) {
+        setBusinessProjects(fetchedProjects);
+      }
+    });
+
+    fetchProjectInvestments().then(fetchedInvs => {
+      if (fetchedInvs && fetchedInvs.length > 0) {
+        setProjectInvestments(fetchedInvs);
+      }
+    });
+
+    // 2. Check active auth session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setSupabaseUser(session.user);
+        const isAdmin = isSuperAdmin(session.user);
+        setIsAdminLoggedIn(isAdmin);
+        if (isAdmin) {
+          setCurrentRole('admin');
+        }
+
         setUser(prev => ({
           ...prev,
           name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0] || prev.name,
           email: session.user.email || prev.email,
           avatarUrl: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || null,
-          authProvider: 'google'
+          authProvider: 'google',
+          isAdmin
         }));
+      } else {
+        setIsAdminLoggedIn(false);
       }
       setIsAuthLoading(false);
     }).catch(err => {
@@ -87,19 +120,28 @@ export const AppProvider = ({ children }) => {
       setIsAuthLoading(false);
     });
 
-    // Subscribe to OAuth redirects and auth events
+    // 3. Subscribe to OAuth redirects and auth events
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setSupabaseUser(session.user);
+        const isAdmin = isSuperAdmin(session.user);
+        setIsAdminLoggedIn(isAdmin);
+        if (isAdmin) {
+          setCurrentRole('admin');
+        }
+
         setUser(prev => ({
           ...prev,
           name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0] || prev.name,
           email: session.user.email || prev.email,
           avatarUrl: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || null,
-          authProvider: 'google'
+          authProvider: 'google',
+          isAdmin
         }));
       } else {
         setSupabaseUser(null);
+        setIsAdminLoggedIn(false);
+        setCurrentRole('investor');
       }
       setIsAuthLoading(false);
     });
@@ -883,9 +925,10 @@ export const AppProvider = ({ children }) => {
     setPendingApplications(prev => prev.map(a => a.id === appId ? { ...a, status: "Rejected" } : a));
   };
 
-  // Admin Login Verification
-  const adminLogin = (password) => {
-    if (password === 'admin123' || password === 'admin' || password === 'rbi2026') {
+  // Admin Login Verification - Strictly rajacofficial369@gmail.com
+  const adminLogin = (credential, email) => {
+    const activeEmail = (email || supabaseUser?.email || user?.email || '').toLowerCase().trim();
+    if (activeEmail === ADMIN_EMAIL.toLowerCase()) {
       setIsAdminLoggedIn(true);
       setCurrentRole('admin');
       setActiveTab('admin');
@@ -897,7 +940,7 @@ export const AppProvider = ({ children }) => {
   const adminLogout = () => {
     setIsAdminLoggedIn(false);
     setCurrentRole('investor');
-    setActiveTab('collect');
+    setActiveTab('projects');
   };
 
   // Fund Collection Engine
@@ -960,12 +1003,18 @@ export const AppProvider = ({ children }) => {
 
   // Business Projects Operations
   const updateBusinessProject = (projectId, updatedFields, changeNote = "Assumptions Updated") => {
+    let updatedProj = null;
     setBusinessProjects(prev => prev.map(p => {
       if (p.id === projectId) {
-        return { ...p, ...updatedFields };
+        updatedProj = { ...p, ...updatedFields };
+        return updatedProj;
       }
       return p;
     }));
+
+    if (updatedProj) {
+      syncBusinessProjectToSupabase(updatedProj);
+    }
 
     const historyEntry = {
       id: `hist-${Date.now()}`,
@@ -983,6 +1032,7 @@ export const AppProvider = ({ children }) => {
     };
 
     setProjectChangeHistory(prev => [historyEntry, ...prev]);
+    saveAuditLogToSupabase(historyEntry);
   };
 
   const addBusinessProject = (newProject) => {
@@ -1152,6 +1202,10 @@ export const AppProvider = ({ children }) => {
     };
     setProjectChangeHistory(prev => [historyEntry, ...prev]);
 
+    // Asynchronously sync with Supabase
+    saveProjectInvestmentToSupabase(newInvestment);
+    saveAuditLogToSupabase(historyEntry);
+
     return newInvestment;
   };
 
@@ -1168,13 +1222,15 @@ export const AppProvider = ({ children }) => {
 
     if (approvedInv) {
       // Increment Project Capital Raised and Backer Count
+      let updatedProjectPayload = null;
       setBusinessProjects(prev => prev.map(p => {
         if (p.id === approvedInv.projectId) {
-          return {
+          updatedProjectPayload = {
             ...p,
             capitalRaised: (Number(p.capitalRaised) || 0) + approvedInv.amount,
             investorsCount: (Number(p.investorsCount) || 0) + 1
           };
+          return updatedProjectPayload;
         }
         return p;
       }));
@@ -1202,6 +1258,13 @@ export const AppProvider = ({ children }) => {
       };
       setProjectChangeHistory(prev => [historyEntry, ...prev]);
 
+      // Supabase Persistence
+      updateInvestmentStatusInSupabase(investmentId, 'CONFIRMED');
+      if (updatedProjectPayload) {
+        syncBusinessProjectToSupabase(updatedProjectPayload);
+      }
+      saveAuditLogToSupabase(historyEntry);
+
       triggerConfetti();
     }
   };
@@ -1223,6 +1286,9 @@ export const AppProvider = ({ children }) => {
       note: `Investment ${investmentId} rejected: ${reason}`
     };
     setProjectChangeHistory(prev => [historyEntry, ...prev]);
+
+    updateInvestmentStatusInSupabase(investmentId, 'REJECTED', reason);
+    saveAuditLogToSupabase(historyEntry);
   };
 
   return (
@@ -1304,7 +1370,9 @@ export const AppProvider = ({ children }) => {
       supabaseUser,
       isAuthLoading,
       loginWithGoogle,
-      logoutUser
+      logoutUser,
+      ADMIN_EMAIL,
+      isSuperAdmin: () => isSuperAdmin(supabaseUser || user)
     }}>
       {children}
     </AppContext.Provider>
