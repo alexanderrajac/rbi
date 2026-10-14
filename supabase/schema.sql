@@ -134,3 +134,25 @@ DROP POLICY IF EXISTS "Anyone can insert project history" ON public.project_hist
 CREATE POLICY "Anyone can insert project history"
     ON public.project_history FOR INSERT
     WITH CHECK (true);
+
+-- =========================================================================
+-- SEED INITIAL 4 BUSINESS VENTURES (Strict Zero Capital Baseline)
+-- =========================================================================
+
+INSERT INTO public.business_projects (id, name, category, status, description, type, capital_requested, capital_raised, min_investment, expected_term_yield, payout_timeline)
+VALUES
+('proj-unavukadai', 'UnavuKadai', 'Food Delivery & Cloud Kitchen', 'Active', 'Launch marketing campaign and hyper-local food delivery order acquisition across Vadamadurai / Thudiyalur cluster.', 'SERVICE_ORDER', 4000, 0, 500, '14.2% Net Term Yield', 'Oct 22, 2026 (6-Day Sprint)'),
+('proj-carpenterbullet', 'CarpenterBullet', 'Commission-Based Marketplace', 'Active', 'Digital lead generation and carpenter job routing marketplace connecting homeowners with master carpentry guilds.', 'COMMISSION_MARKETPLACE', 10000, 0, 1000, '15.0% Commission Pool Yield', 'Nov 25, 2026 (40-Day Sprint)'),
+('proj-wooden-laptop-case', 'Wooden Laptop Case', 'Product Manufacturing & Sales', 'Planning', 'Precision CNC milled seasoned timber luxury laptop sleeves with magnetic velvet latch fittings.', 'PRODUCT_MANUFACTURING', 99500, 0, 2500, '18.5% Net Term Yield', 'Dec 15, 2026 (Batch Fulfillment)'),
+('proj-bamboo-cup', 'Wooden Cup', 'Artisan Wooden Product Manufacturing', 'Testing', 'Handcrafted artisan natural wooden drinking cups and tumblers turned from seasoned timber with food-safe plant wax sealant for eco-conscious retail.', 'PRODUCT_MANUFACTURING', 46000, 0, 500, '16.0% Net Term Yield', 'Dec 05, 2026 (Batch Distribution)')
+ON CONFLICT (id) DO UPDATE SET
+    name = EXCLUDED.name,
+    category = EXCLUDED.category,
+    status = EXCLUDED.status,
+    description = EXCLUDED.description,
+    type = EXCLUDED.type,
+    capital_requested = EXCLUDED.capital_requested,
+    min_investment = EXCLUDED.min_investment,
+    expected_term_yield = EXCLUDED.expected_term_yield,
+    payout_timeline = EXCLUDED.payout_timeline,
+    updated_at = NOW();

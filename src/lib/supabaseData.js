@@ -30,36 +30,46 @@ export const fetchBusinessProjects = async () => {
       return null;
     }
 
-    if (data && data.length > 0) {
-      // Map and merge Supabase projects with initial data definitions
-      return data.map(item => {
-        const initial = INITIAL_BUSINESS_PROJECTS.find(p => p.id === item.id) || {};
-        return {
-          ...initial,
-          ...item,
-          capitalRequested: item.capital_requested ?? item.capitalRequested ?? initial.capitalRequested,
-          capitalRaised: item.capital_raised ?? item.capitalRaised ?? initial.capitalRaised ?? 0,
-          minInvestment: item.min_investment ?? item.minInvestment ?? initial.minInvestment ?? 500,
-          investorsCount: item.investors_count ?? item.investorsCount ?? initial.investorsCount ?? 0,
-          expectedTermYield: item.expected_term_yield || item.expectedTermYield || initial.expectedTermYield,
-          payoutTimeline: item.payout_timeline || item.payoutTimeline || initial.payoutTimeline,
-          expenseBreakdown: (item.expense_breakdown && item.expense_breakdown.length > 0) 
-            ? item.expense_breakdown 
-            : (item.expenseBreakdown || initial.expenseBreakdown || []),
-          timeline: (item.timeline && Array.isArray(item.timeline) && item.timeline.length > 0) 
-            ? item.timeline 
-            : (initial.timeline || []),
-          liveUpdates: (item.live_updates && Array.isArray(item.live_updates) && item.live_updates.length > 0) 
-            ? item.live_updates 
-            : (item.liveUpdates || initial.liveUpdates || []),
-          actuals: item.actuals || initial.actuals || {}
-        };
-      });
-    }
+    // Always guarantee all 4 ventures from INITIAL_BUSINESS_PROJECTS exist!
+    const mergedProjects = INITIAL_BUSINESS_PROJECTS.map(initial => {
+      if (!data || data.length === 0) return initial;
+      const item = data.find(p => p.id === initial.id);
+      if (!item) return initial;
+
+      // Ensure clean name (if Supabase has old Bamboo Cup, use initial name Wooden Cup)
+      const cleanName = (item.name === 'Bamboo Cup' || !item.name) ? initial.name : item.name;
+
+      return {
+        ...initial,
+        ...item,
+        name: cleanName,
+        category: item.category || initial.category,
+        capitalRequested: item.capital_requested !== undefined ? Number(item.capital_requested) : (item.capitalRequested !== undefined ? Number(item.capitalRequested) : initial.capitalRequested),
+        capitalRaised: item.capital_raised !== undefined ? Number(item.capital_raised) : (item.capitalRaised !== undefined ? Number(item.capitalRaised) : (initial.capitalRaised || 0)),
+        minInvestment: item.min_investment !== undefined ? Number(item.min_investment) : (item.minInvestment !== undefined ? Number(item.minInvestment) : initial.minInvestment),
+        investorsCount: item.investors_count !== undefined ? Number(item.investors_count) : (item.investorsCount !== undefined ? Number(item.investorsCount) : (initial.investorsCount || 0)),
+        expectedTermYield: item.expected_term_yield || item.expectedTermYield || initial.expectedTermYield,
+        payoutTimeline: item.payout_timeline || item.payoutTimeline || initial.payoutTimeline,
+        expenseBreakdown: (item.expense_breakdown && Array.isArray(item.expense_breakdown) && item.expense_breakdown.length > 0) 
+          ? item.expense_breakdown 
+          : (initial.expenseBreakdown || []),
+        timeline: (item.timeline && Array.isArray(item.timeline) && item.timeline.length > 0) 
+          ? item.timeline 
+          : (initial.timeline || []),
+        liveUpdates: (item.live_updates && Array.isArray(item.live_updates) && item.live_updates.length > 0) 
+          ? item.live_updates 
+          : (initial.liveUpdates || []),
+        actuals: item.actuals || initial.actuals || {}
+      };
+    });
+
+    // Also include any user-created custom projects from Supabase
+    const customProjects = (data || []).filter(item => !INITIAL_BUSINESS_PROJECTS.some(init => init.id === item.id));
+    return [...mergedProjects, ...customProjects];
   } catch (err) {
     console.warn('Supabase network notice:', err?.message || err);
   }
-  return null;
+  return INITIAL_BUSINESS_PROJECTS;
 };
 
 /**

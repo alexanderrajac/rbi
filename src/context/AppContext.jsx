@@ -87,8 +87,17 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     // 1. Initial live data fetch from Supabase
     fetchBusinessProjects().then(fetchedProjects => {
-      if (fetchedProjects && fetchedProjects.length > 0) {
+      if (fetchedProjects && fetchedProjects.length >= 4) {
         setBusinessProjects(fetchedProjects);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('rbi_business_projects', JSON.stringify(fetchedProjects));
+        }
+      } else {
+        // Auto-seed all 4 projects to Supabase and state so all 4 ventures always display
+        INITIAL_BUSINESS_PROJECTS.forEach(proj => {
+          syncBusinessProjectToSupabase(proj).catch(console.warn);
+        });
+        setBusinessProjects(INITIAL_BUSINESS_PROJECTS);
       }
     });
 
@@ -260,8 +269,20 @@ export const AppProvider = ({ children }) => {
 
   // 4 Business Projects State
   const [businessProjects, setBusinessProjects] = useState(() => {
-    const saved = localStorage.getItem('rbi_business_projects');
-    return saved ? JSON.parse(saved) : INITIAL_BUSINESS_PROJECTS;
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('rbi_business_projects');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length >= 4) {
+            return parsed;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+    return INITIAL_BUSINESS_PROJECTS;
   });
 
   // Project Change History Audit Log
