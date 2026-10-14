@@ -981,18 +981,23 @@ export const AppProvider = ({ children }) => {
 
   // Business Projects Operations
   const updateBusinessProject = (projectId, updatedFields, changeNote = "Assumptions Updated") => {
-    let updatedProj = null;
-    setBusinessProjects(prev => prev.map(p => {
-      if (p.id === projectId) {
-        updatedProj = { ...p, ...updatedFields };
-        return updatedProj;
-      }
-      return p;
-    }));
+    // 1. Resolve current project and compute updated drop-in object
+    const currentProj = businessProjects.find(p => p.id === projectId) || INITIAL_BUSINESS_PROJECTS.find(p => p.id === projectId);
+    const updatedProj = currentProj ? { ...currentProj, ...updatedFields } : { id: projectId, ...updatedFields };
 
-    if (updatedProj) {
-      syncBusinessProjectToSupabase(updatedProj);
-    }
+    // 2. Atomically update state & persistent local storage
+    setBusinessProjects(prev => {
+      const next = prev.map(p => p.id === projectId ? { ...p, ...updatedFields } : p);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('rbi_business_projects', JSON.stringify(next));
+      }
+      return next;
+    });
+
+    // 3. Immediately sync to Supabase database
+    syncBusinessProjectToSupabase(updatedProj).catch(err => {
+      console.error('Failed to sync updated business project to Supabase:', err);
+    });
 
     const historyEntry = {
       id: `hist-${Date.now()}`,

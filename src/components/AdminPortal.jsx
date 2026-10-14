@@ -134,12 +134,113 @@ export const AdminPortal = () => {
   const [broadcastAuthor, setBroadcastAuthor] = useState(user?.name || 'Alexander (Operations Lead)');
   const [broadcastSuccess, setBroadcastSuccess] = useState(false);
 
-  // Financials Editor Form State
+  // Comprehensive Business Details Form State
   const activeSelectedProject = businessProjects.find(p => p.id === selectedProjectId) || businessProjects[0];
-  const [editAdBudget, setEditAdBudget] = useState(activeSelectedProject?.dailyAdBudget || 200);
-  const [editDuration, setEditDuration] = useState(activeSelectedProject?.campaignDurationDays || 6);
-  const [editSellingPrice, setEditSellingPrice] = useState(activeSelectedProject?.avgSellingPricePerUnit || activeSelectedProject?.proposedSellingPrice || 250);
   const [saveNotice, setSaveNotice] = useState(null);
+
+  const [businessFormData, setBusinessFormData] = useState({
+    name: '',
+    category: '',
+    tagline: '',
+    description: '',
+    capitalRequested: 0,
+    minInvestment: 500,
+    expectedTermYield: '',
+    payoutTimeline: '',
+    upiId: '8248651695-3@ybl',
+    dailyAdBudget: 200,
+    campaignDurationDays: 6,
+    unitPrice: 250,
+    directCost: 140,
+    volumeTarget: 60,
+    expenseBreakdown: []
+  });
+
+  // Keep form data synchronized whenever selected venture changes
+  React.useEffect(() => {
+    if (activeSelectedProject) {
+      setBusinessFormData({
+        name: activeSelectedProject.name || '',
+        category: activeSelectedProject.category || '',
+        tagline: activeSelectedProject.tagline || '',
+        description: activeSelectedProject.description || '',
+        capitalRequested: activeSelectedProject.capitalRequested || activeSelectedProject.statedTotalBudget || 0,
+        minInvestment: activeSelectedProject.minInvestment || 500,
+        expectedTermYield: activeSelectedProject.expectedTermYield || '14.5% Net Term Yield',
+        payoutTimeline: activeSelectedProject.payoutTimeline || 'Sprint Completion',
+        upiId: activeSelectedProject.upiId || '8248651695-3@ybl',
+        dailyAdBudget: activeSelectedProject.dailyAdBudget || 200,
+        campaignDurationDays: activeSelectedProject.campaignDurationDays || 6,
+        unitPrice: activeSelectedProject.avgSellingPricePerUnit || activeSelectedProject.proposedSellingPrice || activeSelectedProject.commissionPerCompletedSale || 250,
+        directCost: activeSelectedProject.directCostPerUnit || activeSelectedProject.totalDirectCostPerUnit || 0,
+        volumeTarget: activeSelectedProject.totalOrderTarget || activeSelectedProject.campaignSalesTarget || activeSelectedProject.productionTarget || 0,
+        expenseBreakdown: activeSelectedProject.expenseBreakdown ? JSON.parse(JSON.stringify(activeSelectedProject.expenseBreakdown)) : []
+      });
+    }
+  }, [selectedProjectId, activeSelectedProject]);
+
+  const handleExpenseChange = (idx, field, val) => {
+    setBusinessFormData(prev => {
+      const list = [...prev.expenseBreakdown];
+      list[idx] = { ...list[idx], [field]: field === 'amount' ? (parseFloat(val) || 0) : val };
+      return { ...prev, expenseBreakdown: list };
+    });
+  };
+
+  const handleAddExpenseItem = () => {
+    setBusinessFormData(prev => ({
+      ...prev,
+      expenseBreakdown: [
+        ...prev.expenseBreakdown,
+        { item: 'New Itemized Expense', amount: 500, category: 'Operations & Sourcing', verified: true, progress: 'Allocated' }
+      ]
+    }));
+  };
+
+  const handleRemoveExpenseItem = (idx) => {
+    setBusinessFormData(prev => ({
+      ...prev,
+      expenseBreakdown: prev.expenseBreakdown.filter((_, i) => i !== idx)
+    }));
+  };
+
+  const handleSaveAllBusinessDetails = (e) => {
+    e.preventDefault();
+    if (!selectedProjectId) return;
+
+    const updates = {
+      name: businessFormData.name.trim(),
+      category: businessFormData.category.trim(),
+      tagline: businessFormData.tagline.trim(),
+      description: businessFormData.description.trim(),
+      capitalRequested: parseFloat(businessFormData.capitalRequested) || 0,
+      statedTotalBudget: parseFloat(businessFormData.capitalRequested) || 0,
+      minInvestment: parseFloat(businessFormData.minInvestment) || 500,
+      expectedTermYield: businessFormData.expectedTermYield.trim(),
+      payoutTimeline: businessFormData.payoutTimeline.trim(),
+      upiId: businessFormData.upiId.trim() || '8248651695-3@ybl',
+      dailyAdBudget: parseFloat(businessFormData.dailyAdBudget) || 0,
+      campaignDurationDays: parseInt(businessFormData.campaignDurationDays, 10) || 0,
+      expenseBreakdown: businessFormData.expenseBreakdown
+    };
+
+    if (activeSelectedProject.type === 'COMMISSION_MARKETPLACE') {
+      updates.commissionPerCompletedSale = parseFloat(businessFormData.unitPrice) || 0;
+      updates.campaignSalesTarget = parseInt(businessFormData.volumeTarget, 10) || 0;
+    } else if (activeSelectedProject.type === 'SERVICE_ORDER') {
+      updates.avgSellingPricePerUnit = parseFloat(businessFormData.unitPrice) || 0;
+      updates.directCostPerUnit = parseFloat(businessFormData.directCost) || 0;
+      updates.totalOrderTarget = parseInt(businessFormData.volumeTarget, 10) || 0;
+    } else {
+      updates.proposedSellingPrice = parseFloat(businessFormData.unitPrice) || 0;
+      updates.totalDirectCostPerUnit = parseFloat(businessFormData.directCost) || 0;
+      updates.productionTarget = parseInt(businessFormData.volumeTarget, 10) || 0;
+    }
+
+    updateBusinessProject(selectedProjectId, updates, `Admin updated full business profile for ${updates.name}`);
+    setSaveNotice(`Successfully saved and synced all details for ${updates.name}! Live across portal.`);
+    setTimeout(() => setSaveNotice(null), 4000);
+  };
 
   // Notification Banner
   const [actionNotice, setActionNotice] = useState(null);
@@ -723,8 +824,8 @@ export const AdminPortal = () => {
               boxShadow: currentAdminTab === 'financials' ? '0 -1px 3px rgba(0,0,0,0.03)' : 'none'
             }}
           >
-            <SlidersHorizontal size={16} />
-            <span>Financials & Parameters</span>
+            <Building2 size={16} />
+            <span>Edit Business Details</span>
           </button>
 
           <button
@@ -1582,133 +1683,608 @@ export const AdminPortal = () => {
         )}
 
         {/* ===================================================================== */}
-        {/* TAB 4: FINANCIALS & PARAMETERS EDITOR */}
+        {/* TAB 4: COMPREHENSIVE BUSINESS VENTURE DETAILS & FINANCIALS EDITOR */}
         {/* ===================================================================== */}
         {currentAdminTab === 'financials' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             
-            {/* Project Picker Bar */}
-            <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '18px 20px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '14px' }}>
+            {/* Venture Selector Header Bar */}
+            <div style={{ 
+              background: '#ffffff', 
+              borderRadius: '16px', 
+              border: '1px solid #e2e8f0', 
+              padding: '20px 24px', 
+              display: 'flex', 
+              flexWrap: 'wrap', 
+              alignItems: 'center', 
+              justifyContent: 'space-between', 
+              gap: '16px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04)'
+            }}>
               <div>
-                <span style={{ fontSize: '0.72rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase' }}>
-                  Select Venture
-                </span>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: '800', color: '#0f172a', margin: '2px 0 0 0' }}>
-                  {activeSelectedProject.name} — Financial Parameters & Pricing
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '0.72rem', fontWeight: '800', color: '#d97706', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Active Venture Profile
+                  </span>
+                  <span style={{ background: '#f1f5f9', color: '#475569', fontSize: '0.72rem', padding: '2px 8px', borderRadius: '12px', fontWeight: '700' }}>
+                    {activeSelectedProject.category || 'Venture'}
+                  </span>
+                </div>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: '900', color: '#0f172a', margin: 0 }}>
+                  {activeSelectedProject.name}
                 </h3>
               </div>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                {businessProjects.map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedProjectId(p.id);
-                      setEditAdBudget(p.dailyAdBudget || 200);
-                      setEditDuration(p.campaignDurationDays || 6);
-                      setEditSellingPrice(p.avgSellingPricePerUnit || p.proposedSellingPrice || 250);
-                    }}
-                    style={{
-                      padding: '7px 14px',
-                      borderRadius: '8px',
-                      fontSize: '0.78rem',
-                      fontWeight: '700',
-                      cursor: 'pointer',
-                      border: p.id === selectedProjectId ? '1px solid #d97706' : '1px solid #e2e8f0',
-                      background: p.id === selectedProjectId ? '#fffbeb' : '#ffffff',
-                      color: p.id === selectedProjectId ? '#b45309' : '#475569'
-                    }}
-                  >
-                    {p.name}
-                  </button>
-                ))}
+              {/* Venture Switcher Pills */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                {businessProjects.map((p) => {
+                  const isSelected = p.id === selectedProjectId;
+                  return (
+                    <button
+                      key={p.id}
+                      type="button"
+                      onClick={() => setSelectedProjectId(p.id)}
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: '10px',
+                        fontSize: '0.8rem',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                        border: isSelected ? '2px solid #d97706' : '1px solid #e2e8f0',
+                        background: isSelected ? '#fffbeb' : '#ffffff',
+                        color: isSelected ? '#b45309' : '#475569',
+                        boxShadow: isSelected ? '0 2px 6px rgba(217,119,6,0.12)' : 'none',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      {p.name}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Financial Parameters Editor Card */}
-            <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '24px' }}>
-              <div style={{ marginBottom: '18px', paddingBottom: '14px', borderBottom: '1px solid #e2e8f0' }}>
-                <h4 style={{ fontSize: '1.05rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
-                  Unit Economics & Campaign Controls
-                </h4>
-                <p style={{ fontSize: '0.78rem', color: '#64748b', margin: '2px 0 0 0' }}>
-                  Adjust marketing spend, sprint duration, and product selling prices. Investor yields update in real time.
-                </p>
+            {/* Save Notice Notification Banner */}
+            {saveNotice && (
+              <div style={{ 
+                padding: '14px 20px', 
+                borderRadius: '12px', 
+                background: '#ecfdf5', 
+                border: '1px solid #6ee7b7', 
+                color: '#065f46', 
+                fontSize: '0.88rem', 
+                fontWeight: '700', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '10px',
+                boxShadow: '0 2px 8px rgba(16,185,129,0.1)'
+              }}>
+                <CheckCircle2 size={20} color="#059669" />
+                <span>{saveNotice}</span>
+              </div>
+            )}
+
+            {/* Master Business Editing Form */}
+            <form onSubmit={handleSaveAllBusinessDetails} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+
+              {/* CARD 1: Core Business Profile */}
+              <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px', paddingBottom: '12px', borderBottom: '1px solid #f1f5f9' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Building2 size={18} color="#2563eb" />
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '1.05rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
+                      1. Core Business Profile & Value Proposition
+                    </h4>
+                    <p style={{ fontSize: '0.76rem', color: '#64748b', margin: 0 }}>
+                      Primary branding, customer-facing venture identity, and market proposition.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                      Business Venture Name *
+                    </label>
+                    <input 
+                      type="text" 
+                      value={businessFormData.name} 
+                      onChange={(e) => setBusinessFormData(prev => ({ ...prev, name: e.target.value }))}
+                      className="form-input"
+                      placeholder="e.g. T-Shirt Pre-Order Campaign"
+                      style={{ background: '#f8fafc', fontWeight: '700' }}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                      Sector / Industry Category *
+                    </label>
+                    <input 
+                      type="text" 
+                      value={businessFormData.category} 
+                      onChange={(e) => setBusinessFormData(prev => ({ ...prev, category: e.target.value }))}
+                      className="form-input"
+                      placeholder="e.g. Apparel & Fashion, Automotive Services"
+                      style={{ background: '#f8fafc' }}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '16px' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                    Catchy Value Proposition / Tagline *
+                  </label>
+                  <input 
+                    type="text" 
+                    value={businessFormData.tagline} 
+                    onChange={(e) => setBusinessFormData(prev => ({ ...prev, tagline: e.target.value }))}
+                    className="form-input"
+                    placeholder="Short punchy summary displayed on public cards"
+                    style={{ background: '#f8fafc' }}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                    Full Business Narrative & Execution Model *
+                  </label>
+                  <textarea 
+                    rows={4}
+                    value={businessFormData.description} 
+                    onChange={(e) => setBusinessFormData(prev => ({ ...prev, description: e.target.value }))}
+                    className="form-input"
+                    placeholder="Detailed explanation of the business mechanics, fulfillment strategy, and target audience"
+                    style={{ background: '#f8fafc', lineHeight: '1.5' }}
+                    required
+                  />
+                </div>
               </div>
 
-              {saveNotice && (
-                <div style={{ padding: '10px 14px', borderRadius: '8px', background: '#ecfdf5', border: '1px solid #a7f3d0', color: '#065f46', fontSize: '0.8rem', fontWeight: '700', marginBottom: '16px' }}>
-                  ✓ {saveNotice}
-                </div>
-              )}
-
-              <form onSubmit={handleSaveFinancials}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '20px' }}>
-                  
+              {/* CARD 2: Capital Terms & Payout Structure */}
+              <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px', paddingBottom: '12px', borderBottom: '1px solid #f1f5f9' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <DollarSign size={18} color="#059669" />
+                  </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: '700', color: '#475569', marginBottom: '6px' }}>
+                    <h4 style={{ fontSize: '1.05rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
+                      2. Capital Requirements & Investor Terms
+                    </h4>
+                    <p style={{ fontSize: '0.76rem', color: '#64748b', margin: 0 }}>
+                      Fundraising limits, investor return commitments, payout cycles, and settlement UPI.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                      Target Capital Goal (₹) *
+                    </label>
+                    <input 
+                      type="number" 
+                      value={businessFormData.capitalRequested} 
+                      onChange={(e) => setBusinessFormData(prev => ({ ...prev, capitalRequested: e.target.value }))}
+                      className="form-input"
+                      placeholder="e.g. 15000"
+                      style={{ background: '#f8fafc', fontWeight: '800', color: '#0f172a' }}
+                      required
+                    />
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '3px', display: 'block' }}>
+                      Total capital requested from backers
+                    </span>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                      Minimum Ticket Size (₹) *
+                    </label>
+                    <input 
+                      type="number" 
+                      value={businessFormData.minInvestment} 
+                      onChange={(e) => setBusinessFormData(prev => ({ ...prev, minInvestment: e.target.value }))}
+                      className="form-input"
+                      placeholder="e.g. 500"
+                      style={{ background: '#f8fafc' }}
+                      required
+                    />
+                    <span style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '3px', display: 'block' }}>
+                      Default minimum: ₹500
+                    </span>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                      Target Net Term Yield / ROI *
+                    </label>
+                    <input 
+                      type="text" 
+                      value={businessFormData.expectedTermYield} 
+                      onChange={(e) => setBusinessFormData(prev => ({ ...prev, expectedTermYield: e.target.value }))}
+                      className="form-input"
+                      placeholder="e.g. 14.5% Net Term Yield"
+                      style={{ background: '#f8fafc' }}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                      Payout Timeline / Liquidity *
+                    </label>
+                    <input 
+                      type="text" 
+                      value={businessFormData.payoutTimeline} 
+                      onChange={(e) => setBusinessFormData(prev => ({ ...prev, payoutTimeline: e.target.value }))}
+                      className="form-input"
+                      placeholder="e.g. 6-Day Sprint Completion"
+                      style={{ background: '#f8fafc' }}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '4px' }}>
+                    Designated Settlement UPI ID (Strictly UPI Only)
+                  </label>
+                  <input 
+                    type="text" 
+                    value={businessFormData.upiId} 
+                    onChange={(e) => setBusinessFormData(prev => ({ ...prev, upiId: e.target.value }))}
+                    className="form-input"
+                    style={{ background: '#ffffff', fontWeight: '700', color: '#0f172a' }}
+                    required
+                  />
+                  <span style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                    All investor transfers must settle strictly to this VPA: <strong>8248651695-3@ybl</strong>
+                  </span>
+                </div>
+              </div>
+
+              {/* CARD 3: Unit Economics & Campaign Parameters */}
+              <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px', paddingBottom: '12px', borderBottom: '1px solid #f1f5f9' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <TrendingUp size={18} color="#d97706" />
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '1.05rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
+                      3. Operational Unit Economics & Sprint Controls
+                    </h4>
+                    <p style={{ fontSize: '0.76rem', color: '#64748b', margin: 0 }}>
+                      Calibrate marketing ad velocity, pricing formulas, and product volume goals.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '18px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
                       Daily Ad Budget (₹ / day)
                     </label>
                     <input 
                       type="number" 
-                      value={editAdBudget} 
-                      onChange={(e) => setEditAdBudget(e.target.value)}
+                      value={businessFormData.dailyAdBudget} 
+                      onChange={(e) => setBusinessFormData(prev => ({ ...prev, dailyAdBudget: e.target.value }))}
                       className="form-input"
                       style={{ background: '#f8fafc' }}
                       required
                     />
-                    <span style={{ fontSize: '0.68rem', color: '#64748b' }}>
-                      Total Ad Spend: ₹{(editAdBudget * editDuration).toLocaleString('en-IN')}
+                    <span style={{ fontSize: '0.68rem', color: '#64748b', marginTop: '3px', display: 'block' }}>
+                      Total Campaign Ad Spend: ₹{((parseFloat(businessFormData.dailyAdBudget) || 0) * (parseInt(businessFormData.campaignDurationDays, 10) || 0)).toLocaleString('en-IN')}
                     </span>
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: '700', color: '#475569', marginBottom: '6px' }}>
-                      Campaign Duration (Days)
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                      Sprint Duration (Days)
                     </label>
                     <input 
                       type="number" 
-                      value={editDuration} 
-                      onChange={(e) => setEditDuration(e.target.value)}
+                      value={businessFormData.campaignDurationDays} 
+                      onChange={(e) => setBusinessFormData(prev => ({ ...prev, campaignDurationDays: e.target.value }))}
                       className="form-input"
                       style={{ background: '#f8fafc' }}
                       required
                     />
-                    <span style={{ fontSize: '0.68rem', color: '#64748b' }}>
-                      Payout timeline: Day {editDuration} sprint close
+                    <span style={{ fontSize: '0.68rem', color: '#64748b', marginTop: '3px', display: 'block' }}>
+                      Capital lock-in & execution cycle
                     </span>
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.74rem', fontWeight: '700', color: '#475569', marginBottom: '6px' }}>
-                      Selling Price / Fee per Unit (₹)
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                      Unit Selling Price / Fee (₹)
                     </label>
                     <input 
                       type="number" 
-                      value={editSellingPrice} 
-                      onChange={(e) => setEditSellingPrice(e.target.value)}
+                      value={businessFormData.unitPrice} 
+                      onChange={(e) => setBusinessFormData(prev => ({ ...prev, unitPrice: e.target.value }))}
                       className="form-input"
                       style={{ background: '#f8fafc' }}
                       required
                     />
-                    <span style={{ fontSize: '0.68rem', color: '#64748b' }}>
-                      Customer price or platform commission fee
+                    <span style={{ fontSize: '0.68rem', color: '#64748b', marginTop: '3px', display: 'block' }}>
+                      Customer price or service fee per order
                     </span>
                   </div>
 
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                      Direct Cost Per Unit (₹)
+                    </label>
+                    <input 
+                      type="number" 
+                      value={businessFormData.directCost} 
+                      onChange={(e) => setBusinessFormData(prev => ({ ...prev, directCost: e.target.value }))}
+                      className="form-input"
+                      style={{ background: '#f8fafc' }}
+                    />
+                    <span style={{ fontSize: '0.68rem', color: '#64748b', marginTop: '3px', display: 'block' }}>
+                      COGS / Materials / Labor per unit
+                    </span>
+                  </div>
+
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '700', color: '#334155', marginBottom: '6px' }}>
+                      Target Volume (Units / Orders)
+                    </label>
+                    <input 
+                      type="number" 
+                      value={businessFormData.volumeTarget} 
+                      onChange={(e) => setBusinessFormData(prev => ({ ...prev, volumeTarget: e.target.value }))}
+                      className="form-input"
+                      style={{ background: '#f8fafc' }}
+                    />
+                    <span style={{ fontSize: '0.68rem', color: '#64748b', marginTop: '3px', display: 'block' }}>
+                      Total production or fulfillment target
+                    </span>
+                  </div>
+                </div>
+
+                {/* Economics Live Projection Card */}
+                {(() => {
+                  const vol = parseInt(businessFormData.volumeTarget, 10) || 0;
+                  const price = parseFloat(businessFormData.unitPrice) || 0;
+                  const cost = parseFloat(businessFormData.directCost) || 0;
+                  const ads = (parseFloat(businessFormData.dailyAdBudget) || 0) * (parseInt(businessFormData.campaignDurationDays, 10) || 0);
+                  const grossRevenue = vol * price;
+                  const totalCOGS = vol * cost;
+                  const estNetProfit = grossRevenue - totalCOGS - ads;
+
+                  return (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', background: '#f1f5f9', padding: '14px 18px', borderRadius: '12px' }}>
+                      <div>
+                        <span style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: '700', textTransform: 'uppercase' }}>Est. Gross Revenue</span>
+                        <div style={{ fontSize: '1rem', fontWeight: '800', color: '#0f172a' }}>₹{grossRevenue.toLocaleString('en-IN')}</div>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: '700', textTransform: 'uppercase' }}>Est. Direct COGS</span>
+                        <div style={{ fontSize: '1rem', fontWeight: '800', color: '#64748b' }}>₹{totalCOGS.toLocaleString('en-IN')}</div>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: '700', textTransform: 'uppercase' }}>Est. Ad Marketing</span>
+                        <div style={{ fontSize: '1rem', fontWeight: '800', color: '#d97706' }}>₹{ads.toLocaleString('en-IN')}</div>
+                      </div>
+                      <div>
+                        <span style={{ fontSize: '0.68rem', color: '#64748b', fontWeight: '700', textTransform: 'uppercase' }}>Est. Net Venture Profit</span>
+                        <div style={{ fontSize: '1rem', fontWeight: '800', color: estNetProfit >= 0 ? '#059669' : '#dc2626' }}>
+                          ₹{estNetProfit.toLocaleString('en-IN')}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* CARD 4: Itemized Budget Allocation (Expense Breakdown) */}
+              <div style={{ background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px', paddingBottom: '12px', borderBottom: '1px solid #f1f5f9' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f3e8ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Layers size={18} color="#9333ea" />
+                    </div>
+                    <div>
+                      <h4 style={{ fontSize: '1.05rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
+                        4. Itemized Operational Budget & Expense Allocations
+                      </h4>
+                      <p style={{ fontSize: '0.76rem', color: '#64748b', margin: 0 }}>
+                        Transparent fund allocation visible to verified investors on their dashboard.
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleAddExpenseItem}
+                    style={{
+                      background: '#f8fafc',
+                      border: '1px solid #cbd5e1',
+                      borderRadius: '8px',
+                      padding: '6px 12px',
+                      fontSize: '0.75rem',
+                      fontWeight: '700',
+                      color: '#0f172a',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <Plus size={14} />
+                    <span>Add Expense Item</span>
+                  </button>
+                </div>
+
+                {/* Expense Items List */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '16px' }}>
+                  {(businessFormData.expenseBreakdown || []).map((exp, idx) => (
+                    <div 
+                      key={idx} 
+                      style={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: 'minmax(200px, 2fr) minmax(150px, 1.5fr) minmax(120px, 1fr) 40px', 
+                        gap: '10px', 
+                        alignItems: 'center',
+                        background: '#f8fafc',
+                        padding: '10px 14px',
+                        borderRadius: '10px',
+                        border: '1px solid #e2e8f0'
+                      }}
+                    >
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: '700', color: '#64748b', marginBottom: '2px' }}>
+                          Item Name / Description
+                        </label>
+                        <input 
+                          type="text" 
+                          value={exp.item || ''} 
+                          onChange={(e) => handleExpenseChange(idx, 'item', e.target.value)}
+                          className="form-input"
+                          style={{ background: '#ffffff', padding: '6px 10px', fontSize: '0.8rem' }}
+                          placeholder="e.g. Blank T-shirts 60 units"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: '700', color: '#64748b', marginBottom: '2px' }}>
+                          Category
+                        </label>
+                        <input 
+                          type="text" 
+                          value={exp.category || ''} 
+                          onChange={(e) => handleExpenseChange(idx, 'category', e.target.value)}
+                          className="form-input"
+                          style={{ background: '#ffffff', padding: '6px 10px', fontSize: '0.8rem' }}
+                          placeholder="e.g. Sourcing / Marketing"
+                          required
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.68rem', fontWeight: '700', color: '#64748b', marginBottom: '2px' }}>
+                          Amount (₹)
+                        </label>
+                        <input 
+                          type="number" 
+                          value={exp.amount || 0} 
+                          onChange={(e) => handleExpenseChange(idx, 'amount', e.target.value)}
+                          className="form-input"
+                          style={{ background: '#ffffff', padding: '6px 10px', fontSize: '0.8rem', fontWeight: '700' }}
+                          required
+                        />
+                      </div>
+
+                      <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '16px' }}>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveExpenseItem(idx)}
+                          style={{
+                            background: '#fee2e2',
+                            border: 'none',
+                            color: '#b91c1c',
+                            width: '28px',
+                            height: '28px',
+                            borderRadius: '6px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer'
+                          }}
+                          title="Remove Item"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Expense Allocation Summary */}
+                {(() => {
+                  const totalAllocated = (businessFormData.expenseBreakdown || []).reduce((sum, it) => sum + (parseFloat(it.amount) || 0), 0);
+                  const goal = parseFloat(businessFormData.capitalRequested) || 0;
+                  const difference = goal - totalAllocated;
+
+                  return (
+                    <div style={{ 
+                      padding: '12px 18px', 
+                      borderRadius: '10px', 
+                      background: Math.abs(difference) < 1 ? '#ecfdf5' : '#fffbeb', 
+                      border: Math.abs(difference) < 1 ? '1px solid #a7f3d0' : '1px solid #fde68a',
+                      display: 'flex', 
+                      flexWrap: 'wrap', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center',
+                      gap: '12px'
+                    }}>
+                      <div>
+                        <span style={{ fontSize: '0.74rem', color: '#475569', fontWeight: '600' }}>
+                          Total Itemized Allocated: <strong>₹{totalAllocated.toLocaleString('en-IN')}</strong> / Target Goal: <strong>₹{goal.toLocaleString('en-IN')}</strong>
+                        </span>
+                      </div>
+                      <span style={{ 
+                        fontSize: '0.74rem', 
+                        fontWeight: '800', 
+                        color: Math.abs(difference) < 1 ? '#065f46' : '#b45309' 
+                      }}>
+                        {Math.abs(difference) < 1 ? '✓ Perfectly Balanced Budget' : `Variance: ₹${difference.toLocaleString('en-IN')}`}
+                      </span>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Master Save Button Bar */}
+              <div style={{ 
+                background: '#ffffff', 
+                borderRadius: '16px', 
+                border: '1px solid #e2e8f0', 
+                padding: '20px 24px', 
+                display: 'flex', 
+                flexWrap: 'wrap', 
+                alignItems: 'center', 
+                justifyContent: 'space-between', 
+                gap: '16px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.04)'
+              }}>
+                <div>
+                  <h5 style={{ fontSize: '0.95rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
+                    Deploy Business Updates Live
+                  </h5>
+                  <p style={{ fontSize: '0.75rem', color: '#64748b', margin: '2px 0 0 0' }}>
+                    Saves all updates to local state and instantly pushes to Supabase cloud tables.
+                  </p>
                 </div>
 
                 <button 
                   type="submit" 
                   className="btn btn-primary"
-                  style={{ fontWeight: '700', borderRadius: '8px' }}
+                  style={{ 
+                    padding: '12px 28px', 
+                    fontWeight: '800', 
+                    borderRadius: '10px', 
+                    fontSize: '0.92rem',
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '8px',
+                    boxShadow: '0 4px 12px rgba(217,119,6,0.25)'
+                  }}
                 >
-                  Save & Update Financial Blueprint
+                  <CheckCircle2 size={18} />
+                  <span>Save All Business Details & Sync Live</span>
                 </button>
-              </form>
+              </div>
 
-            </div>
+            </form>
 
           </div>
         )}
