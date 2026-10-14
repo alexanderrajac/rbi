@@ -427,6 +427,21 @@ export const BusinessProjectsDashboard = () => {
         totalCapitalRaised={portfolioAggregates.totalCapitalRaised} 
         totalInvestors={portfolioAggregates.totalInvestors} 
         investments={projectInvestments}
+        projects={businessProjects}
+        onInvest={(targetProj, amt) => {
+          const proj = targetProj || businessProjects[0];
+          setInvestingProject(proj);
+          if (amt) {
+            setInvestmentAmount(String(amt));
+          } else if (proj?.minInvestment) {
+            setInvestmentAmount(String(proj.minInvestment));
+          } else {
+            setInvestmentAmount('500');
+          }
+          setInvestmentNote(`Capital backing for ${proj?.name || 'Venture'}`);
+          setInvestorUtr('');
+          setScreenshotPreview('');
+        }}
       />
 
       {/* ========================================================================= */}
