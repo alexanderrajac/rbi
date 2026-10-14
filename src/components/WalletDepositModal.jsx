@@ -121,35 +121,24 @@ export const WalletDepositModal = () => {
               </div>
             </div>
 
-            <div style={{ marginBottom: '22px' }}>
-              <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '8px' }}>
-                Funding Channel:
-              </label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
-                <button
-                  type="button"
-                  onClick={() => setMethod('wire')}
-                  className={`btn btn-sm ${method === 'wire' ? 'btn-primary' : 'btn-secondary'}`}
-                  style={{ fontSize: '0.75rem', padding: '8px 4px' }}
-                >
-                  Bank Wire
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMethod('card')}
-                  className={`btn btn-sm ${method === 'card' ? 'btn-primary' : 'btn-secondary'}`}
-                  style={{ fontSize: '0.75rem', padding: '8px 4px' }}
-                >
-                  Card / NetBank
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMethod('upi')}
-                  className={`btn btn-sm ${method === 'upi' ? 'btn-primary' : 'btn-secondary'}`}
-                  style={{ fontSize: '0.75rem', padding: '8px 4px' }}
-                >
-                  Instant UPI
-                </button>
+            {/* Official Sovereign UPI Rail Only */}
+            <div style={{ marginBottom: '20px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '12px', padding: '14px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <span style={{ fontSize: '0.78rem', fontWeight: '700', color: '#92400e' }}>Official Escrow UPI ID:</span>
+                <span style={{ fontSize: '0.68rem', background: '#10b981', color: '#fff', padding: '2px 6px', borderRadius: '4px', fontWeight: '700' }}>Active Rail</span>
+              </div>
+              <div style={{ background: '#ffffff', border: '1px solid #fde68a', borderRadius: '8px', padding: '8px', textAlign: 'center', fontFamily: 'monospace', fontWeight: '800', color: '#0f172a', fontSize: '0.95rem' }}>
+                8248651695-3@ybl
+              </div>
+              <div style={{ textAlign: 'center', marginTop: '10px' }}>
+                <img 
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(`upi://pay?pa=8248651695-3@ybl&pn=RoyalBankOfInvestment&am=${depositAmount}&cu=INR`)}`}
+                  alt="UPI QR Code"
+                  style={{ width: '130px', height: '130px', margin: '0 auto', display: 'block', borderRadius: '8px', border: '1px solid #e2e8f0', background: '#fff' }}
+                />
+                <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '6px' }}>
+                  Scan & pay with GPay, PhonePe, Paytm or BHIM UPI
+                </div>
               </div>
             </div>
 

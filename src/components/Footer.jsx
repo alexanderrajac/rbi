@@ -41,7 +41,7 @@ export const Footer = () => {
             </span>
             <span style={{ color: '#cbd5e1' }}>•</span>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <strong style={{ color: '#0f172a' }}>HDFC</strong> Depository Escrow
+              <strong style={{ color: '#0f172a' }}>NPCI UPI</strong> Vault (8248651695-3@ybl)
             </span>
             <span style={{ color: '#cbd5e1' }}>•</span>
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>

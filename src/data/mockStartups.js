@@ -32,7 +32,7 @@ export const SETTLED_PAYOUT_HISTORY = [
     totalPayoutDistributed: 135600,
     investorsCount: 14,
     status: "SETTLED_100_PERCENT",
-    escrowBank: "HDFC Depository Escrow A/C #3108"
+    escrowBank: "NPCI Official UPI Vault (8248651695-3@ybl)"
   },
   {
     id: "SETTLE-879",
@@ -130,7 +130,7 @@ export const INITIAL_PROJECT_DEALS = [
     expectedSurplus: 110000,
     indicativeYield: "12.8% Term Yield",
     safetyScore: "99/100",
-    escrowPartner: "HDFC Bank Partner Escrow",
+    escrowPartner: "NPCI UPI Sovereign Escrow (8248651695-3@ybl)",
     riskScorecard: {
       customerConcentration: "Low (Multi-sponsor Global IT Corp)",
       documentation: "Verified Corporate PO Attached",

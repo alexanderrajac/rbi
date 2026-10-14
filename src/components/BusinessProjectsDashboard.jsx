@@ -4,6 +4,7 @@ import {
   calculateProjectFinancials, 
   parseNaturalLanguagePlan 
 } from '../data/businessProjectsData';
+import { LiveCandlestickTerminal } from './LiveCandlestickTerminal';
 import { 
   Building2, 
   TrendingUp, 
@@ -408,6 +409,14 @@ export const BusinessProjectsDashboard = () => {
           )}
         </div>
       </div>
+
+      {/* ========================================================================= */}
+      {/* 1.5. LIVE STOCK MARKET CANDLESTICK TERMINAL (Moving Real-time Engine) */}
+      {/* ========================================================================= */}
+      <LiveCandlestickTerminal 
+        totalCapitalRaised={portfolioAggregates.totalCapitalRaised} 
+        totalInvestors={portfolioAggregates.totalInvestors} 
+      />
 
       {/* ========================================================================= */}
       {/* 2. PROFIT RATIO & ₹500 RETURN BREAKDOWN CALCULATOR */}
