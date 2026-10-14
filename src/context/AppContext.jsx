@@ -28,8 +28,8 @@ import {
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  // Production Data Version Migration: clears old mock cache
-  const DATA_VERSION = 'rbi_v5_sprint_admin';
+  // Production Data Version Migration: purges mock caches for clean production launch
+  const DATA_VERSION = 'rbi_v7_production_live';
   if (typeof window !== 'undefined') {
     const currentVer = localStorage.getItem('rbi_data_version');
     if (currentVer !== DATA_VERSION) {
@@ -41,6 +41,12 @@ export const AppProvider = ({ children }) => {
       localStorage.removeItem('rbi_ledger');
       localStorage.removeItem('rbi_cart');
       localStorage.removeItem('rbi_project_deals');
+      localStorage.removeItem('rbi_contributions');
+      localStorage.removeItem('rbi_wallet');
+      localStorage.removeItem('rbi_admin_auth');
+      localStorage.removeItem('rbi_user');
+      localStorage.removeItem('rbi_pending_apps');
+      localStorage.removeItem('rbi_project_history');
       localStorage.setItem('rbi_data_version', DATA_VERSION);
     }
   }
@@ -179,7 +185,7 @@ export const AppProvider = ({ children }) => {
   // Wallet Balance (in INR by default)
   const [walletBalance, setWalletBalance] = useState(() => {
     const saved = localStorage.getItem('rbi_wallet');
-    return saved !== null ? parseFloat(saved) : 250000.00; // ₹2,50,000
+    return saved !== null ? parseFloat(saved) : 0.00;
   });
 
   // Equity Startups Database
@@ -235,7 +241,7 @@ export const AppProvider = ({ children }) => {
     const saved = localStorage.getItem('rbi_fund_campaign');
     return saved ? JSON.parse(saved) : {
       title: "Royal Growth & Project Capital Fund",
-      organizer: "Alexander Rajasingh",
+      organizer: "Royal Bank of Investment Escrow",
       targetAmount: 500000,
       description: "Direct community and investor fund collection for immediate working capital, project inventory, and expansion operations.",
       upiId: "8248651695-3@ybl",
@@ -247,60 +253,12 @@ export const AppProvider = ({ children }) => {
     };
   });
 
-  // Real-time Recorded Contributions Ledger
+  // Real-time Recorded Contributions Ledger - Production Fresh
   const [contributions, setContributions] = useState(() => {
     const saved = localStorage.getItem('rbi_contributions');
-    return saved ? JSON.parse(saved) : [
-      {
-        id: "TXN-89421",
-        contributorName: "Dr. Raman Krishnamurthy",
-        email: "raman.k@chennai-med.org",
-        phone: "+91 98401 22910",
-        amount: 50000,
-        paymentMethod: "UPI",
-        date: "Today, 11:30 AM",
-        timestamp: Date.now() - 3600000,
-        note: "Direct allocation for project procurement",
-        status: "COMPLETED"
-      },
-      {
-        id: "TXN-89310",
-        contributorName: "Priya Menon",
-        email: "priya.m@techpartners.com",
-        phone: "+91 97909 34182",
-        amount: 25000,
-        paymentMethod: "Bank Transfer",
-        date: "Today, 10:15 AM",
-        timestamp: Date.now() - 7200000,
-        note: "Backing for working capital expansion",
-        status: "COMPLETED"
-      },
-      {
-        id: "TXN-89204",
-        contributorName: "Vikramaditya Pillai",
-        email: "vikram@vp-holdings.in",
-        phone: "+91 94440 88219",
-        amount: 75000,
-        paymentMethod: "UPI",
-        date: "Yesterday, 04:45 PM",
-        timestamp: Date.now() - 86400000,
-        note: "Anchor syndicate contribution",
-        status: "COMPLETED"
-      },
-      {
-        id: "TXN-89115",
-        contributorName: "Ananya Sharma",
-        email: "ananya.s@gmail.com",
-        phone: "+91 98841 77312",
-        amount: 10000,
-        paymentMethod: "UPI",
-        date: "Yesterday, 02:20 PM",
-        timestamp: Date.now() - 95000000,
-        note: "Community contribution",
-        status: "COMPLETED"
-      }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
+
 
   // 4 Business Projects State
   const [businessProjects, setBusinessProjects] = useState(() => {
