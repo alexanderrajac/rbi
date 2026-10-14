@@ -690,7 +690,7 @@ export const AdminPortal = () => {
               4 Projects
             </div>
             <div style={{ fontSize: '0.74rem', color: '#64748b', marginTop: '4px' }}>
-              UnavuKadai • CarpenterBullet • Laptop Case • Bamboo Cup
+              UnavuKadai • CarpenterBullet • Wooden Laptop Case • Wooden Cup
             </div>
           </div>
 

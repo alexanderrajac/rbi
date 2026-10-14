@@ -29,7 +29,7 @@ const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   // Production Data Version Migration: purges mock caches for clean production launch with zero capital baseline
-  const DATA_VERSION = 'rbi_v8_zerocapital_upi_launch';
+  const DATA_VERSION = 'rbi_v9_ventures_unavukadai_woodencup';
   if (typeof window !== 'undefined') {
     const currentVer = localStorage.getItem('rbi_data_version');
     if (currentVer !== DATA_VERSION) {

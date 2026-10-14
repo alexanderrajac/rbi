@@ -1,13 +1,13 @@
 // Institutional Financial Database & Calculation Engine for Business Projects
-// 1. UnavuKadai Jasai (Food Delivery Marketing Launch)
+// 1. UnavuKadai (Food Delivery Marketing Launch)
 // 2. CarpenterBullet (Marketplace Lead Generation & Commission)
 // 3. Wooden Laptop Case (Product Manufacturing & Sales)
-// 4. Bamboo Cup (Eco-Friendly Manufacturing & Sales)
+// 4. Wooden Cup (Artisan Wooden Manufacturing & Sales)
 
 export const INITIAL_BUSINESS_PROJECTS = [
   {
     id: "proj-unavukadai",
-    name: "UnavuKadai Jasai",
+    name: "UnavuKadai",
     category: "Food Delivery & Cloud Kitchen",
     status: "Active", // Planning | Testing | Active | Completed
     description: "Launch marketing campaign and hyper-local food delivery order acquisition across Vadamadurai / Thudiyalur cluster.",
@@ -426,10 +426,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
 
   {
     id: "proj-bamboo-cup",
-    name: "Bamboo Cup",
-    category: "Eco-Friendly Product Manufacturing",
+    name: "Wooden Cup",
+    category: "Artisan Wooden Product Manufacturing",
     status: "Testing",
-    description: "Sustainably harvested organic bamboo drinking cups with food-safe natural oil sealant for eco-conscious retail.",
+    description: "Handcrafted artisan natural wooden drinking cups and tumblers turned from seasoned timber with food-safe plant wax sealant for eco-conscious retail.",
     campaignStartDate: "2026-10-20",
     campaignEndDate: "2026-11-20",
     campaignDurationDays: 30,
@@ -438,7 +438,7 @@ export const INITIAL_BUSINESS_PROJECTS = [
 
     // Complete Itemized Budget Allocation (All Costs, Not Just Ads)
     expenseBreakdown: [
-      { item: "Organic Bamboo Stalks Sourcing (100–150 units)", amount: 7500, category: "Raw Materials (₹50/cup)", verified: true, progress: "Stored in Dry Room" },
+      { item: "Seasoned Timber Logs Sourcing (100–150 units)", amount: 7500, category: "Raw Timber Materials (₹50/cup)", verified: true, progress: "Stored in Dry Room" },
       { item: "Artisan Wood-Lathe Turning & Labour", amount: 15000, category: "Craft Labour (₹100/cup)", verified: true, progress: "Artisans Contracted" },
       { item: "Food-Grade Plant Wax & Sandpaper Finishing", amount: 6000, category: "Finishing & Sealant (₹40/cup)", verified: true, progress: "Testing Certified" },
       { item: "Plastic-Free Kraft Packaging & Courier Surcharges", amount: 9000, category: "Packaging & Delivery (₹60/cup)", verified: true, progress: "Boxes Printed" },
@@ -559,7 +559,7 @@ export const INITIAL_BUSINESS_PROJECTS = [
 
     // Live Operational Activity Feed ("What We Are Doing Right Now")
     liveUpdates: [
-      { date: "Oct 13, 2026", time: "09:15 AM", note: "42 bamboo cups packed in plastic-free recycled corrugated sleeves with jute tags.", author: "Alexander (Craft Manager)" },
+      { date: "Oct 13, 2026", time: "09:15 AM", note: "42 wooden cups packed in plastic-free recycled corrugated sleeves with jute tags.", author: "Alexander (Craft Manager)" },
       { date: "Oct 11, 2026", time: "04:30 PM", note: "Food contact safety certificate received from SGS partner lab. 100% organic certification confirmed.", author: "Compliance Desk" }
     ],
 
@@ -621,7 +621,7 @@ export const calculateProjectFinancials = (project, customScenarioUnits = null) 
     projectedNetProfit = projectedGrossProfit - totalAdSpend - setupExpenses;
 
   } else {
-    // Product Manufacturing Model (Wooden Case, Bamboo Cup)
+    // Product Manufacturing Model (Wooden Laptop Case, Wooden Cup)
     const units = customScenarioUnits !== null ? customScenarioUnits : (Number(project.productionTarget) || 0);
     const sellingPrice = Number(project.proposedSellingPrice) || 0;
     const unitCost = Number(project.totalDirectCostPerUnit) || 0;

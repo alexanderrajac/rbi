@@ -67,7 +67,7 @@ export const LiveCandlestickTerminal = ({
     { 
       id: 'proj-unavukadai', 
       ticker: 'UNAVU-EQ', 
-      name: 'UnavuKadai Jasai', 
+      name: 'UnavuKadai', 
       exchange: 'RBI:FOOD-TECH', 
       target: 4000, 
       minTicket: 500, 
@@ -96,9 +96,9 @@ export const LiveCandlestickTerminal = ({
     },
     { 
       id: 'proj-bamboo-cup', 
-      ticker: 'BAMBOO-EQ', 
-      name: 'Bamboo Cup', 
-      exchange: 'RBI:ECO-MFG', 
+      ticker: 'WCUP-EQ', 
+      name: 'Wooden Cup', 
+      exchange: 'RBI:WOOD-CRAFT', 
       target: 46000, 
       minTicket: 500, 
       estYield: '16.0% Net Term Yield',
