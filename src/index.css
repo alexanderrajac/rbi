@@ -871,3 +871,93 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #30363D;
 }
+
+/* =========================================================================
+   MULTI-PAGE LAYOUT & MOBILE BOTTOM NAVIGATION BAR
+   ========================================================================= */
+
+.page-header-trading {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.page-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  color: #8B949E;
+  margin-bottom: 8px;
+}
+
+.page-breadcrumb button {
+  background: none;
+  border: none;
+  color: #38BDF8;
+  cursor: pointer;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.page-breadcrumb button:hover {
+  text-decoration: underline;
+}
+
+/* Mobile Bottom Navigation Bar (Fixed 1-Tap Switching) */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: rgba(11, 14, 20, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 4px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
+  }
+
+  .mobile-bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    color: #8B949E;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex: 1;
+    max-width: 72px;
+  }
+
+  .mobile-bottom-nav-item.active {
+    color: #00F59B;
+  }
+
+  .mobile-bottom-nav-item.active svg {
+    filter: drop-shadow(0 0 6px rgba(0, 245, 155, 0.6));
+  }
+
+  /* Add padding to page container so bottom nav does not overlap content */
+  .container {
+    padding-bottom: 74px !important;
+  }
+}

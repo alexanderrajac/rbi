@@ -90,48 +90,42 @@ export const Footer = () => {
 
           {/* Quick Rails */}
           <div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '0.90rem', marginBottom: '14px', fontWeight: '800' }}>Platform Navigation</h4>
+            <h4 style={{ color: '#F0F6FC', fontSize: '0.90rem', marginBottom: '14px', fontWeight: '800' }}>Platform Pages</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <li>
-                <button onClick={() => {
-                  setActiveTab('projects');
-                  const el = document.getElementById('projects-grid');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#8B949E', justifyContent: 'flex-start' }}>
-                  Active Business Projects
+                <button onClick={() => setActiveTab('ventures')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#8B949E', justifyContent: 'flex-start' }}>
+                  4 Active Business Ventures
                 </button>
               </li>
               <li>
-                <button onClick={() => {
-                  setActiveTab('projects');
-                  const el = document.getElementById('how-it-works-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#8B949E', justifyContent: 'flex-start' }}>
-                  How It Works
+                <button onClick={() => setActiveTab('terminal')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#8B949E', justifyContent: 'flex-start' }}>
+                  Live Candlestick Terminal
                 </button>
               </li>
               <li>
-                <button onClick={() => {
-                  setActiveTab('projects');
-                  const el = document.getElementById('investor-protection-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#8B949E', justifyContent: 'flex-start' }}>
-                  Escrow & Investor Protection
+                <button onClick={() => setActiveTab('calculator')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#8B949E', justifyContent: 'flex-start' }}>
+                  Return & Profit Calculator
                 </button>
               </li>
               <li>
-                <button onClick={() => {
-                  setActiveTab('projects');
-                  const el = document.getElementById('my-investments-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#8B949E', justifyContent: 'flex-start' }}>
-                  My Investments & Certificates
+                <button onClick={() => setActiveTab('how-it-works')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#8B949E', justifyContent: 'flex-start' }}>
+                  Execution Workflow & Guide
+                </button>
+              </li>
+              <li>
+                <button onClick={() => setActiveTab('escrow')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#8B949E', justifyContent: 'flex-start' }}>
+                  Escrow Vault & Protection Charter
+                </button>
+              </li>
+              <li>
+                <button onClick={() => setActiveTab('portfolio')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#8B949E', justifyContent: 'flex-start' }}>
+                  My Portfolio & Digital Certificates
                 </button>
               </li>
               {isAdminLoggedIn && (
                 <li>
                   <button onClick={() => setActiveTab('admin')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#F59E0B', fontWeight: '700', justifyContent: 'flex-start' }}>
-                    Admin Portal
+                    Sovereign Admin Portal
                   </button>
                 </li>
               )}

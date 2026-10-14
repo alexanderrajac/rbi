@@ -49,8 +49,39 @@ export const AppProvider = ({ children }) => {
     }
   }
 
-  // Current active view: 'projects' | 'collect' | 'marketplace' | 'portfolio' | 'raise' | 'ai-oracle' | 'admin'
-  const [activeTab, setActiveTab] = useState('projects');
+  // Multi-Page Routes: 'ventures' | 'terminal' | 'calculator' | 'how-it-works' | 'escrow' | 'portfolio' | 'admin'
+  const VALID_PAGES = ['ventures', 'terminal', 'calculator', 'how-it-works', 'escrow', 'portfolio', 'admin'];
+
+  const getPageFromHash = () => {
+    if (typeof window === 'undefined') return 'ventures';
+    const raw = window.location.hash.replace(/^#\/?/, '').trim().toLowerCase();
+    if (raw === 'projects') return 'ventures';
+    if (VALID_PAGES.includes(raw)) return raw;
+    return 'ventures';
+  };
+
+  const [activeTab, setActiveTabState] = useState(getPageFromHash);
+
+  const setActiveTab = (tab) => {
+    const target = tab === 'projects' ? 'ventures' : tab;
+    setActiveTabState(target);
+    if (typeof window !== 'undefined') {
+      if (window.location.hash !== `#/${target}`) {
+        window.location.hash = `#/${target}`;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Sync state when user uses browser Back / Forward buttons
+  useEffect(() => {
+    const handleHash = () => {
+      const page = getPageFromHash();
+      setActiveTabState(page);
+    };
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   // Role: 'investor' | 'founder' | 'admin'
   const [currentRole, setCurrentRole] = useState('investor');

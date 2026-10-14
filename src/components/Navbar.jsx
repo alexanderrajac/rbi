@@ -21,7 +21,8 @@ import {
   Zap,
   HeartHandshake,
   LogOut,
-  User
+  User,
+  Calculator
 } from 'lucide-react';
 
 export const Navbar = () => {
@@ -109,62 +110,70 @@ export const Navbar = () => {
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav style={{ display: 'flex', alignItems: 'center', gap: '8px' }} className="nav-desktop desktop-only">
+          <nav style={{ display: 'flex', alignItems: 'center', gap: '6px' }} className="nav-desktop desktop-only">
             <button 
-              onClick={() => setActiveTab('projects')}
-              className={`btn btn-sm ${activeTab === 'projects' ? 'btn-primary' : 'btn-ghost'}`}
-              style={{ borderRadius: '10px', fontWeight: '700' }}
+              onClick={() => setActiveTab('ventures')}
+              className={`btn btn-sm ${(activeTab === 'ventures' || activeTab === 'projects') ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ borderRadius: '8px', fontWeight: '700' }}
             >
-              <Building2 size={16} />
-              <span>Business Projects</span>
+              <Building2 size={15} />
+              <span>Ventures</span>
               <span className="badge badge-emerald" style={{ fontSize: '0.62rem', padding: '1px 6px', marginLeft: '3px' }}>
-                4 Open
+                4 Deals
               </span>
             </button>
 
             <button 
-              onClick={() => {
-                setActiveTab('projects');
-                setTimeout(() => {
-                  const el = document.getElementById('how-it-works-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 50);
-              }}
-              className="btn btn-sm btn-ghost"
-              style={{ borderRadius: '10px' }}
+              onClick={() => setActiveTab('terminal')}
+              className={`btn btn-sm ${activeTab === 'terminal' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ borderRadius: '8px', fontWeight: '700' }}
             >
-              <Sparkles size={16} />
+              <BarChart3 size={15} />
+              <span>Live Terminal</span>
+              <span className="badge badge-cyan" style={{ fontSize: '0.60rem', padding: '1px 5px', marginLeft: '2px' }}>
+                Live
+              </span>
+            </button>
+
+            <button 
+              onClick={() => setActiveTab('calculator')}
+              className={`btn btn-sm ${activeTab === 'calculator' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ borderRadius: '8px', fontWeight: '700' }}
+            >
+              <Calculator size={15} />
+              <span>Calculator</span>
+            </button>
+
+            <button 
+              onClick={() => setActiveTab('how-it-works')}
+              className={`btn btn-sm ${activeTab === 'how-it-works' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ borderRadius: '8px', fontWeight: '700' }}
+            >
+              <Sparkles size={15} />
               <span>How It Works</span>
             </button>
 
             <button 
-              onClick={() => {
-                setActiveTab('projects');
-                setTimeout(() => {
-                  const el = document.getElementById('investor-protection-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 50);
-              }}
-              className="btn btn-sm btn-ghost"
-              style={{ borderRadius: '10px' }}
+              onClick={() => setActiveTab('escrow')}
+              className={`btn btn-sm ${activeTab === 'escrow' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ borderRadius: '8px', fontWeight: '700' }}
             >
-              <ShieldCheck size={16} />
+              <ShieldCheck size={15} />
               <span>Escrow & Safety</span>
             </button>
 
             <button 
-              onClick={() => {
-                setActiveTab('projects');
-                setTimeout(() => {
-                  const el = document.getElementById('my-investments-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 50);
-              }}
-              className="btn btn-sm btn-ghost"
-              style={{ borderRadius: '10px' }}
+              onClick={() => setActiveTab('portfolio')}
+              className={`btn btn-sm ${activeTab === 'portfolio' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ borderRadius: '8px', fontWeight: '700' }}
             >
-              <Layers size={16} />
-              <span>My Investments</span>
+              <Layers size={15} />
+              <span>My Portfolio</span>
+              {projectInvestments && projectInvestments.length > 0 && (
+                <span className="badge badge-gold" style={{ fontSize: '0.62rem', padding: '1px 5px', marginLeft: '3px' }}>
+                  {projectInvestments.length}
+                </span>
+              )}
             </button>
 
             {/* Sovereign Admin Desk Nav Link - Strictly for verified rajacofficial369@gmail.com */}
@@ -173,23 +182,20 @@ export const Navbar = () => {
                 onClick={() => setActiveTab('admin')}
                 className={`btn btn-sm ${activeTab === 'admin' ? 'btn-primary' : 'btn-ghost'}`}
                 style={{ 
-                  borderRadius: '10px', 
+                  borderRadius: '8px', 
                   fontWeight: '700', 
                   gap: '6px',
-                  border: activeTab === 'admin' ? 'none' : '1px solid #e2e8f0',
-                  background: activeTab === 'admin' ? undefined : '#fef3c7'
+                  border: activeTab === 'admin' ? 'none' : '1px solid rgba(245, 158, 11, 0.4)',
+                  background: activeTab === 'admin' ? '#F59E0B' : 'rgba(245, 158, 11, 0.15)',
+                  color: activeTab === 'admin' ? '#0B0E14' : '#F59E0B'
                 }}
                 title="Sovereign Admin Management Desk (rajacofficial369@gmail.com)"
               >
-                <ShieldCheck size={16} color={activeTab === 'admin' ? '#000' : '#d97706'} />
+                <ShieldCheck size={15} />
                 <span>Admin Desk</span>
-                {pendingApprovalsCount > 0 ? (
-                  <span style={{ background: '#f59e0b', color: '#000', borderRadius: '12px', padding: '1px 7px', fontSize: '0.62rem', fontWeight: '800' }}>
+                {pendingApprovalsCount > 0 && (
+                  <span style={{ background: '#FF3366', color: '#FFF', borderRadius: '12px', padding: '1px 6px', fontSize: '0.62rem', fontWeight: '800' }}>
                     {pendingApprovalsCount}
-                  </span>
-                ) : (
-                  <span className="badge badge-gold" style={{ fontSize: '0.6rem', padding: '1px 5px' }}>
-                    Active
                   </span>
                 )}
               </button>
@@ -331,87 +337,84 @@ export const Navbar = () => {
           <div 
             className="mobile-only"
             style={{ 
+              display: 'flex',
               flexDirection: 'column', 
-              gap: '8px', 
+              gap: '6px', 
               paddingTop: '12px', 
               marginTop: '12px', 
-              borderTop: '1px solid #e2e8f0' 
+              borderTop: '1px solid rgba(255, 255, 255, 0.1)' 
             }}
           >
             <button 
               onClick={() => {
-                setActiveTab('projects');
+                setActiveTab('ventures');
                 setMobileMenuOpen(false);
               }}
-              className={`btn btn-sm ${activeTab === 'projects' ? 'btn-primary' : 'btn-ghost'}`}
+              className={`btn btn-sm ${(activeTab === 'ventures' || activeTab === 'projects') ? 'btn-primary' : 'btn-ghost'}`}
               style={{ justifyContent: 'flex-start', borderRadius: '8px', fontWeight: '700' }}
             >
               <Building2 size={16} />
-              <span>4 Open Business Projects</span>
+              <span>4 Open Business Ventures</span>
             </button>
 
             <button 
               onClick={() => {
-                setActiveTab('projects');
+                setActiveTab('terminal');
                 setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const el = document.getElementById('candlestick-terminal-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
               }}
-              className="btn btn-sm btn-ghost"
-              style={{ justifyContent: 'flex-start', borderRadius: '8px' }}
+              className={`btn btn-sm ${activeTab === 'terminal' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ justifyContent: 'flex-start', borderRadius: '8px', fontWeight: '700' }}
             >
               <BarChart3 size={16} />
-              <span>Live Stock Candlestick Terminal</span>
+              <span>Live Candlestick Trading Terminal</span>
             </button>
 
             <button 
               onClick={() => {
-                setActiveTab('projects');
+                setActiveTab('calculator');
                 setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const el = document.getElementById('my-investments-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
               }}
-              className="btn btn-sm btn-ghost"
-              style={{ justifyContent: 'flex-start', borderRadius: '8px' }}
+              className={`btn btn-sm ${activeTab === 'calculator' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ justifyContent: 'flex-start', borderRadius: '8px', fontWeight: '700' }}
             >
-              <Layers size={16} />
-              <span>My Investments</span>
+              <Calculator size={16} />
+              <span>Profit Ratio & Return Calculator</span>
             </button>
 
             <button 
               onClick={() => {
-                setActiveTab('projects');
+                setActiveTab('how-it-works');
                 setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const el = document.getElementById('how-it-works-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
               }}
-              className="btn btn-sm btn-ghost"
-              style={{ justifyContent: 'flex-start', borderRadius: '8px' }}
+              className={`btn btn-sm ${activeTab === 'how-it-works' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ justifyContent: 'flex-start', borderRadius: '8px', fontWeight: '700' }}
             >
               <Sparkles size={16} />
-              <span>How It Works & Unit Economics</span>
+              <span>Execution Workflow & Guide</span>
             </button>
 
             <button 
               onClick={() => {
-                setActiveTab('projects');
+                setActiveTab('escrow');
                 setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const el = document.getElementById('investor-protection-section');
-                  if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 100);
               }}
-              className="btn btn-sm btn-ghost"
-              style={{ justifyContent: 'flex-start', borderRadius: '8px' }}
+              className={`btn btn-sm ${activeTab === 'escrow' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ justifyContent: 'flex-start', borderRadius: '8px', fontWeight: '700' }}
             >
               <ShieldCheck size={16} />
-              <span>Escrow & Safety (8248651695-3@ybl)</span>
+              <span>Escrow Vault & Safety (8248651695-3@ybl)</span>
+            </button>
+
+            <button 
+              onClick={() => {
+                setActiveTab('portfolio');
+                setMobileMenuOpen(false);
+              }}
+              className={`btn btn-sm ${activeTab === 'portfolio' ? 'btn-primary' : 'btn-ghost'}`}
+              style={{ justifyContent: 'flex-start', borderRadius: '8px', fontWeight: '700' }}
+            >
+              <Layers size={16} />
+              <span>My Portfolio & Certificates</span>
             </button>
 
             {/* Sovereign Admin Link (Only for verified admin) */}
@@ -422,13 +425,18 @@ export const Navbar = () => {
                   setMobileMenuOpen(false);
                 }}
                 className={`btn btn-sm ${activeTab === 'admin' ? 'btn-primary' : 'btn-ghost'}`}
-                style={{ justifyContent: 'flex-start', borderRadius: '8px', fontWeight: '700' }}
+                style={{ 
+                  justifyContent: 'flex-start', 
+                  borderRadius: '8px', 
+                  fontWeight: '700', 
+                  gap: '6px',
+                  background: activeTab === 'admin' ? '#F59E0B' : 'rgba(245, 158, 11, 0.15)',
+                  color: activeTab === 'admin' ? '#0B0E14' : '#F59E0B',
+                  border: '1px solid rgba(245, 158, 11, 0.4)'
+                }}
               >
-                <Lock size={16} />
-                <span>Admin Management Desk</span>
-                <span className="badge badge-gold" style={{ fontSize: '0.62rem', marginLeft: 'auto' }}>
-                  Admin Active
-                </span>
+                <ShieldCheck size={16} />
+                <span>Sovereign Admin Management Desk</span>
               </button>
             )}
 
@@ -447,79 +455,46 @@ export const Navbar = () => {
         )}
       </div>
 
-      {/* ========================================================================= */}
-      {/* NATIVE MOBILE BOTTOM APP BAR (Robinhood / Zerodha / Binance App Style)    */}
-      {/* ========================================================================= */}
-      <nav className="mobile-bottom-nav" aria-label="Mobile Bottom Navigation">
+      {/* Multi-Page Mobile Bottom Navigation Bar (Robinhood/TradingView 1-Tap Switching) */}
+      <nav className="mobile-bottom-nav">
         <button 
-          onClick={() => {
-            setActiveTab('projects');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          className={`mobile-nav-item ${activeTab === 'projects' ? 'active' : ''}`}
+          onClick={() => setActiveTab('ventures')}
+          className={`mobile-bottom-nav-item ${(activeTab === 'ventures' || activeTab === 'projects') ? 'active' : ''}`}
         >
-          <Building2 size={20} />
+          <Building2 size={18} />
           <span>Ventures</span>
         </button>
 
         <button 
-          onClick={() => {
-            setActiveTab('projects');
-            setTimeout(() => {
-              const el = document.getElementById('candlestick-terminal-section');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }, 60);
-          }}
-          className="mobile-nav-item"
+          onClick={() => setActiveTab('terminal')}
+          className={`mobile-bottom-nav-item ${activeTab === 'terminal' ? 'active' : ''}`}
         >
-          <BarChart3 size={20} />
+          <BarChart3 size={18} />
           <span>Terminal</span>
         </button>
 
         <button 
-          onClick={() => {
-            setActiveTab('projects');
-            setTimeout(() => {
-              const el = document.getElementById('my-investments-section');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-            }, 60);
-          }}
-          className="mobile-nav-item"
+          onClick={() => setActiveTab('calculator')}
+          className={`mobile-bottom-nav-item ${activeTab === 'calculator' ? 'active' : ''}`}
         >
-          <Layers size={20} />
-          <span>Holdings</span>
+          <Calculator size={18} />
+          <span>Calculator</span>
         </button>
 
-        {isAdminLoggedIn ? (
-          <button 
-            onClick={() => setActiveTab('admin')}
-            className={`mobile-nav-item ${activeTab === 'admin' ? 'active' : ''}`}
-          >
-            <ShieldCheck size={20} />
-            <span>Admin</span>
-          </button>
-        ) : (
-          <button 
-            onClick={() => {
-              setActiveTab('projects');
-              setTimeout(() => {
-                const el = document.getElementById('how-it-works-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }, 60);
-            }}
-            className="mobile-nav-item"
-          >
-            <Sparkles size={20} />
-            <span>How It Works</span>
-          </button>
-        )}
+        <button 
+          onClick={() => setActiveTab('escrow')}
+          className={`mobile-bottom-nav-item ${activeTab === 'escrow' ? 'active' : ''}`}
+        >
+          <ShieldCheck size={18} />
+          <span>Escrow</span>
+        </button>
 
         <button 
-          onClick={() => setIsKYCModalOpen(true)}
-          className="mobile-nav-item"
+          onClick={() => setActiveTab('portfolio')}
+          className={`mobile-bottom-nav-item ${activeTab === 'portfolio' ? 'active' : ''}`}
         >
-          <User size={20} />
-          <span>{user.kycStatus === 'verified' ? 'Verified' : 'Account'}</span>
+          <Layers size={18} />
+          <span>Portfolio</span>
         </button>
       </nav>
     </header>

@@ -7,6 +7,11 @@ import {
   parseNaturalLanguagePlan 
 } from '../data/businessProjectsData';
 import { LiveCandlestickTerminal } from './LiveCandlestickTerminal';
+import { TerminalPage } from './pages/TerminalPage';
+import { CalculatorPage } from './pages/CalculatorPage';
+import { HowItWorksPage } from './pages/HowItWorksPage';
+import { EscrowPage } from './pages/EscrowPage';
+import { PortfolioPage } from './pages/PortfolioPage';
 import { 
   Building2, 
   TrendingUp, 
@@ -64,8 +69,12 @@ export const BusinessProjectsDashboard = () => {
     formatMoney, 
     currency,
     user,
-    isAdminLoggedIn
+    isAdminLoggedIn,
+    activeTab,
+    setActiveTab
   } = useApp();
+
+  const currentRoute = (activeTab === 'projects' || !activeTab) ? 'ventures' : activeTab;
 
   // Active Filter & Search
   const [selectedCategory, setSelectedCategory] = useState('ALL');
@@ -359,198 +368,84 @@ export const BusinessProjectsDashboard = () => {
     <div className="container" style={{ padding: '28px 16px', maxWidth: '1280px', margin: '0 auto' }}>
       
       {/* ========================================================================= */}
-      {/* 1. INSTITUTIONAL TRADING DESK HERO TELEMETRY (DARK OBSIDIAN THEME) */}
+      {/* PAGE 1: 4 BUSINESS VENTURES SYNDICATE DESK ('ventures' or 'projects')    */}
       {/* ========================================================================= */}
-      <motion.div 
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="hero-box-mobile trading-panel-card"
-        style={{
-          padding: '28px 24px',
-          marginBottom: '24px',
-          boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.6)'
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
-          <div style={{ maxWidth: '860px', width: '100%' }}>
-            
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 245, 155, 0.08)', border: '1px solid rgba(0, 245, 155, 0.3)', borderRadius: '20px', padding: '4px 12px', marginBottom: '14px', maxWidth: '100%' }}>
-              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00F59B', boxShadow: '0 0 8px #00F59B', flexShrink: 0 }}></span>
-              <span className="font-mono-numbers" style={{ fontSize: '0.72rem', fontWeight: '700', color: '#00F59B', letterSpacing: '0.04em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                RBI SOVEREIGN TRADING DESK • ESCROW RING-FENCED • ZERO DEFAULT
-              </span>
-            </div>
-
-            <h1 className="hero-heading-mobile" style={{ fontSize: '2.1rem', fontWeight: '900', color: '#F0F6FC', margin: '0 0 10px 0', letterSpacing: '-0.03em', lineHeight: '1.2' }}>
-              Invest in Real-World Business Ventures
-            </h1>
-            <p style={{ color: '#8B949E', fontSize: '0.94rem', margin: '0 0 20px 0', lineHeight: '1.6' }}>
-              Direct capital allocation into 4 verified businesses across <strong style={{ color: '#E6EDF3' }}>Food Delivery & Cloud Kitchen</strong>, <strong style={{ color: '#E6EDF3' }}>Carpentry Service Marketplaces</strong>, and <strong style={{ color: '#E6EDF3' }}>Sustainable Eco-Friendly Manufacturing</strong>. Every rupee spent is audited, milestones trigger escrow disbursement, and investors receive direct sprint return settlements.
-            </p>
-
-            {/* High-Density Key Trading Telemetry Numbers */}
-            <div className="responsive-stat-grid">
-              <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Active Businesses</div>
-                <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#F0F6FC', marginTop: '2px' }}>4 Open Deals</div>
-              </div>
-              <div className="card-pulse-bullish" style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(0, 245, 155, 0.4)' }}>
-                <div style={{ fontSize: '0.70rem', color: '#00F59B', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Total Capital Raised</div>
-                <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#00F59B', marginTop: '2px' }}>₹{animatedRaised.toLocaleString('en-IN')}</div>
-              </div>
-              <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Target Capital Goal</div>
-                <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#F59E0B', marginTop: '2px' }}>₹{animatedTarget.toLocaleString('en-IN')}</div>
-              </div>
-              <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Verified Backers</div>
-                <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#38BDF8', marginTop: '2px' }}>{animatedInvestors} Investors</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Admin Approval Quick Gate - STRICTLY SOVEREIGN ADMIN */}
-          {isAdminLoggedIn && (
-            <div style={{ background: '#161B22', border: '1px solid rgba(245, 158, 11, 0.35)', borderRadius: '14px', padding: '18px', minWidth: '240px' }}>
-              <div style={{ fontSize: '0.72rem', fontWeight: '800', color: '#F59E0B', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>
-                Admin Verification Desk
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                <span className="badge font-mono-numbers" style={{ fontSize: '0.78rem', padding: '4px 10px', background: pendingInvestments.length > 0 ? 'rgba(245, 158, 11, 0.15)' : 'rgba(0, 245, 155, 0.15)', color: pendingInvestments.length > 0 ? '#F59E0B' : '#00F59B', border: '1px solid currentColor' }}>
-                  {pendingInvestments.length} Pending Approval
-                </span>
-              </div>
-              <button
-                onClick={() => setIsAdminApprovalModalOpen(true)}
-                className="btn btn-sm"
-                style={{ width: '100%', borderRadius: '8px', fontWeight: '700', gap: '6px', background: '#F59E0B', color: '#0B0E14' }}
-              >
-                <UserCheck size={15} />
-                <span>Review Submissions</span>
-              </button>
-            </div>
-          )}
-        </div>
-      </motion.div>
-
-      {/* ========================================================================= */}
-      {/* 1.5. LIVE STOCK MARKET CANDLESTICK TERMINAL (Moving Real-time Engine) */}
-      {/* ========================================================================= */}
-      <LiveCandlestickTerminal 
-        totalCapitalRaised={portfolioAggregates.totalCapitalRaised} 
-        totalInvestors={portfolioAggregates.totalInvestors} 
-        investments={projectInvestments}
-        projects={businessProjects}
-        onInvest={(targetProj, amt) => {
-          const proj = targetProj || businessProjects[0];
-          setInvestingProject(proj);
-          if (amt) {
-            setInvestmentAmount(String(amt));
-          } else if (proj?.minInvestment) {
-            setInvestmentAmount(String(proj.minInvestment));
-          } else {
-            setInvestmentAmount('500');
-          }
-          setInvestmentNote(`Capital backing for ${proj?.name || 'Venture'}`);
-          setInvestorUtr('');
-          setScreenshotPreview('');
-        }}
-      />
-
-      {/* ========================================================================= */}
-      {/* 2. PROFIT RATIO & ₹500 RETURN BREAKDOWN CALCULATOR */}
-      {/* ========================================================================= */}
-      {/* ========================================================================= */}
-      {/* 2. PROFIT RATIO & ₹500 RETURN BREAKDOWN CALCULATOR (TRADING DESK SIMULATOR) */}
-      {/* ========================================================================= */}
-      <div 
-        className="trading-panel-card"
-        style={{
-          padding: '22px 24px',
-          marginBottom: '26px',
-          background: '#0D1117'
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Calculator size={18} className="text-emerald-400" />
-              <h3 style={{ fontSize: '1.20rem', fontWeight: '800', color: '#F0F6FC', margin: 0 }}>
-                Transparent Profit Ratio & Return Calculator
-              </h3>
-            </div>
-            <p style={{ color: '#8B949E', fontSize: '0.84rem', margin: '4px 0 0 0' }}>
-              Simulate exact net returns and sprint payout for backing any deal with <strong className="font-mono-numbers" style={{ color: '#00F59B' }}>₹{calcAmount || '500'}</strong>:
-            </p>
-          </div>
-
-          {/* Quick Amount Inputs */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '0.78rem', color: '#8B949E', fontWeight: '600' }}>Order Size:</span>
-            {[500, 1000, 2500, 5000].map(amt => (
-              <button
-                key={amt}
-                onClick={() => setCalcAmount(amt.toString())}
-                className="font-mono-numbers"
-                style={{
-                  padding: '5px 12px',
-                  borderRadius: '8px',
-                  fontSize: '0.78rem',
-                  fontWeight: '700',
-                  border: calcAmount === amt.toString() ? '1px solid #00F59B' : '1px solid rgba(255, 255, 255, 0.1)',
-                  background: calcAmount === amt.toString() ? 'rgba(0, 245, 155, 0.15)' : '#161B22',
-                  color: calcAmount === amt.toString() ? '#00F59B' : '#C9D1D9',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                ₹{amt}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 4 Projects Return Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
-          {businessProjects.map(proj => {
-            const ret = calculateInvestmentReturn(proj, calcAmount);
-            return (
-              <div 
-                key={proj.id}
-                style={{
-                  background: '#161B22',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '12px',
-                  padding: '14px 16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px'
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <strong style={{ fontSize: '0.88rem', color: '#F0F6FC' }}>{proj.name}</strong>
-                  <span className="badge font-mono-numbers" style={{ fontSize: '0.66rem', background: 'rgba(0, 245, 155, 0.12)', color: '#00F59B', border: '1px solid rgba(0, 245, 155, 0.25)' }}>
-                    +{ret.yieldPercent}
-                  </span>
-                </div>
+      {currentRoute === 'ventures' && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: 'easeOut' }}
+        >
+          {/* 1. INSTITUTIONAL TRADING DESK HERO TELEMETRY (DARK OBSIDIAN THEME) */}
+          <div 
+            className="hero-box-mobile trading-panel-card"
+            style={{
+              padding: '28px 24px',
+              marginBottom: '24px',
+              boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.6)'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
+              <div style={{ maxWidth: '860px', width: '100%' }}>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', paddingTop: '4px', borderTop: '1px dashed rgba(255, 255, 255, 0.1)' }}>
-                  <span style={{ fontSize: '0.74rem', color: '#8B949E' }}>If backed with ₹{calcAmount}:</span>
-                  <span className="font-mono-numbers" style={{ fontSize: '1.15rem', fontWeight: '800', color: '#00F59B' }}>
-                    ₹{ret.totalReturn}
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 245, 155, 0.08)', border: '1px solid rgba(0, 245, 155, 0.3)', borderRadius: '20px', padding: '4px 12px', marginBottom: '14px', maxWidth: '100%' }}>
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00F59B', boxShadow: '0 0 8px #00F59B', flexShrink: 0 }}></span>
+                  <span className="font-mono-numbers" style={{ fontSize: '0.72rem', fontWeight: '700', color: '#00F59B', letterSpacing: '0.04em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    RBI SOVEREIGN TRADING DESK • ESCROW RING-FENCED • ZERO DEFAULT
                   </span>
                 </div>
 
-                <div className="font-mono-numbers" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#8B949E' }}>
-                  <span>Net Profit: <strong style={{ color: '#F59E0B' }}>+₹{ret.profit}</strong></span>
-                  <span>Timeline: <strong style={{ color: '#C9D1D9' }}>{ret.days}</strong></span>
+                <h1 className="hero-heading-mobile" style={{ fontSize: '2.1rem', fontWeight: '900', color: '#F0F6FC', margin: '0 0 10px 0', letterSpacing: '-0.03em', lineHeight: '1.2' }}>
+                  Invest in Real-World Business Ventures
+                </h1>
+                <p style={{ color: '#8B949E', fontSize: '0.94rem', margin: '0 0 20px 0', lineHeight: '1.6' }}>
+                  Direct capital allocation into 4 verified businesses across <strong style={{ color: '#E6EDF3' }}>Food Delivery & Cloud Kitchen</strong>, <strong style={{ color: '#E6EDF3' }}>Carpentry Service Marketplaces</strong>, and <strong style={{ color: '#E6EDF3' }}>Sustainable Eco-Friendly Manufacturing</strong>. Every rupee spent is audited, milestones trigger escrow disbursement, and investors receive direct sprint return settlements.
+                </p>
+
+                {/* High-Density Key Trading Telemetry Numbers */}
+                <div className="responsive-stat-grid">
+                  <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Active Businesses</div>
+                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#F0F6FC', marginTop: '2px' }}>4 Open Deals</div>
+                  </div>
+                  <div className="card-pulse-bullish" style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(0, 245, 155, 0.4)' }}>
+                    <div style={{ fontSize: '0.70rem', color: '#00F59B', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Total Capital Raised</div>
+                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#00F59B', marginTop: '2px' }}>₹{animatedRaised.toLocaleString('en-IN')}</div>
+                  </div>
+                  <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Target Capital Goal</div>
+                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#F59E0B', marginTop: '2px' }}>₹{animatedTarget.toLocaleString('en-IN')}</div>
+                  </div>
+                  <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Verified Backers</div>
+                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#38BDF8', marginTop: '2px' }}>{animatedInvestors} Investors</div>
+                  </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
-      </div>
+
+              {/* Admin Approval Quick Gate - STRICTLY SOVEREIGN ADMIN */}
+              {isAdminLoggedIn && (
+                <div style={{ background: '#161B22', border: '1px solid rgba(245, 158, 11, 0.35)', borderRadius: '14px', padding: '18px', minWidth: '240px' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: '800', color: '#F59E0B', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>
+                    Admin Verification Desk
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                    <span className="badge font-mono-numbers" style={{ fontSize: '0.78rem', padding: '4px 10px', background: pendingInvestments.length > 0 ? 'rgba(245, 158, 11, 0.15)' : 'rgba(0, 245, 155, 0.15)', color: pendingInvestments.length > 0 ? '#F59E0B' : '#00F59B', border: '1px solid currentColor' }}>
+                      {pendingInvestments.length} Pending Approval
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setIsAdminApprovalModalOpen(true)}
+                    className="btn btn-sm"
+                    style={{ width: '100%', borderRadius: '8px', fontWeight: '700', gap: '6px', background: '#F59E0B', color: '#0B0E14' }}
+                  >
+                    <UserCheck size={15} />
+                    <span>Review Submissions</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
 
       {/* ========================================================================= */}
       {/* 3. FILTER & SEARCH BAR */}
@@ -954,263 +849,158 @@ export const BusinessProjectsDashboard = () => {
         })}
       </div>
 
-      {/* ========================================================================= */}
-      {/* 5. HOW IT WORKS SECTION (NORMAL & PROFESSIONAL WHITE THEME) */}
-      {/* ========================================================================= */}
-      {/* ========================================================================= */}
-      {/* 5. HOW IT WORKS SECTION (DARK TRADING DESK WORKFLOW) */}
-      {/* ========================================================================= */}
-      <div 
-        id="how-it-works-section"
-        className="trading-panel-card"
-        style={{
-          marginTop: '48px',
-          padding: '32px 28px',
-          background: '#0D1117'
-        }}
-      >
-        <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 32px auto' }}>
-          <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', padding: '3px 10px', background: 'rgba(245, 158, 11, 0.12)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.25)', marginBottom: '8px' }}>
-            EXECUTION WORKFLOW
-          </span>
-          <h3 style={{ fontSize: '1.65rem', fontWeight: '800', color: '#F0F6FC', margin: '6px 0 8px 0', letterSpacing: '-0.02em' }}>
-            Straightforward Business Capital Allocation
-          </h3>
-          <p style={{ color: '#8B949E', fontSize: '0.88rem', margin: 0 }}>
-            Four simple steps to back verified local enterprises with complete escrow protection and clear yield terms.
-          </p>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div className="font-mono-numbers" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
-              01
-            </div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Choose Venture</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
-              Select a verified venture based on unit economics, operational timeline, and targeted term yields.
-            </p>
-          </div>
-
-          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div className="font-mono-numbers" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
-              02
-            </div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Review All Costs</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
-              Inspect where every rupee is spent across materials, labour, packaging, delivery, and marketing.
-            </p>
-          </div>
-
-          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div className="font-mono-numbers" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(0, 245, 155, 0.15)', color: '#00F59B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
-              03
-            </div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Instant UPI Clearing</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
-              Scan QR to pay UPI ID <strong style={{ color: '#00F59B' }}>8248651695-3@ybl</strong>, enter your UTR number, and upload screenshot.
-            </p>
-          </div>
-
-          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div className="font-mono-numbers" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(168, 85, 247, 0.15)', color: '#A855F7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
-              04
-            </div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Escrow Audit & Cert</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
-              Admin verifies the payment against bank escrow rails, approves allocation, and issues your certificate.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* ========================================================================= */}
-      {/* 6. INVESTOR PROTECTION & ESCROW ASSURANCE */}
-      {/* ========================================================================= */}
-      <div 
-        id="investor-protection-section"
-        className="trading-panel-card"
-        style={{
-          marginTop: '32px',
-          background: '#0D1117',
-          padding: '28px 32px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '24px'
-        }}
-      >
-        <div style={{ maxWidth: '720px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <ShieldCheck size={22} className="text-emerald-400" />
-            <h3 style={{ fontSize: '1.30rem', fontWeight: '800', color: '#F0F6FC', margin: 0 }}>
-              Royal Bank of Investment Institutional Escrow Ring-Fence
-            </h3>
-          </div>
-          <p style={{ color: '#8B949E', fontSize: '0.86rem', margin: 0, lineHeight: '1.6' }}>
-            All investor funds are held in segregated, audited escrow accounts. Capital is disbursed in strict tranches only upon verified milestone completion. In the event a project does not meet targets, 100% of unspent funds are returned to backers.
-          </p>
-        </div>
-
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <button 
-            type="button"
-            onClick={() => window.print()}
-            className="btn-secondary-trading"
-            style={{ padding: '8px 14px', fontSize: '0.80rem', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
-          >
-            <Printer size={14} /> <span>Print Due Diligence</span>
-          </button>
-        </div>
-      </div>
-
-      {/* ========================================================================= */}
-      {/* 7. MY INVESTMENTS & DIGITAL CERTIFICATES */}
-      {/* ========================================================================= */}
-      <div 
-        id="my-investments-section"
-        className="trading-panel-card"
-        style={{
-          marginTop: '32px',
-          background: '#0D1117',
-          padding: '28px'
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Layers size={20} className="text-amber-400" />
-              <h3 style={{ fontSize: '1.30rem', fontWeight: '800', color: '#F0F6FC', margin: 0 }}>
-                My Portfolio & Investment Certificates
+          {/* Platform Ecosystem Launchpad */}
+          <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+              <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', padding: '3px 10px', background: 'rgba(56, 189, 248, 0.12)', color: '#38BDF8', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+                PLATFORM ECOSYSTEM
+              </span>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: '800', color: '#F0F6FC', margin: '6px 0 4px 0' }}>
+                Dedicated Investor Desks & Tools
               </h3>
+              <p style={{ color: '#8B949E', fontSize: '0.84rem', margin: 0 }}>
+                Access deep financial tools without single-page scroll clutter
+              </p>
             </div>
-            <p style={{ color: '#8B949E', fontSize: '0.84rem', margin: '4px 0 0 0' }}>
-              View your registered business allocations, payment confirmation references, and instant printable certificates.
-            </p>
-          </div>
-          <span className="badge font-mono-numbers" style={{ fontSize: '0.72rem', padding: '4px 10px', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
-            {projectInvestments?.length || 0} Total Allocations
-          </span>
-        </div>
 
-        {projectInvestments && projectInvestments.length > 0 ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '16px' }}>
-            {projectInvestments.map((inv) => (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
               <div 
-                key={inv.id}
-                style={{
-                  background: '#161B22',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  borderRadius: '14px',
-                  padding: '18px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '12px'
-                }}
+                onClick={() => setActiveTab('terminal')}
+                className="trading-panel-card"
+                style={{ padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px' }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div>
-                    <span className="badge font-mono-numbers" style={{ fontSize: '0.64rem', marginBottom: '4px', background: 'rgba(245, 158, 11, 0.12)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.25)' }}>
-                      {inv.category || 'Business Venture'}
-                    </span>
-                    <h4 style={{ fontSize: '1.05rem', fontWeight: '800', color: '#F0F6FC', margin: '4px 0 0 0' }}>
-                      {inv.projectName}
-                    </h4>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <TrendingUp size={20} />
                   </div>
-                  
-                  {/* Status Badge */}
-                  {inv.status === 'CONFIRMED' ? (
-                    <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', background: 'rgba(0, 245, 155, 0.15)', color: '#00F59B', border: '1px solid rgba(0, 245, 155, 0.3)' }}>
-                      ✓ Verified & Allocated
-                    </span>
-                  ) : inv.status === 'REJECTED' ? (
-                    <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', background: 'rgba(255, 51, 102, 0.15)', color: '#FF3366', border: '1px solid rgba(255, 51, 102, 0.3)' }}>
-                      ✕ Rejected
-                    </span>
-                  ) : (
-                    <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
-                      ⏳ Awaiting Admin Approval
-                    </span>
-                  )}
+                  <span className="badge badge-cyan font-mono-numbers" style={{ fontSize: '0.62rem' }}>LIVE ENGINE</span>
                 </div>
-
-                <div className="font-mono-numbers" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', padding: '12px', background: '#0D1117', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '10px' }}>
-                  <div>
-                    <div style={{ fontSize: '0.68rem', color: '#8B949E' }}>Invested Capital</div>
-                    <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#00F59B' }}>{formatMoney(inv.amount)}</div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.68rem', color: '#8B949E' }}>Target Yield</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: '700', color: '#F59E0B' }}>{inv.expectedYield || '14.5%'}</div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.68rem', color: '#8B949E' }}>Payout Timeline</div>
-                    <div style={{ fontSize: '0.80rem', color: '#C9D1D9', fontWeight: '600' }}>{inv.payoutTimeline || 'Sprint End'}</div>
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.68rem', color: '#8B949E' }}>Ref ID</div>
-                    <div style={{ fontSize: '0.72rem', color: '#6E7681' }}>{inv.id}</div>
-                  </div>
-                </div>
-
-                {/* Attached Screenshot or UTR info */}
-                {(inv.utrNumber || inv.screenshotUrl) && (
-                  <div style={{ fontSize: '0.74rem', background: '#0D1117', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    {inv.utrNumber && <div><span style={{ color: '#8B949E' }}>UTR:</span> <strong className="font-mono-numbers" style={{ color: '#F0F6FC' }}>{inv.utrNumber}</strong></div>}
-                    {inv.screenshotUrl && (
-                      <button
-                        type="button"
-                        onClick={() => setPreviewScreenshotUrl(inv.screenshotUrl)}
-                        style={{ background: 'none', border: 'none', color: '#38BDF8', cursor: 'pointer', padding: 0, fontWeight: '700', fontSize: '0.72rem', marginTop: '4px' }}
-                      >
-                        👁 View Attached Payment Screenshot
-                      </button>
-                    )}
-                  </div>
-                )}
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                  <span className="font-mono-numbers" style={{ fontSize: '0.70rem', color: '#8B949E' }}>Submitted: {inv.date}</span>
-                  {inv.status === 'CONFIRMED' ? (
-                    <button
-                      type="button"
-                      onClick={() => setActiveCertificate(inv)}
-                      className="btn-secondary-trading"
-                      style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '0.74rem', gap: '5px', cursor: 'pointer' }}
-                    >
-                      <FileText size={13} style={{ color: '#F59E0B' }} />
-                      <span>View Certificate</span>
-                    </button>
-                  ) : (
-                    <span style={{ fontSize: '0.70rem', color: '#F59E0B', fontWeight: '600' }}>
-                      Admin verification in progress
-                    </span>
-                  )}
-                </div>
+                <h4 style={{ color: '#F0F6FC', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>Live Candlestick Terminal</h4>
+                <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
+                  Full-screen TradingView style candlestick charts, order books, and real-time execution depth.
+                </p>
+                <span style={{ color: '#38BDF8', fontSize: '0.78rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  Open Trading Terminal →
+                </span>
               </div>
-            ))}
+
+              <div 
+                onClick={() => setActiveTab('calculator')}
+                className="trading-panel-card"
+                style={{ padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px' }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(0, 245, 155, 0.15)', color: '#00F59B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Calculator size={20} />
+                  </div>
+                  <span className="badge badge-emerald font-mono-numbers" style={{ fontSize: '0.62rem' }}>SIMULATOR</span>
+                </div>
+                <h4 style={{ color: '#F0F6FC', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>Return Calculator</h4>
+                <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
+                  Calculate exact profit multiples, compounding returns, and sprint payout dates on any order size.
+                </p>
+                <span style={{ color: '#00F59B', fontSize: '0.78rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  Calculate Net Returns →
+                </span>
+              </div>
+
+              <div 
+                onClick={() => setActiveTab('escrow')}
+                className="trading-panel-card"
+                style={{ padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px' }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <ShieldCheck size={20} />
+                  </div>
+                  <span className="badge badge-gold font-mono-numbers" style={{ fontSize: '0.62rem' }}>100% ESCROW</span>
+                </div>
+                <h4 style={{ color: '#F0F6FC', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>Escrow & Protection</h4>
+                <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
+                  Segregated bank rails, milestone-gated capital disbursement, and legally enforceable contracts.
+                </p>
+                <span style={{ color: '#F59E0B', fontSize: '0.78rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  Read Security Charter →
+                </span>
+              </div>
+
+              <div 
+                onClick={() => setActiveTab('portfolio')}
+                className="trading-panel-card"
+                style={{ padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px' }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(168, 85, 247, 0.15)', color: '#A855F7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Layers size={20} />
+                  </div>
+                  <span className="badge font-mono-numbers" style={{ fontSize: '0.62rem', background: 'rgba(168, 85, 247, 0.15)', color: '#A855F7', border: '1px solid rgba(168, 85, 247, 0.3)' }}>CERTIFICATES</span>
+                </div>
+                <h4 style={{ color: '#F0F6FC', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>My Portfolio</h4>
+                <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
+                  Track active allocations, review approval status, and print tamper-evident digital certificates.
+                </p>
+                <span style={{ color: '#A855F7', fontSize: '0.78rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  View My Holdings →
+                </span>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div style={{ textAlign: 'center', padding: '40px 20px', background: '#161B22', borderRadius: '14px', border: '1px dashed rgba(255, 255, 255, 0.12)' }}>
-            <Building2 size={36} style={{ color: '#6E7681', margin: '0 auto 12px auto' }} />
-            <h4 style={{ color: '#F0F6FC', fontSize: '1rem', margin: '0 0 6px 0', fontWeight: '700' }}>No Active Investments Yet</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.84rem', margin: '0 0 16px 0', maxWidth: '480px', marginInline: 'auto' }}>
-              Select any of the 4 verified business projects above and click <strong style={{ color: '#00F59B' }}>"Execute Backing Order"</strong> to fund and receive your official digital allocation certificate.
-            </p>
-            <button
-              onClick={() => {
-                const el = document.getElementById('projects-grid');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="btn-order-cta"
-              style={{ padding: '8px 16px', fontSize: '0.82rem' }}
-            >
-              Browse Active Business Deals
-            </button>
-          </div>
-        )}
-      </div>
+        </motion.div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* PAGE 2: LIVE STOCK CANDLESTICK TERMINAL                                   */}
+      {/* ========================================================================= */}
+      {currentRoute === 'terminal' && (
+        <TerminalPage 
+          portfolioAggregates={portfolioAggregates}
+          projectInvestments={projectInvestments}
+          businessProjects={businessProjects}
+          onInvest={handleOpenInvest}
+          setActiveTab={setActiveTab}
+        />
+      )}
+
+      {/* ========================================================================= */}
+      {/* PAGE 3: PROFIT RATIO & RETURN CALCULATOR                                  */}
+      {/* ========================================================================= */}
+      {currentRoute === 'calculator' && (
+        <CalculatorPage 
+          businessProjects={businessProjects}
+          calcAmount={calcAmount}
+          setCalcAmount={setCalcAmount}
+          calculateInvestmentReturn={calculateInvestmentReturn}
+          onInvest={handleOpenInvest}
+          setActiveTab={setActiveTab}
+        />
+      )}
+
+      {/* ========================================================================= */}
+      {/* PAGE 4: HOW IT WORKS WORKFLOW & SYNDICATE GUIDE                           */}
+      {/* ========================================================================= */}
+      {currentRoute === 'how-it-works' && (
+        <HowItWorksPage setActiveTab={setActiveTab} />
+      )}
+
+      {/* ========================================================================= */}
+      {/* PAGE 5: ESCROW VAULT & LEGAL PROTECTION                                   */}
+      {/* ========================================================================= */}
+      {currentRoute === 'escrow' && (
+        <EscrowPage setActiveTab={setActiveTab} />
+      )}
+
+      {/* ========================================================================= */}
+      {/* PAGE 6: MY PORTFOLIO & CERTIFICATES                                       */}
+      {/* ========================================================================= */}
+      {currentRoute === 'portfolio' && (
+        <PortfolioPage 
+          projectInvestments={projectInvestments}
+          formatMoney={formatMoney}
+          setPreviewScreenshotUrl={setPreviewScreenshotUrl}
+          setActiveCertificate={setActiveCertificate}
+          setActiveTab={setActiveTab}
+        />
+      )}
 
       {/* ========================================================================= */}
       {/* MODAL 1: DIRECT "INVEST IN THIS BUSINESS" MODAL (WITH SCREENSHOT & UTR) */}
