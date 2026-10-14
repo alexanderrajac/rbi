@@ -350,33 +350,34 @@ export const BusinessProjectsDashboard = () => {
       {/* 1. PROFESSIONAL HERO BANNER (CLEAN WHITE THEME + ADMIN APPROVAL BADGE) */}
       {/* ========================================================================= */}
       <div 
+        className="hero-box-mobile"
         style={{
           background: '#ffffff',
           borderRadius: '20px',
-          padding: '36px 40px',
+          padding: '28px 24px',
           border: '1px solid #e2e8f0',
           boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02)',
-          marginBottom: '28px'
+          marginBottom: '24px'
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
-          <div style={{ maxWidth: '860px' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#fef3c7', border: '1px solid #fde68a', borderRadius: '20px', padding: '4px 14px', marginBottom: '14px' }}>
-              <span className="live-pulse-dot" style={{ width: '7px', height: '7px' }}></span>
-              <span style={{ fontSize: '0.78rem', fontWeight: '700', color: '#92400e', letterSpacing: '0.04em' }}>
+          <div style={{ maxWidth: '860px', width: '100%' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#fef3c7', border: '1px solid #fde68a', borderRadius: '20px', padding: '4px 12px', marginBottom: '14px', maxWidth: '100%' }}>
+              <span className="live-pulse-dot" style={{ width: '7px', height: '7px', flexShrink: 0 }}></span>
+              <span style={{ fontSize: '0.74rem', fontWeight: '700', color: '#92400e', letterSpacing: '0.03em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 RBI VERIFIED BUSINESS INVESTMENT DESK • ESCROW RING-FENCED
               </span>
             </div>
 
-            <h1 style={{ fontSize: '2.4rem', fontWeight: '900', color: '#0f172a', margin: '0 0 12px 0', letterSpacing: '-0.025em', lineHeight: '1.2' }}>
+            <h1 className="hero-heading-mobile" style={{ fontSize: '2.2rem', fontWeight: '900', color: '#0f172a', margin: '0 0 12px 0', letterSpacing: '-0.025em', lineHeight: '1.2' }}>
               Invest in Real-World Business Ventures
             </h1>
-            <p style={{ color: '#475569', fontSize: '1.02rem', margin: '0 0 24px 0', lineHeight: '1.6' }}>
+            <p style={{ color: '#475569', fontSize: '0.96rem', margin: '0 0 20px 0', lineHeight: '1.6' }}>
               Direct capital allocation into 4 verified businesses across <strong>Food Delivery & Cloud Kitchen</strong>, <strong>Carpentry Service Marketplaces</strong>, and <strong>Sustainable Eco-Friendly Manufacturing</strong>. Every rupee spent is audited, milestones trigger escrow disbursement, and investors receive direct sprint return settlements.
             </p>
 
             {/* Key Platform Numbers */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px' }}>
+            <div className="responsive-stat-grid">
               <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
                 <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Active Businesses</div>
                 <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0f172a', marginTop: '2px' }}>4 Open Deals</div>
@@ -597,7 +598,7 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       {/* 4. BUSINESS PROJECT CARDS (WITH PROFIT RATIO & APPROVAL WORKFLOW) */}
       {/* ========================================================================= */}
-      <div id="projects-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px' }}>
+      <div id="projects-grid" className="responsive-projects-grid">
         {filteredProjects.map(project => {
           const customUnits = project.id === 'proj-bamboo-cup' ? bambooScenario : null;
           const financials = calculateProjectFinancials(project, customUnits);
@@ -611,7 +612,7 @@ export const BusinessProjectsDashboard = () => {
                 background: '#ffffff',
                 borderRadius: '18px',
                 border: '1px solid #e2e8f0',
-                padding: '26px',
+                padding: '20px 16px',
                 boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.02)',
                 display: 'flex',
                 flexDirection: 'column',
@@ -1379,7 +1380,7 @@ export const BusinessProjectsDashboard = () => {
                 </div>
 
                 {/* Investor Details */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.76rem', color: '#64748b', marginBottom: '4px', fontWeight: '600' }}>
                       Investor Full Name: *

@@ -40,6 +40,7 @@ export const LiveCandlestickTerminal = ({
   const [test500Active, setTest500Active] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
   const [selectedLotSize, setSelectedLotSize] = useState(500);
+  const [mobileTab, setMobileTab] = useState('chart'); // 'chart' | 'tape'
 
   // Live IST Clock
   useEffect(() => {
@@ -455,6 +456,7 @@ export const LiveCandlestickTerminal = ({
 
   return (
     <div 
+      id="candlestick-terminal-section"
       ref={containerRef}
       style={{
         background: '#090d16',
@@ -472,7 +474,7 @@ export const LiveCandlestickTerminal = ({
       {/* ===================================================================== */}
       <div 
         style={{
-          padding: '16px 24px',
+          padding: '14px 18px',
           borderBottom: '1px solid #1e293b',
           display: 'flex',
           flexWrap: 'wrap',
@@ -663,8 +665,19 @@ export const LiveCandlestickTerminal = ({
           gap: '12px'
         }}
       >
-        {/* Venture Asset Selectors */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+        {/* Venture Asset Selectors (Swipeable on Mobile) */}
+        <div 
+          className="no-scrollbar"
+          style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '6px', 
+            overflowX: 'auto', 
+            maxWidth: '100%',
+            WebkitOverflowScrolling: 'touch',
+            paddingBottom: '2px'
+          }}
+        >
           {assetSpecs.map(spec => {
             const isSelected = spec.id === selectedAssetId;
             return (
@@ -673,7 +686,7 @@ export const LiveCandlestickTerminal = ({
                 type="button"
                 onClick={() => setSelectedAssetId(spec.id)}
                 style={{
-                  padding: '5px 12px',
+                  padding: '6px 12px',
                   borderRadius: '8px',
                   fontSize: '0.74rem',
                   fontWeight: '700',
@@ -681,7 +694,9 @@ export const LiveCandlestickTerminal = ({
                   border: isSelected ? '1px solid #d97706' : '1px solid #1e293b',
                   background: isSelected ? '#1e293b' : 'transparent',
                   color: isSelected ? '#fbbf24' : '#94a3b8',
-                  transition: 'all 0.15s ease'
+                  transition: 'all 0.15s ease',
+                  flexShrink: 0,
+                  whiteSpace: 'nowrap'
                 }}
               >
                 {spec.ticker}
@@ -805,12 +820,73 @@ export const LiveCandlestickTerminal = ({
       </div>
 
       {/* ===================================================================== */}
-      {/* 4. MAIN TRADING VIEWPORT: DUAL-PANE (CHART 72% + TIME & SALES 28%) */}
+      {/* 4. MAIN TRADING VIEWPORT: RESPONSIVE DUAL-PANE / MOBILE SINGLE COLUMN */}
       {/* ===================================================================== */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(280px, 320px)', minHeight: '380px' }}>
+      {/* Mobile-Only View Switcher Tab (Chart vs Time & Sales) */}
+      <div 
+        className="mobile-only"
+        style={{
+          padding: '8px 14px',
+          background: '#0a0f1d',
+          borderBottom: '1px solid #1e293b',
+          display: 'flex',
+          gap: '8px'
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => setMobileTab('chart')}
+          style={{
+            flex: 1,
+            padding: '7px 10px',
+            borderRadius: '8px',
+            fontSize: '0.74rem',
+            fontWeight: '800',
+            border: mobileTab === 'chart' ? '1px solid #10b981' : '1px solid #1e293b',
+            background: mobileTab === 'chart' ? '#10b981' : '#0e1526',
+            color: mobileTab === 'chart' ? '#000000' : '#94a3b8',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px'
+          }}
+        >
+          <BarChart3 size={14} />
+          <span>Candlestick Chart</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setMobileTab('tape')}
+          style={{
+            flex: 1,
+            padding: '7px 10px',
+            borderRadius: '8px',
+            fontSize: '0.74rem',
+            fontWeight: '800',
+            border: mobileTab === 'tape' ? '1px solid #38bdf8' : '1px solid #1e293b',
+            background: mobileTab === 'tape' ? '#0284c7' : '#0e1526',
+            color: mobileTab === 'tape' ? '#ffffff' : '#94a3b8',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px'
+          }}
+        >
+          <Activity size={14} />
+          <span>Time & Sales Tape</span>
+        </button>
+      </div>
+
+      <div className="terminal-dual-pane-grid">
         
         {/* Left Pane: Interactive High-Precision Candlestick Canvas */}
-        <div style={{ position: 'relative', width: '100%', height: '380px', background: '#090d16', borderRight: '1px solid #1e293b' }}>
+        <div 
+          className={`terminal-pane-chart ${mobileTab === 'tape' ? 'desktop-only' : ''}`}
+          style={{ position: 'relative', width: '100%', height: '380px', background: '#090d16', borderRight: '1px solid #1e293b' }}
+        >
           
           {/* Active Hover HUD Badge */}
           {hoveredCandle && (
@@ -845,19 +921,20 @@ export const LiveCandlestickTerminal = ({
             <div style={{
               position: 'absolute',
               bottom: '55px',
-              left: '24px',
+              left: '16px',
+              right: '16px',
               zIndex: 5,
-              background: 'rgba(15, 23, 42, 0.8)',
+              background: 'rgba(15, 23, 42, 0.85)',
               border: '1px solid rgba(245, 158, 11, 0.3)',
               borderRadius: '8px',
-              padding: '6px 12px',
+              padding: '6px 10px',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              fontSize: '0.74rem',
+              fontSize: '0.72rem',
               color: '#fbbf24'
             }}>
-              <Info size={14} />
+              <Info size={14} style={{ flexShrink: 0 }} />
               <span>Genesis Floor: ₹0 Capital Inflow • Chart ready for initial ₹500 market candle</span>
             </div>
           )}
@@ -871,7 +948,10 @@ export const LiveCandlestickTerminal = ({
         </div>
 
         {/* Right Pane: Live Time & Sales / Market Depth Tape */}
-        <div style={{ background: '#0a0f1d', display: 'flex', flexDirection: 'column' }}>
+        <div 
+          className={`terminal-pane-tape ${mobileTab === 'chart' ? 'desktop-only' : ''}`}
+          style={{ background: '#0a0f1d', display: 'flex', flexDirection: 'column' }}
+        >
           
           <div style={{ 
             padding: '12px 16px', 

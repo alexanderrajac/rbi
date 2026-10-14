@@ -93,14 +93,14 @@ export const Footer = () => {
 
           {/* Quick Rails */}
           <div>
-            <h4 style={{ color: '#fff', fontSize: '0.95rem', marginBottom: '14px' }}>Platform Navigation</h4>
+            <h4 style={{ color: '#0f172a', fontSize: '0.95rem', marginBottom: '14px', fontWeight: '800' }}>Platform Navigation</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <li>
                 <button onClick={() => {
                   setActiveTab('projects');
                   const el = document.getElementById('projects-grid');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
+                }} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#475569', justifyContent: 'flex-start' }}>
                   Active Business Projects
                 </button>
               </li>
@@ -109,7 +109,7 @@ export const Footer = () => {
                   setActiveTab('projects');
                   const el = document.getElementById('how-it-works-section');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
+                }} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#475569', justifyContent: 'flex-start' }}>
                   How It Works
                 </button>
               </li>
@@ -118,7 +118,7 @@ export const Footer = () => {
                   setActiveTab('projects');
                   const el = document.getElementById('investor-protection-section');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
+                }} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#475569', justifyContent: 'flex-start' }}>
                   Escrow & Investor Protection
                 </button>
               </li>
@@ -127,12 +127,12 @@ export const Footer = () => {
                   setActiveTab('projects');
                   const el = document.getElementById('my-investments-section');
                   if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }} className="btn btn-ghost btn-sm" style={{ padding: 0 }}>
+                }} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#475569', justifyContent: 'flex-start' }}>
                   My Investments & Certificates
                 </button>
               </li>
               <li>
-                <button onClick={() => setActiveTab('admin')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#34d399' }}>
+                <button onClick={() => setActiveTab('admin')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#d97706', fontWeight: '700', justifyContent: 'flex-start' }}>
                   Admin Portal
                 </button>
               </li>
@@ -141,29 +141,29 @@ export const Footer = () => {
 
           {/* Compliance & Regulatory Notice */}
           <div>
-            <h4 style={{ color: '#fff', fontSize: '0.95rem', marginBottom: '14px' }}>Regulatory Disclosures</h4>
-            <p style={{ color: 'var(--text-dim)', fontSize: '0.78rem', lineHeight: '1.6', margin: 0 }}>
-              Investments in early-stage businesses and unlisted private companies involve capital risk. Real-time AI valuations are derived from proprietary financial algorithms, DCF simulations, and market multiples for guidance purposes. Fractional digital shares and milestone escrow allocations are managed under the Royal Bank of Investment depository framework.
+            <h4 style={{ color: '#0f172a', fontSize: '0.95rem', marginBottom: '14px', fontWeight: '800' }}>Regulatory Disclosures</h4>
+            <p style={{ color: '#64748b', fontSize: '0.78rem', lineHeight: '1.6', margin: 0 }}>
+              Investments in early-stage businesses and unlisted private companies involve capital risk. Real-time unit economics and milestone escrow allocations are managed under the Royal Bank of Investment depository framework.
             </p>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div style={{ 
-          borderTop: '1px solid rgba(255, 255, 255, 0.06)', 
+          borderTop: '1px solid #e2e8f0', 
           paddingTop: '20px',
           display: 'flex',
           flexWrap: 'wrap',
           alignItems: 'center',
           justifyContent: 'space-between',
-          color: 'var(--text-dim)',
+          color: '#64748b',
           fontSize: '0.78rem',
           gap: '12px'
         }}>
           <div>
             © {new Date().getFullYear()} Royal Bank of Investment (RBI). All rights reserved.
           </div>
-          <div style={{ display: 'flex', gap: '16px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
             <span>Confidential Project Architecture</span>
             <span>•</span>
             <span>Alexander Rajasingh</span>
