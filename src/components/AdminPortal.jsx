@@ -37,7 +37,8 @@ import {
   HelpCircle,
   Activity,
   CheckCircle,
-  ChevronRight
+  ChevronRight,
+  Edit3
 } from 'lucide-react';
 
 export const AdminPortal = () => {
@@ -91,6 +92,42 @@ export const AdminPortal = () => {
   const [newMilestoneDeliverables, setNewMilestoneDeliverables] = useState('');
   const [newMilestoneBudget, setNewMilestoneBudget] = useState('1000');
   const [showAddMilestoneForm, setShowAddMilestoneForm] = useState(false);
+
+  // Edit Existing Milestone State
+  const [editingMilestoneId, setEditingMilestoneId] = useState(null);
+  const [editingMilestoneForm, setEditingMilestoneForm] = useState({
+    phase: '',
+    sprintDuration: '',
+    period: '',
+    deliverables: '',
+    allocatedBudget: '1000',
+    spent: '0',
+    status: 'UPCOMING'
+  });
+
+  const handleStartEditMilestone = (m) => {
+    setEditingMilestoneId(m.id);
+    setEditingMilestoneForm({
+      phase: m.phase || '',
+      sprintDuration: m.sprintDuration || m.period || '',
+      period: m.period || '',
+      deliverables: m.deliverables || '',
+      allocatedBudget: String(m.allocatedBudget || 0),
+      spent: String(m.spent || 0),
+      status: m.status || 'UPCOMING'
+    });
+  };
+
+  const handleSaveMilestoneEdit = (milestoneId) => {
+    updateProjectMilestone(selectedProjectId, milestoneId, {
+      ...editingMilestoneForm,
+      allocatedBudget: parseFloat(editingMilestoneForm.allocatedBudget) || 0,
+      spent: parseFloat(editingMilestoneForm.spent) || 0
+    });
+    setEditingMilestoneId(null);
+    setActionNotice('Milestone parameters updated and saved successfully!');
+    setTimeout(() => setActionNotice(null), 3000);
+  };
 
   // Live Broadcaster Form State
   const [broadcastNote, setBroadcastNote] = useState('');
@@ -1175,114 +1212,234 @@ export const AdminPortal = () => {
                       transition: 'all 0.15s ease'
                     }}
                   >
-                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
-                      
-                      {/* Left Info */}
-                      <div style={{ flex: '1 1 340px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '6px' }}>
-                          <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' }}>
-                            Step {m.stepNumber || idx + 1} of {m.stepTotal || activeSelectedProject.timeline?.length}
-                          </span>
-                          <strong style={{ fontSize: '0.92rem', color: '#0f172a' }}>
-                            {m.phase}
-                          </strong>
-                          <span className={`badge ${m.status === 'COMPLETED' ? 'badge-emerald' : m.status === 'IN_PROGRESS' ? 'badge-cyan' : 'badge-gold'}`} style={{ fontSize: '0.62rem', padding: '1px 6px' }}>
-                            {m.status}
-                          </span>
+                    {editingMilestoneId === m.id ? (
+                      /* Inline Milestone Edit Form */
+                      <div style={{ background: '#ffffff', border: '2px solid #3b82f6', borderRadius: '10px', padding: '16px' }}>
+                        <div style={{ fontSize: '0.82rem', fontWeight: '800', color: '#1e40af', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Edit3 size={15} /> Edit Milestone Details
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px', marginBottom: '10px' }}>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: '700', color: '#64748b', marginBottom: '3px' }}>Phase Title:</label>
+                            <input 
+                              type="text" 
+                              value={editingMilestoneForm.phase}
+                              onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, phase: e.target.value })}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.8rem' }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: '700', color: '#64748b', marginBottom: '3px' }}>Sprint Duration:</label>
+                            <input 
+                              type="text" 
+                              value={editingMilestoneForm.sprintDuration}
+                              onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, sprintDuration: e.target.value })}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.8rem' }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: '700', color: '#64748b', marginBottom: '3px' }}>Timeline / Period:</label>
+                            <input 
+                              type="text" 
+                              value={editingMilestoneForm.period}
+                              onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, period: e.target.value })}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.8rem' }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: '700', color: '#64748b', marginBottom: '3px' }}>Allocated Budget (₹):</label>
+                            <input 
+                              type="number" 
+                              value={editingMilestoneForm.allocatedBudget}
+                              onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, allocatedBudget: e.target.value })}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.8rem' }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: '700', color: '#64748b', marginBottom: '3px' }}>Spent to Date (₹):</label>
+                            <input 
+                              type="number" 
+                              value={editingMilestoneForm.spent}
+                              onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, spent: e.target.value })}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.8rem' }}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: '700', color: '#64748b', marginBottom: '3px' }}>Current Status:</label>
+                            <select
+                              value={editingMilestoneForm.status}
+                              onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, status: e.target.value })}
+                              style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.8rem', background: '#fff' }}
+                            >
+                              <option value="UPCOMING">UPCOMING</option>
+                              <option value="IN_PROGRESS">IN_PROGRESS</option>
+                              <option value="COMPLETED">COMPLETED</option>
+                            </select>
+                          </div>
                         </div>
 
-                        {/* Prominent Sprint Badge */}
-                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#fef3c7', color: '#92400e', padding: '3px 10px', borderRadius: '6px', fontSize: '0.74rem', fontWeight: '700', border: '1px solid #fde68a', marginBottom: '8px' }}>
-                          <Clock size={13} strokeWidth={2.4} />
-                          <span>Sprint Duration: {m.sprintDuration || m.period}</span>
+                        <div style={{ marginBottom: '12px' }}>
+                          <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: '700', color: '#64748b', marginBottom: '3px' }}>Deliverables & Tasks:</label>
+                          <textarea 
+                            rows={2}
+                            value={editingMilestoneForm.deliverables}
+                            onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, deliverables: e.target.value })}
+                            style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.8rem', resize: 'vertical' }}
+                          />
                         </div>
 
-                        <div style={{ color: '#334155', fontSize: '0.78rem', lineHeight: '1.4' }}>
-                          {m.deliverables}
-                        </div>
-
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', marginTop: '8px', fontSize: '0.72rem', color: '#64748b' }}>
-                          <span>Timeline: <strong style={{ color: '#1e293b' }}>{m.period}</strong></span>
-                          <span>Allocated Budget: <strong style={{ color: '#1e293b' }}>{formatMoney(m.allocatedBudget)}</strong></span>
-                          <span>Spent to Date: <strong style={{ color: '#1e293b' }}>{formatMoney(m.spent)}</strong></span>
+                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
+                          <button
+                            type="button"
+                            onClick={() => setEditingMilestoneId(null)}
+                            className="btn btn-secondary btn-sm"
+                            style={{ padding: '6px 12px', fontSize: '0.76rem' }}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleSaveMilestoneEdit(m.id)}
+                            className="btn btn-primary btn-sm"
+                            style={{ padding: '6px 14px', fontSize: '0.76rem', fontWeight: '800' }}
+                          >
+                            Save Milestone
+                          </button>
                         </div>
                       </div>
+                    ) : (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                        {/* Left Info */}
+                        <div style={{ flex: '1 1 340px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '6px' }}>
+                            <span style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' }}>
+                              Step {m.stepNumber || idx + 1} of {m.stepTotal || activeSelectedProject.timeline?.length}
+                            </span>
+                            <strong style={{ fontSize: '0.92rem', color: '#0f172a' }}>
+                              {m.phase}
+                            </strong>
+                            <span className={`badge ${m.status === 'COMPLETED' ? 'badge-emerald' : m.status === 'IN_PROGRESS' ? 'badge-cyan' : 'badge-gold'}`} style={{ fontSize: '0.62rem', padding: '1px 6px' }}>
+                              {m.status}
+                            </span>
+                          </div>
 
-                      {/* Right Action Switchers */}
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
-                        <div style={{ display: 'flex', gap: '5px' }}>
-                          <button
-                            type="button"
-                            onClick={() => updateProjectMilestone(selectedProjectId, m.id, { status: 'COMPLETED' })}
-                            style={{
-                              padding: '4px 10px',
-                              borderRadius: '6px',
-                              fontSize: '0.72rem',
-                              fontWeight: '700',
-                              cursor: 'pointer',
-                              border: '1px solid #a7f3d0',
-                              background: m.status === 'COMPLETED' ? '#d1fae5' : '#ffffff',
-                              color: '#065f46'
-                            }}
-                          >
-                            ✓ Completed
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => updateProjectMilestone(selectedProjectId, m.id, { status: 'IN_PROGRESS' })}
-                            style={{
-                              padding: '4px 10px',
-                              borderRadius: '6px',
-                              fontSize: '0.72rem',
-                              fontWeight: '700',
-                              cursor: 'pointer',
-                              border: '1px solid #bae6fd',
-                              background: m.status === 'IN_PROGRESS' ? '#e0f2fe' : '#ffffff',
-                              color: '#0369a1'
-                            }}
-                          >
-                            ▶ In Progress
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => updateProjectMilestone(selectedProjectId, m.id, { status: 'UPCOMING' })}
-                            style={{
-                              padding: '4px 10px',
-                              borderRadius: '6px',
-                              fontSize: '0.72rem',
-                              fontWeight: '700',
-                              cursor: 'pointer',
-                              border: '1px solid #e2e8f0',
-                              background: m.status === 'UPCOMING' ? '#f1f5f9' : '#ffffff',
-                              color: '#64748b'
-                            }}
-                          >
-                            Upcoming
-                          </button>
+                          {/* Prominent Sprint Badge */}
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#fef3c7', color: '#92400e', padding: '3px 10px', borderRadius: '6px', fontSize: '0.74rem', fontWeight: '700', border: '1px solid #fde68a', marginBottom: '8px' }}>
+                            <Clock size={13} strokeWidth={2.4} />
+                            <span>Sprint Duration: {m.sprintDuration || m.period}</span>
+                          </div>
+
+                          <div style={{ color: '#334155', fontSize: '0.78rem', lineHeight: '1.4' }}>
+                            {m.deliverables}
+                          </div>
+
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', marginTop: '8px', fontSize: '0.72rem', color: '#64748b' }}>
+                            <span>Timeline: <strong style={{ color: '#1e293b' }}>{m.period}</strong></span>
+                            <span>Allocated Budget: <strong style={{ color: '#1e293b' }}>{formatMoney(m.allocatedBudget)}</strong></span>
+                            <span>Spent to Date: <strong style={{ color: '#1e293b' }}>{formatMoney(m.spent)}</strong></span>
+                          </div>
                         </div>
 
-                        <button
-                          type="button"
-                          onClick={() => deleteProjectMilestone(selectedProjectId, m.id)}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#e11d48',
-                            fontSize: '0.72rem',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                            padding: '2px 6px'
-                          }}
-                          title="Delete Milestone"
-                        >
-                          <Trash2 size={13} />
-                          <span>Delete Step</span>
-                        </button>
-                      </div>
+                        {/* Right Action Switchers */}
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+                          <div style={{ display: 'flex', gap: '5px' }}>
+                            <button
+                              type="button"
+                              onClick={() => updateProjectMilestone(selectedProjectId, m.id, { status: 'COMPLETED' })}
+                              style={{
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                fontSize: '0.72rem',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                border: '1px solid #a7f3d0',
+                                background: m.status === 'COMPLETED' ? '#d1fae5' : '#ffffff',
+                                color: '#065f46'
+                              }}
+                            >
+                              ✓ Completed
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => updateProjectMilestone(selectedProjectId, m.id, { status: 'IN_PROGRESS' })}
+                              style={{
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                fontSize: '0.72rem',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                border: '1px solid #bae6fd',
+                                background: m.status === 'IN_PROGRESS' ? '#e0f2fe' : '#ffffff',
+                                color: '#0369a1'
+                              }}
+                            >
+                              ▶ In Progress
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => updateProjectMilestone(selectedProjectId, m.id, { status: 'UPCOMING' })}
+                              style={{
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                fontSize: '0.72rem',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                border: '1px solid #e2e8f0',
+                                background: m.status === 'UPCOMING' ? '#f1f5f9' : '#ffffff',
+                                color: '#64748b'
+                              }}
+                            >
+                              Upcoming
+                            </button>
+                          </div>
 
-                    </div>
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            <button
+                              type="button"
+                              onClick={() => handleStartEditMilestone(m)}
+                              style={{
+                                background: '#f8fafc',
+                                border: '1px solid #cbd5e1',
+                                color: '#0f172a',
+                                fontSize: '0.72rem',
+                                fontWeight: '700',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                padding: '3px 8px',
+                                borderRadius: '6px'
+                              }}
+                              title="Edit milestone title, budget, deliverables"
+                            >
+                              <Edit3 size={12} color="#0284c7" />
+                              <span>Edit Details</span>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => deleteProjectMilestone(selectedProjectId, m.id)}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                color: '#e11d48',
+                                fontSize: '0.72rem',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                padding: '3px 6px'
+                              }}
+                              title="Delete Milestone"
+                            >
+                              <Trash2 size={12} />
+                              <span>Delete</span>
+                            </button>
+                          </div>
+                        </div>
+
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

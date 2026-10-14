@@ -122,7 +122,17 @@ export const BusinessProjectsDashboard = () => {
   const [newMilestoneDeliverables, setNewMilestoneDeliverables] = useState('');
   const [newLiveUpdateNote, setNewLiveUpdateNote] = useState('');
 
-  // Edit Modal State (Admin Assumptions)
+  // Milestone Inline Editing State
+  const [editingMilestoneId, setEditingMilestoneId] = useState(null);
+  const [editingMilestoneForm, setEditingMilestoneForm] = useState({
+    phase: '',
+    period: '',
+    sprintDuration: '',
+    deliverables: '',
+    allocatedBudget: '1000',
+    spent: '0',
+    status: 'UPCOMING'
+  });
   const [editingProject, setEditingProject] = useState(null);
   const [editFormData, setEditFormData] = useState({});
 
@@ -416,6 +426,7 @@ export const BusinessProjectsDashboard = () => {
       <LiveCandlestickTerminal 
         totalCapitalRaised={portfolioAggregates.totalCapitalRaised} 
         totalInvestors={portfolioAggregates.totalInvestors} 
+        investments={projectInvestments}
       />
 
       {/* ========================================================================= */}
@@ -1892,74 +1903,180 @@ export const BusinessProjectsDashboard = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {(adminMilestoneProject.timeline || []).map((m) => (
                     <div key={m.id} style={{ padding: '12px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                          <strong style={{ color: '#0f172a', fontSize: '0.85rem' }}>{m.phase}</strong>
-                          <span style={{ fontSize: '0.72rem', color: '#64748b', display: 'block' }}>{m.period} • Budget: {formatMoney(m.allocatedBudget)}</span>
+                      {editingMilestoneId === m.id ? (
+                        /* Inline Edit Form */
+                        <div style={{ background: '#ffffff', border: '2px solid #3b82f6', borderRadius: '8px', padding: '12px' }}>
+                          <div style={{ fontSize: '0.8rem', fontWeight: '800', color: '#1e40af', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <Edit3 size={14} /> Edit Milestone
+                          </div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: '700', color: '#64748b' }}>Phase:</label>
+                              <input 
+                                type="text"
+                                value={editingMilestoneForm.phase}
+                                onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, phase: e.target.value })}
+                                style={{ width: '100%', padding: '5px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.78rem' }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: '700', color: '#64748b' }}>Period:</label>
+                              <input 
+                                type="text"
+                                value={editingMilestoneForm.period}
+                                onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, period: e.target.value })}
+                                style={{ width: '100%', padding: '5px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.78rem' }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: '700', color: '#64748b' }}>Budget (₹):</label>
+                              <input 
+                                type="number"
+                                value={editingMilestoneForm.allocatedBudget}
+                                onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, allocatedBudget: e.target.value })}
+                                style={{ width: '100%', padding: '5px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.78rem' }}
+                              />
+                            </div>
+                            <div>
+                              <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: '700', color: '#64748b' }}>Status:</label>
+                              <select
+                                value={editingMilestoneForm.status}
+                                onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, status: e.target.value })}
+                                style={{ width: '100%', padding: '5px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.78rem', background: '#fff' }}
+                              >
+                                <option value="UPCOMING">UPCOMING</option>
+                                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                                <option value="COMPLETED">COMPLETED</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div style={{ marginBottom: '8px' }}>
+                            <label style={{ display: 'block', fontSize: '0.7rem', fontWeight: '700', color: '#64748b' }}>Deliverables:</label>
+                            <textarea 
+                              rows={2}
+                              value={editingMilestoneForm.deliverables}
+                              onChange={(e) => setEditingMilestoneForm({ ...editingMilestoneForm, deliverables: e.target.value })}
+                              style={{ width: '100%', padding: '5px 8px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.78rem' }}
+                            />
+                          </div>
+                          <div style={{ display: 'flex', gap: '6px', justifyContent: 'flex-end' }}>
+                            <button
+                              type="button"
+                              onClick={() => setEditingMilestoneId(null)}
+                              className="btn btn-secondary btn-sm"
+                              style={{ padding: '4px 10px', fontSize: '0.72rem' }}
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                updateProjectMilestone(adminMilestoneProject.id, m.id, {
+                                  ...editingMilestoneForm,
+                                  allocatedBudget: parseFloat(editingMilestoneForm.allocatedBudget) || 0
+                                });
+                                setEditingMilestoneId(null);
+                              }}
+                              className="btn btn-primary btn-sm"
+                              style={{ padding: '4px 12px', fontSize: '0.72rem', fontWeight: '800' }}
+                            >
+                              Save
+                            </button>
+                          </div>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => deleteProjectMilestone(adminMilestoneProject.id, m.id)}
-                          className="btn btn-ghost btn-sm"
-                          style={{ padding: '4px', color: '#e11d48' }}
-                          title="Delete Milestone"
-                        >
-                          <Trash2 size={14} />
-                        </button>
-                      </div>
-                      <p style={{ fontSize: '0.75rem', color: '#475569', margin: '4px 0 8px 0' }}>{m.deliverables}</p>
+                      ) : (
+                        <div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                              <strong style={{ color: '#0f172a', fontSize: '0.85rem' }}>{m.phase}</strong>
+                              <span style={{ fontSize: '0.72rem', color: '#64748b', display: 'block' }}>{m.period} • Budget: {formatMoney(m.allocatedBudget)}</span>
+                            </div>
+                            <div style={{ display: 'flex', gap: '4px' }}>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setEditingMilestoneId(m.id);
+                                  setEditingMilestoneForm({
+                                    phase: m.phase || '',
+                                    period: m.period || '',
+                                    deliverables: m.deliverables || '',
+                                    allocatedBudget: String(m.allocatedBudget || 0),
+                                    spent: String(m.spent || 0),
+                                    status: m.status || 'UPCOMING'
+                                  });
+                                }}
+                                className="btn btn-ghost btn-sm"
+                                style={{ padding: '4px', color: '#0284c7' }}
+                                title="Edit Milestone Details"
+                              >
+                                <Edit3 size={14} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => deleteProjectMilestone(adminMilestoneProject.id, m.id)}
+                                className="btn btn-ghost btn-sm"
+                                style={{ padding: '4px', color: '#e11d48' }}
+                                title="Delete Milestone"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+                          </div>
+                          <p style={{ fontSize: '0.75rem', color: '#475569', margin: '4px 0 8px 0' }}>{m.deliverables}</p>
 
-                      {/* Status Action Buttons */}
-                      <div style={{ display: 'flex', gap: '6px' }}>
-                        <button
-                          type="button"
-                          onClick={() => updateProjectMilestone(adminMilestoneProject.id, m.id, { status: 'COMPLETED' })}
-                          style={{
-                            padding: '4px 10px',
-                            borderRadius: '6px',
-                            fontSize: '0.72rem',
-                            fontWeight: '700',
-                            border: m.status === 'COMPLETED' ? '1px solid #059669' : '1px solid #cbd5e1',
-                            background: m.status === 'COMPLETED' ? '#ecfdf5' : '#ffffff',
-                            color: m.status === 'COMPLETED' ? '#065f46' : '#475569',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          ✓ Mark Completed
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => updateProjectMilestone(adminMilestoneProject.id, m.id, { status: 'IN_PROGRESS' })}
-                          style={{
-                            padding: '4px 10px',
-                            borderRadius: '6px',
-                            fontSize: '0.72rem',
-                            fontWeight: '700',
-                            border: m.status === 'IN_PROGRESS' ? '1px solid #0284c7' : '1px solid #cbd5e1',
-                            background: m.status === 'IN_PROGRESS' ? '#f0f9ff' : '#ffffff',
-                            color: m.status === 'IN_PROGRESS' ? '#075985' : '#475569',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          ▶ In Progress
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => updateProjectMilestone(adminMilestoneProject.id, m.id, { status: 'UPCOMING' })}
-                          style={{
-                            padding: '4px 10px',
-                            borderRadius: '6px',
-                            fontSize: '0.72rem',
-                            fontWeight: '700',
-                            border: m.status === 'UPCOMING' ? '1px solid #d97706' : '1px solid #cbd5e1',
-                            background: m.status === 'UPCOMING' ? '#fffbeb' : '#ffffff',
-                            color: m.status === 'UPCOMING' ? '#92400e' : '#475569',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          Upcoming
-                        </button>
-                      </div>
+                          {/* Status Action Buttons */}
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            <button
+                              type="button"
+                              onClick={() => updateProjectMilestone(adminMilestoneProject.id, m.id, { status: 'COMPLETED' })}
+                              style={{
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                fontSize: '0.72rem',
+                                fontWeight: '700',
+                                border: m.status === 'COMPLETED' ? '1px solid #059669' : '1px solid #cbd5e1',
+                                background: m.status === 'COMPLETED' ? '#ecfdf5' : '#ffffff',
+                                color: m.status === 'COMPLETED' ? '#065f46' : '#475569',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              ✓ Mark Completed
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => updateProjectMilestone(adminMilestoneProject.id, m.id, { status: 'IN_PROGRESS' })}
+                              style={{
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                fontSize: '0.72rem',
+                                fontWeight: '700',
+                                border: m.status === 'IN_PROGRESS' ? '1px solid #0284c7' : '1px solid #cbd5e1',
+                                background: m.status === 'IN_PROGRESS' ? '#f0f9ff' : '#ffffff',
+                                color: m.status === 'IN_PROGRESS' ? '#075985' : '#475569',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              ▶ In Progress
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => updateProjectMilestone(adminMilestoneProject.id, m.id, { status: 'UPCOMING' })}
+                              style={{
+                                padding: '4px 10px',
+                                borderRadius: '6px',
+                                fontSize: '0.72rem',
+                                fontWeight: '700',
+                                border: m.status === 'UPCOMING' ? '1px solid #d97706' : '1px solid #cbd5e1',
+                                background: m.status === 'UPCOMING' ? '#fffbeb' : '#ffffff',
+                                color: m.status === 'UPCOMING' ? '#92400e' : '#475569',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Upcoming
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

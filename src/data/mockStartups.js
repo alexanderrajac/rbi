@@ -74,7 +74,7 @@ export const INITIAL_PROJECT_DEALS = [
     customerContractValue: 450000, // ₹4,50,000 customer contract
     capitalRequired: 200000,       // ₹2,00,000 needed
     businessContribution: 100000,  // ₹1,00,000 carpenter's own money
-    capitalRaised: 165000,         // ₹1,65,000 funded so far (82%)
+    capitalRaised: 0,              // ₹0 fresh launch
     durationDays: 45,
     minContribution: 2500,
     expectedSurplus: 150000,       // Estimated gross surplus
@@ -124,7 +124,7 @@ export const INITIAL_PROJECT_DEALS = [
     customerContractValue: 380000,
     capitalRequired: 150000,
     businessContribution: 80000,
-    capitalRaised: 150000, // 100% funded!
+    capitalRaised: 0, // ₹0 fresh launch
     durationDays: 25,
     minContribution: 2000,
     expectedSurplus: 110000,
@@ -277,7 +277,7 @@ export const INITIAL_STARTUPS = [
     availableShares: 55555,
     sharesSold: 43333,
     targetRaise: 2500000,
-    raisedAmount: 1950000,
+    raisedAmount: 0,
     minInvestment: 45,
     dueDiligenceScore: 96,
     riskGrade: "Low-Medium",
@@ -327,7 +327,7 @@ export const INITIAL_STARTUPS = [
     availableShares: 40000,
     sharesSold: 36000,
     targetRaise: 3200000,
-    raisedAmount: 2880000,
+    raisedAmount: 0,
     minInvestment: 80,
     dueDiligenceScore: 95,
     riskGrade: "Low",
@@ -377,7 +377,7 @@ export const INITIAL_STARTUPS = [
     availableShares: 60000,
     sharesSold: 54000,
     targetRaise: 3000000,
-    raisedAmount: 2700000,
+    raisedAmount: 0,
     minInvestment: 50,
     dueDiligenceScore: 97,
     riskGrade: "Low",
@@ -427,7 +427,7 @@ export const INITIAL_STARTUPS = [
     availableShares: 45000,
     sharesSold: 28000,
     targetRaise: 750000,
-    raisedAmount: 520000,
+    raisedAmount: 0,
     minInvestment: 25,
     dueDiligenceScore: 92,
     riskGrade: "Low-Medium",

@@ -1035,18 +1035,33 @@ export const AppProvider = ({ children }) => {
 
   // Admin Project Milestones Controls
   const updateProjectMilestone = (projectId, milestoneId, updatedData) => {
-    setBusinessProjects(prev => prev.map(p => {
-      if (p.id === projectId) {
-        const updatedTimeline = (p.timeline || []).map(m => {
-          if (m.id === milestoneId) {
-            return { ...m, ...updatedData };
-          }
-          return m;
-        });
-        return { ...p, timeline: updatedTimeline };
+    let syncedProject = null;
+
+    setBusinessProjects(prev => {
+      const updated = prev.map(p => {
+        if (p.id === projectId) {
+          const updatedTimeline = (p.timeline || []).map(m => {
+            if (m.id === milestoneId) {
+              return { ...m, ...updatedData };
+            }
+            return m;
+          });
+          const newProj = { ...p, timeline: updatedTimeline };
+          syncedProject = newProj;
+          return newProj;
+        }
+        return p;
+      });
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('rbi_business_projects', JSON.stringify(updated));
       }
-      return p;
-    }));
+      return updated;
+    });
+
+    if (syncedProject) {
+      syncBusinessProjectToSupabase(syncedProject).catch(err => console.error('Supabase sync error:', err));
+    }
 
     const historyEntry = {
       id: `hist-ms-${Date.now()}`,
@@ -1060,7 +1075,7 @@ export const AppProvider = ({ children }) => {
       }),
       user: user?.name || "Administrator",
       action: "Milestone Updated",
-      note: `Milestone ${milestoneId} status set to ${updatedData.status || 'updated'}`
+      note: `Milestone ${milestoneId} updated with ${JSON.stringify(updatedData)}`
     };
     setProjectChangeHistory(prev => [historyEntry, ...prev]);
 
@@ -1079,15 +1094,28 @@ export const AppProvider = ({ children }) => {
       ...newMilestone
     };
 
-    setBusinessProjects(prev => prev.map(p => {
-      if (p.id === projectId) {
-        return {
-          ...p,
-          timeline: [...(p.timeline || []), milestoneWithId]
-        };
+    let syncedProject = null;
+    setBusinessProjects(prev => {
+      const updated = prev.map(p => {
+        if (p.id === projectId) {
+          const newProj = {
+            ...p,
+            timeline: [...(p.timeline || []), milestoneWithId]
+          };
+          syncedProject = newProj;
+          return newProj;
+        }
+        return p;
+      });
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('rbi_business_projects', JSON.stringify(updated));
       }
-      return p;
-    }));
+      return updated;
+    });
+
+    if (syncedProject) {
+      syncBusinessProjectToSupabase(syncedProject).catch(err => console.error('Supabase sync error:', err));
+    }
 
     const historyEntry = {
       id: `hist-ms-add-${Date.now()}`,
@@ -1107,15 +1135,28 @@ export const AppProvider = ({ children }) => {
   };
 
   const deleteProjectMilestone = (projectId, milestoneId) => {
-    setBusinessProjects(prev => prev.map(p => {
-      if (p.id === projectId) {
-        return {
-          ...p,
-          timeline: (p.timeline || []).filter(m => m.id !== milestoneId)
-        };
+    let syncedProject = null;
+    setBusinessProjects(prev => {
+      const updated = prev.map(p => {
+        if (p.id === projectId) {
+          const newProj = {
+            ...p,
+            timeline: (p.timeline || []).filter(m => m.id !== milestoneId)
+          };
+          syncedProject = newProj;
+          return newProj;
+        }
+        return p;
+      });
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('rbi_business_projects', JSON.stringify(updated));
       }
-      return p;
-    }));
+      return updated;
+    });
+
+    if (syncedProject) {
+      syncBusinessProjectToSupabase(syncedProject).catch(err => console.error('Supabase sync error:', err));
+    }
   };
 
   const addProjectLiveUpdate = (projectId, note, author = "Operations Team") => {
