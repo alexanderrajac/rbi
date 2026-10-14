@@ -158,23 +158,23 @@ export const Navbar = () => {
               <span>My Investments</span>
             </button>
 
-            {/* Sovereign Admin Desk Nav Link */}
-            <button 
-              onClick={() => setActiveTab('admin')}
-              className={`btn btn-sm ${activeTab === 'admin' ? 'btn-primary' : 'btn-ghost'}`}
-              style={{ 
-                borderRadius: '10px', 
-                fontWeight: '700', 
-                gap: '6px',
-                border: activeTab === 'admin' ? 'none' : '1px solid #e2e8f0',
-                background: activeTab === 'admin' ? undefined : (isAdminLoggedIn ? '#fef3c7' : undefined)
-              }}
-              title="Sovereign Admin Management Desk (rajacofficial369@gmail.com)"
-            >
-              <ShieldCheck size={16} color={activeTab === 'admin' ? '#000' : '#d97706'} />
-              <span>Admin Desk</span>
-              {isAdminLoggedIn ? (
-                pendingApprovalsCount > 0 ? (
+            {/* Sovereign Admin Desk Nav Link - Strictly for verified rajacofficial369@gmail.com */}
+            {isAdminLoggedIn && (
+              <button 
+                onClick={() => setActiveTab('admin')}
+                className={`btn btn-sm ${activeTab === 'admin' ? 'btn-primary' : 'btn-ghost'}`}
+                style={{ 
+                  borderRadius: '10px', 
+                  fontWeight: '700', 
+                  gap: '6px',
+                  border: activeTab === 'admin' ? 'none' : '1px solid #e2e8f0',
+                  background: activeTab === 'admin' ? undefined : '#fef3c7'
+                }}
+                title="Sovereign Admin Management Desk (rajacofficial369@gmail.com)"
+              >
+                <ShieldCheck size={16} color={activeTab === 'admin' ? '#000' : '#d97706'} />
+                <span>Admin Desk</span>
+                {pendingApprovalsCount > 0 ? (
                   <span style={{ background: '#f59e0b', color: '#000', borderRadius: '12px', padding: '1px 7px', fontSize: '0.62rem', fontWeight: '800' }}>
                     {pendingApprovalsCount}
                   </span>
@@ -182,13 +182,9 @@ export const Navbar = () => {
                   <span className="badge badge-gold" style={{ fontSize: '0.6rem', padding: '1px 5px' }}>
                     Active
                   </span>
-                )
-              ) : (
-                <span className="badge" style={{ fontSize: '0.6rem', padding: '1px 5px', background: '#f1f5f9', color: '#64748b' }}>
-                  Auth
-                </span>
-              )}
-            </button>
+                )}
+              </button>
+            )}
           </nav>
 
           {/* Right Action Bar */}
@@ -409,22 +405,23 @@ export const Navbar = () => {
               <span>Escrow & Safety (8248651695-3@ybl)</span>
             </button>
 
-            <button 
-              onClick={() => {
-                setActiveTab('admin');
-                setMobileMenuOpen(false);
-              }}
-              className={`btn btn-sm ${activeTab === 'admin' ? 'btn-primary' : 'btn-ghost'}`}
-              style={{ justifyContent: 'flex-start', borderRadius: '8px', fontWeight: '700' }}
-            >
-              <Lock size={16} />
-              <span>Admin Management Desk</span>
-              {isAdminLoggedIn && (
+            {/* Sovereign Admin Link (Only for verified admin) */}
+            {isAdminLoggedIn && (
+              <button 
+                onClick={() => {
+                  setActiveTab('admin');
+                  setMobileMenuOpen(false);
+                }}
+                className={`btn btn-sm ${activeTab === 'admin' ? 'btn-primary' : 'btn-ghost'}`}
+                style={{ justifyContent: 'flex-start', borderRadius: '8px', fontWeight: '700' }}
+              >
+                <Lock size={16} />
+                <span>Admin Management Desk</span>
                 <span className="badge badge-gold" style={{ fontSize: '0.62rem', marginLeft: 'auto' }}>
                   Admin Active
                 </span>
-              )}
-            </button>
+              </button>
+            )}
 
             <button 
               onClick={() => {
@@ -484,13 +481,29 @@ export const Navbar = () => {
           <span>Holdings</span>
         </button>
 
-        <button 
-          onClick={() => setActiveTab('admin')}
-          className={`mobile-nav-item ${activeTab === 'admin' ? 'active' : ''}`}
-        >
-          <ShieldCheck size={20} />
-          <span>Admin</span>
-        </button>
+        {isAdminLoggedIn ? (
+          <button 
+            onClick={() => setActiveTab('admin')}
+            className={`mobile-nav-item ${activeTab === 'admin' ? 'active' : ''}`}
+          >
+            <ShieldCheck size={20} />
+            <span>Admin</span>
+          </button>
+        ) : (
+          <button 
+            onClick={() => {
+              setActiveTab('projects');
+              setTimeout(() => {
+                const el = document.getElementById('how-it-works-section');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }, 60);
+            }}
+            className="mobile-nav-item"
+          >
+            <Sparkles size={20} />
+            <span>How It Works</span>
+          </button>
+        )}
 
         <button 
           onClick={() => setIsKYCModalOpen(true)}

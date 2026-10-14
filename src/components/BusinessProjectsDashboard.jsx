@@ -883,30 +883,32 @@ export const BusinessProjectsDashboard = () => {
                           <span>Budget: <strong style={{ color: '#334155' }}>{formatMoney(m.allocatedBudget)}</strong></span>
                         </div>
                         
-                        {/* Quick Status Buttons */}
-                        <div style={{ display: 'flex', gap: '4px', marginTop: '6px', paddingTop: '6px', borderTop: '1px dashed #e2e8f0' }}>
-                          <button
-                            type="button"
-                            onClick={() => updateProjectMilestone(project.id, m.id, { status: 'COMPLETED' })}
-                            style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #a7f3d0', background: m.status === 'COMPLETED' ? '#d1fae5' : '#ffffff', color: '#065f46', cursor: 'pointer', fontWeight: '700' }}
-                          >
-                            ✓ Completed
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => updateProjectMilestone(project.id, m.id, { status: 'IN_PROGRESS' })}
-                            style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #bae6fd', background: m.status === 'IN_PROGRESS' ? '#e0f2fe' : '#ffffff', color: '#075985', cursor: 'pointer', fontWeight: '700' }}
-                          >
-                            ▶ In Progress
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => updateProjectMilestone(project.id, m.id, { status: 'UPCOMING' })}
-                            style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #e2e8f0', background: m.status === 'UPCOMING' ? '#f1f5f9' : '#ffffff', color: '#64748b', cursor: 'pointer' }}
-                          >
-                            Upcoming
-                          </button>
-                        </div>
+                        {/* Quick Status Buttons - Strictly Sovereign Admin */}
+                        {isAdminLoggedIn && (
+                          <div style={{ display: 'flex', gap: '4px', marginTop: '6px', paddingTop: '6px', borderTop: '1px dashed #e2e8f0' }}>
+                            <button
+                              type="button"
+                              onClick={() => updateProjectMilestone(project.id, m.id, { status: 'COMPLETED' })}
+                              style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #a7f3d0', background: m.status === 'COMPLETED' ? '#d1fae5' : '#ffffff', color: '#065f46', cursor: 'pointer', fontWeight: '700' }}
+                            >
+                              ✓ Completed
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => updateProjectMilestone(project.id, m.id, { status: 'IN_PROGRESS' })}
+                              style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #bae6fd', background: m.status === 'IN_PROGRESS' ? '#e0f2fe' : '#ffffff', color: '#075985', cursor: 'pointer', fontWeight: '700' }}
+                            >
+                              ▶ In Progress
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => updateProjectMilestone(project.id, m.id, { status: 'UPCOMING' })}
+                              style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #e2e8f0', background: m.status === 'UPCOMING' ? '#f1f5f9' : '#ffffff', color: '#64748b', cursor: 'pointer' }}
+                            >
+                              Upcoming
+                            </button>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

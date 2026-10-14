@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Building2, ShieldCheck, Heart, Award, ArrowUpRight, Lock, CheckCircle, FileCheck } from 'lucide-react';
 
 export const Footer = () => {
-  const { setActiveTab } = useApp();
+  const { setActiveTab, isAdminLoggedIn } = useApp();
 
   return (
     <footer style={{ 
@@ -131,11 +131,13 @@ export const Footer = () => {
                   My Investments & Certificates
                 </button>
               </li>
-              <li>
-                <button onClick={() => setActiveTab('admin')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#d97706', fontWeight: '700', justifyContent: 'flex-start' }}>
-                  Admin Portal
-                </button>
-              </li>
+              {isAdminLoggedIn && (
+                <li>
+                  <button onClick={() => setActiveTab('admin')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#d97706', fontWeight: '700', justifyContent: 'flex-start' }}>
+                    Admin Portal
+                  </button>
+                </li>
+              )}
             </ul>
           </div>
 

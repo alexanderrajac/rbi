@@ -53,22 +53,26 @@ export const AppProvider = ({ children }) => {
   const [activeTab, setActiveTab] = useState('projects');
 
   // Role: 'investor' | 'founder' | 'admin'
-  const [currentRole, setCurrentRole] = useState(() => {
-    return localStorage.getItem('rbi_role') || 'investor';
-  });
+  const [currentRole, setCurrentRole] = useState('investor');
 
   const [currency, setCurrency] = useState('INR'); // Default to INR based on project report & blueprint, toggleable to USD
   const USD_TO_INR = 83.5;
 
-  // Admin authentication state - strictly for rajacofficial369@gmail.com
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
-    return typeof window !== 'undefined' && localStorage.getItem('rbi_admin_auth') === 'true';
-  });
+  // Admin authentication state - strictly for verified Google login rajacofficial369@gmail.com
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
   // User details - defaults to Investor Backer for visitors & new users
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('rbi_user');
-    return saved ? JSON.parse(saved) : {
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return { ...parsed, isAdmin: false };
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return {
       name: "Investor Backer",
       email: "",
       phone: "",
@@ -130,12 +134,18 @@ export const AppProvider = ({ children }) => {
       } else {
         setIsAdminLoggedIn(false);
         setCurrentRole('investor');
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('rbi_admin_auth');
+        }
       }
       setIsAuthLoading(false);
     }).catch(err => {
       console.warn('Session check note:', err?.message || err);
       setIsAdminLoggedIn(false);
       setIsAuthLoading(false);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('rbi_admin_auth');
+      }
     });
 
     // 3. Subscribe to OAuth redirects and auth events
@@ -162,6 +172,9 @@ export const AppProvider = ({ children }) => {
         setSupabaseUser(null);
         setIsAdminLoggedIn(false);
         setCurrentRole('investor');
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('rbi_admin_auth');
+        }
       }
       setIsAuthLoading(false);
     });
@@ -186,6 +199,11 @@ export const AppProvider = ({ children }) => {
     try {
       await signOut();
       setSupabaseUser(null);
+      setIsAdminLoggedIn(false);
+      setCurrentRole('investor');
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('rbi_admin_auth');
+      }
     } catch (err) {
       console.error('Sign Out error:', err);
     }
@@ -322,7 +340,13 @@ export const AppProvider = ({ children }) => {
 
   // Sync to LocalStorage
   useEffect(() => { localStorage.setItem('rbi_role', currentRole); }, [currentRole]);
-  useEffect(() => { localStorage.setItem('rbi_admin_auth', isAdminLoggedIn ? 'true' : 'false'); }, [isAdminLoggedIn]);
+  useEffect(() => { 
+    if (isAdminLoggedIn) {
+      localStorage.setItem('rbi_admin_auth', 'true');
+    } else {
+      localStorage.removeItem('rbi_admin_auth');
+    }
+  }, [isAdminLoggedIn]);
   useEffect(() => { localStorage.setItem('rbi_user', JSON.stringify(user)); }, [user]);
   useEffect(() => { localStorage.setItem('rbi_wallet', walletBalance.toString()); }, [walletBalance]);
   useEffect(() => { localStorage.setItem('rbi_startups', JSON.stringify(startups)); }, [startups]);
@@ -1000,8 +1024,13 @@ export const AppProvider = ({ children }) => {
     setContributions([]);
   };
 
-  // Business Projects Operations
+  // Business Projects Operations - Strictly Sovereign Admin
   const updateBusinessProject = (projectId, updatedFields, changeNote = "Assumptions Updated") => {
+    if (!isAdminLoggedIn) {
+      console.warn('Unauthorized: Only Sovereign Admin (rajacofficial369@gmail.com) can update business projects.');
+      return;
+    }
+
     // 1. Resolve current project and compute updated drop-in object
     const currentProj = businessProjects.find(p => p.id === projectId) || INITIAL_BUSINESS_PROJECTS.find(p => p.id === projectId);
     const updatedProj = currentProj ? { ...currentProj, ...updatedFields } : { id: projectId, ...updatedFields };
@@ -1040,6 +1069,11 @@ export const AppProvider = ({ children }) => {
   };
 
   const addBusinessProject = (newProject) => {
+    if (!isAdminLoggedIn) {
+      console.warn('Unauthorized: Only Sovereign Admin (rajacofficial369@gmail.com) can add business projects.');
+      return;
+    }
+
     setBusinessProjects(prev => [newProject, ...prev]);
     const historyEntry = {
       id: `hist-${Date.now()}`,
@@ -1061,6 +1095,11 @@ export const AppProvider = ({ children }) => {
 
   // Admin Project Milestones Controls
   const updateProjectMilestone = (projectId, milestoneId, updatedData) => {
+    if (!isAdminLoggedIn) {
+      console.warn('Unauthorized: Only Sovereign Admin (rajacofficial369@gmail.com) can update milestones.');
+      return;
+    }
+
     const currentProj = businessProjects.find(p => p.id === projectId) || INITIAL_BUSINESS_PROJECTS.find(p => p.id === projectId);
     if (!currentProj) return;
 
@@ -1107,6 +1146,11 @@ export const AppProvider = ({ children }) => {
   };
 
   const addProjectMilestone = (projectId, newMilestone) => {
+    if (!isAdminLoggedIn) {
+      console.warn('Unauthorized: Only Sovereign Admin (rajacofficial369@gmail.com) can add milestones.');
+      return;
+    }
+
     const milestoneWithId = {
       id: `ms-${Date.now()}`,
       status: 'UPCOMING',
@@ -1150,6 +1194,11 @@ export const AppProvider = ({ children }) => {
   };
 
   const deleteProjectMilestone = (projectId, milestoneId) => {
+    if (!isAdminLoggedIn) {
+      console.warn('Unauthorized: Only Sovereign Admin (rajacofficial369@gmail.com) can delete milestones.');
+      return;
+    }
+
     const currentProj = businessProjects.find(p => p.id === projectId) || INITIAL_BUSINESS_PROJECTS.find(p => p.id === projectId);
     if (!currentProj) return;
 
@@ -1170,6 +1219,11 @@ export const AppProvider = ({ children }) => {
   };
 
   const addProjectLiveUpdate = (projectId, note, author = "Operations Team") => {
+    if (!isAdminLoggedIn) {
+      console.warn('Unauthorized: Only Sovereign Admin (rajacofficial369@gmail.com) can broadcast updates.');
+      return;
+    }
+
     const newUpdate = {
       date: new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }),
       time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
@@ -1248,6 +1302,11 @@ export const AppProvider = ({ children }) => {
 
   // Admin Approval: Confirms payment screenshot & allocates capital into project
   const approveBusinessInvestment = (investmentId) => {
+    if (!isAdminLoggedIn) {
+      console.warn('Unauthorized: Only Sovereign Admin (rajacofficial369@gmail.com) can approve investments.');
+      return;
+    }
+
     let approvedInv = null;
     setProjectInvestments(prev => prev.map(inv => {
       if (inv.id === investmentId) {
@@ -1308,6 +1367,11 @@ export const AppProvider = ({ children }) => {
 
   // Admin Rejection
   const rejectBusinessInvestment = (investmentId, reason = "Payment verification could not be validated") => {
+    if (!isAdminLoggedIn) {
+      console.warn('Unauthorized: Only Sovereign Admin (rajacofficial369@gmail.com) can reject investments.');
+      return;
+    }
+
     setProjectInvestments(prev => prev.map(inv => {
       if (inv.id === investmentId) {
         return { ...inv, status: 'REJECTED', rejectionReason: reason };
