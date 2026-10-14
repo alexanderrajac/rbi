@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useAnimatedCounter } from '../hooks/useAnimatedCounter';
 import { useApp } from '../context/AppContext';
 import { 
   calculateProjectFinancials, 
@@ -348,83 +350,89 @@ export const BusinessProjectsDashboard = () => {
     return acc;
   }, { totalCapitalRequested: 0, totalCapitalRaised: 0, totalInvestors: 0 });
 
+  // Spring-driven numeric counters for trading desk metrics
+  const animatedRaised = useAnimatedCounter(portfolioAggregates.totalCapitalRaised);
+  const animatedTarget = useAnimatedCounter(portfolioAggregates.totalCapitalRequested);
+  const animatedInvestors = useAnimatedCounter(portfolioAggregates.totalInvestors);
+
   return (
-    <div className="container" style={{ padding: '32px 20px', maxWidth: '1280px', margin: '0 auto' }}>
+    <div className="container" style={{ padding: '28px 16px', maxWidth: '1280px', margin: '0 auto' }}>
       
       {/* ========================================================================= */}
-      {/* 1. PROFESSIONAL HERO BANNER (CLEAN WHITE THEME + ADMIN APPROVAL BADGE) */}
+      {/* 1. INSTITUTIONAL TRADING DESK HERO TELEMETRY (DARK OBSIDIAN THEME) */}
       {/* ========================================================================= */}
-      <div 
-        className="hero-box-mobile"
+      <motion.div 
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="hero-box-mobile trading-panel-card"
         style={{
-          background: '#ffffff',
-          borderRadius: '20px',
           padding: '28px 24px',
-          border: '1px solid #e2e8f0',
-          boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02)',
-          marginBottom: '24px'
+          marginBottom: '24px',
+          boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.6)'
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
           <div style={{ maxWidth: '860px', width: '100%' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#fef3c7', border: '1px solid #fde68a', borderRadius: '20px', padding: '4px 12px', marginBottom: '14px', maxWidth: '100%' }}>
-              <span className="live-pulse-dot" style={{ width: '7px', height: '7px', flexShrink: 0 }}></span>
-              <span style={{ fontSize: '0.74rem', fontWeight: '700', color: '#92400e', letterSpacing: '0.03em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                RBI VERIFIED BUSINESS INVESTMENT DESK • ESCROW RING-FENCED
+            
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 245, 155, 0.08)', border: '1px solid rgba(0, 245, 155, 0.3)', borderRadius: '20px', padding: '4px 12px', marginBottom: '14px', maxWidth: '100%' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00F59B', boxShadow: '0 0 8px #00F59B', flexShrink: 0 }}></span>
+              <span className="font-mono-numbers" style={{ fontSize: '0.72rem', fontWeight: '700', color: '#00F59B', letterSpacing: '0.04em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                RBI SOVEREIGN TRADING DESK • ESCROW RING-FENCED • ZERO DEFAULT
               </span>
             </div>
 
-            <h1 className="hero-heading-mobile" style={{ fontSize: '2.2rem', fontWeight: '900', color: '#0f172a', margin: '0 0 12px 0', letterSpacing: '-0.025em', lineHeight: '1.2' }}>
+            <h1 className="hero-heading-mobile" style={{ fontSize: '2.1rem', fontWeight: '900', color: '#F0F6FC', margin: '0 0 10px 0', letterSpacing: '-0.03em', lineHeight: '1.2' }}>
               Invest in Real-World Business Ventures
             </h1>
-            <p style={{ color: '#475569', fontSize: '0.96rem', margin: '0 0 20px 0', lineHeight: '1.6' }}>
-              Direct capital allocation into 4 verified businesses across <strong>Food Delivery & Cloud Kitchen</strong>, <strong>Carpentry Service Marketplaces</strong>, and <strong>Sustainable Eco-Friendly Manufacturing</strong>. Every rupee spent is audited, milestones trigger escrow disbursement, and investors receive direct sprint return settlements.
+            <p style={{ color: '#8B949E', fontSize: '0.94rem', margin: '0 0 20px 0', lineHeight: '1.6' }}>
+              Direct capital allocation into 4 verified businesses across <strong style={{ color: '#E6EDF3' }}>Food Delivery & Cloud Kitchen</strong>, <strong style={{ color: '#E6EDF3' }}>Carpentry Service Marketplaces</strong>, and <strong style={{ color: '#E6EDF3' }}>Sustainable Eco-Friendly Manufacturing</strong>. Every rupee spent is audited, milestones trigger escrow disbursement, and investors receive direct sprint return settlements.
             </p>
 
-            {/* Key Platform Numbers */}
+            {/* High-Density Key Trading Telemetry Numbers */}
             <div className="responsive-stat-grid">
-              <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Active Businesses</div>
-                <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0f172a', marginTop: '2px' }}>4 Open Deals</div>
+              <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Active Businesses</div>
+                <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#F0F6FC', marginTop: '2px' }}>4 Open Deals</div>
               </div>
-              <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Total Capital Raised</div>
-                <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#059669', marginTop: '2px' }}>{formatMoney(portfolioAggregates.totalCapitalRaised)}</div>
+              <div className="card-pulse-bullish" style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(0, 245, 155, 0.4)' }}>
+                <div style={{ fontSize: '0.70rem', color: '#00F59B', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Total Capital Raised</div>
+                <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#00F59B', marginTop: '2px' }}>₹{animatedRaised.toLocaleString('en-IN')}</div>
               </div>
-              <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Target Capital Goal</div>
-                <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#d97706', marginTop: '2px' }}>{formatMoney(portfolioAggregates.totalCapitalRequested)}</div>
+              <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Target Capital Goal</div>
+                <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#F59E0B', marginTop: '2px' }}>₹{animatedTarget.toLocaleString('en-IN')}</div>
               </div>
-              <div style={{ background: '#f8fafc', padding: '14px 18px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
-                <div style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600' }}>Verified Backers</div>
-                <div style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0284c7', marginTop: '2px' }}>{portfolioAggregates.totalInvestors} Investors</div>
+              <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Verified Backers</div>
+                <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#38BDF8', marginTop: '2px' }}>{animatedInvestors} Investors</div>
               </div>
             </div>
           </div>
 
           {/* Admin Approval Quick Gate - STRICTLY SOVEREIGN ADMIN */}
           {isAdminLoggedIn && (
-            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', minWidth: '240px' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '8px' }}>
+            <div style={{ background: '#161B22', border: '1px solid rgba(245, 158, 11, 0.35)', borderRadius: '14px', padding: '18px', minWidth: '240px' }}>
+              <div style={{ fontSize: '0.72rem', fontWeight: '800', color: '#F59E0B', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>
                 Admin Verification Desk
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                <span className={`badge ${pendingInvestments.length > 0 ? 'badge-gold' : 'badge-emerald'}`} style={{ fontSize: '0.8rem', padding: '4px 10px' }}>
+                <span className="badge font-mono-numbers" style={{ fontSize: '0.78rem', padding: '4px 10px', background: pendingInvestments.length > 0 ? 'rgba(245, 158, 11, 0.15)' : 'rgba(0, 245, 155, 0.15)', color: pendingInvestments.length > 0 ? '#F59E0B' : '#00F59B', border: '1px solid currentColor' }}>
                   {pendingInvestments.length} Pending Approval
                 </span>
               </div>
               <button
                 onClick={() => setIsAdminApprovalModalOpen(true)}
-                className="btn btn-secondary btn-sm"
-                style={{ width: '100%', borderRadius: '10px', fontWeight: '700', gap: '6px' }}
+                className="btn btn-sm"
+                style={{ width: '100%', borderRadius: '8px', fontWeight: '700', gap: '6px', background: '#F59E0B', color: '#0B0E14' }}
               >
-                <UserCheck size={15} className="text-amber-500" />
+                <UserCheck size={15} />
                 <span>Review Submissions</span>
               </button>
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
       {/* ========================================================================= */}
       {/* 1.5. LIVE STOCK MARKET CANDLESTICK TERMINAL (Moving Real-time Engine) */}
@@ -453,45 +461,48 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       {/* 2. PROFIT RATIO & ₹500 RETURN BREAKDOWN CALCULATOR */}
       {/* ========================================================================= */}
+      {/* ========================================================================= */}
+      {/* 2. PROFIT RATIO & ₹500 RETURN BREAKDOWN CALCULATOR (TRADING DESK SIMULATOR) */}
+      {/* ========================================================================= */}
       <div 
+        className="trading-panel-card"
         style={{
-          background: 'linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%)',
-          borderRadius: '18px',
-          padding: '24px 28px',
-          border: '1px solid #bbf7d0',
-          marginBottom: '28px',
-          boxShadow: '0 4px 18px rgba(5, 150, 105, 0.05)'
+          padding: '22px 24px',
+          marginBottom: '26px',
+          background: '#0D1117'
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Calculator size={20} className="text-emerald-500" />
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
+              <Calculator size={18} className="text-emerald-400" />
+              <h3 style={{ fontSize: '1.20rem', fontWeight: '800', color: '#F0F6FC', margin: 0 }}>
                 Transparent Profit Ratio & Return Calculator
               </h3>
             </div>
-            <p style={{ color: '#475569', fontSize: '0.86rem', margin: '4px 0 0 0' }}>
-              See exact net profit and total returns for backing any project with <strong>₹{calcAmount || '500'}</strong>:
+            <p style={{ color: '#8B949E', fontSize: '0.84rem', margin: '4px 0 0 0' }}>
+              Simulate exact net returns and sprint payout for backing any deal with <strong className="font-mono-numbers" style={{ color: '#00F59B' }}>₹{calcAmount || '500'}</strong>:
             </p>
           </div>
 
           {/* Quick Amount Inputs */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: '600' }}>Test Amount:</span>
+            <span style={{ fontSize: '0.78rem', color: '#8B949E', fontWeight: '600' }}>Order Size:</span>
             {[500, 1000, 2500, 5000].map(amt => (
               <button
                 key={amt}
                 onClick={() => setCalcAmount(amt.toString())}
+                className="font-mono-numbers"
                 style={{
                   padding: '5px 12px',
                   borderRadius: '8px',
                   fontSize: '0.78rem',
                   fontWeight: '700',
-                  border: calcAmount === amt.toString() ? '1px solid #059669' : '1px solid #cbd5e1',
-                  background: calcAmount === amt.toString() ? '#059669' : '#ffffff',
-                  color: calcAmount === amt.toString() ? '#ffffff' : '#0f172a',
-                  cursor: 'pointer'
+                  border: calcAmount === amt.toString() ? '1px solid #00F59B' : '1px solid rgba(255, 255, 255, 0.1)',
+                  background: calcAmount === amt.toString() ? 'rgba(0, 245, 155, 0.15)' : '#161B22',
+                  color: calcAmount === amt.toString() ? '#00F59B' : '#C9D1D9',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
                 }}
               >
                 ₹{amt}
@@ -501,39 +512,39 @@ export const BusinessProjectsDashboard = () => {
         </div>
 
         {/* 4 Projects Return Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '14px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
           {businessProjects.map(proj => {
             const ret = calculateInvestmentReturn(proj, calcAmount);
             return (
               <div 
                 key={proj.id}
                 style={{
-                  background: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '14px',
-                  padding: '16px',
+                  background: '#161B22',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '12px',
+                  padding: '14px 16px',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '8px'
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <strong style={{ fontSize: '0.92rem', color: '#0f172a' }}>{proj.name}</strong>
-                  <span className="badge badge-emerald" style={{ fontSize: '0.68rem' }}>
+                  <strong style={{ fontSize: '0.88rem', color: '#F0F6FC' }}>{proj.name}</strong>
+                  <span className="badge font-mono-numbers" style={{ fontSize: '0.66rem', background: 'rgba(0, 245, 155, 0.12)', color: '#00F59B', border: '1px solid rgba(0, 245, 155, 0.25)' }}>
                     +{ret.yieldPercent}
                   </span>
                 </div>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', paddingTop: '4px', borderTop: '1px dashed #e2e8f0' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>If you invest ₹{calcAmount}:</span>
-                  <span style={{ fontSize: '1.15rem', fontWeight: '900', color: '#059669' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', paddingTop: '4px', borderTop: '1px dashed rgba(255, 255, 255, 0.1)' }}>
+                  <span style={{ fontSize: '0.74rem', color: '#8B949E' }}>If backed with ₹{calcAmount}:</span>
+                  <span className="font-mono-numbers" style={{ fontSize: '1.15rem', fontWeight: '800', color: '#00F59B' }}>
                     ₹{ret.totalReturn}
                   </span>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#475569' }}>
-                  <span>Net Profit: <strong style={{ color: '#d97706' }}>+₹{ret.profit}</strong></span>
-                  <span>Timeline: <strong>{ret.days}</strong></span>
+                <div className="font-mono-numbers" style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#8B949E' }}>
+                  <span>Net Profit: <strong style={{ color: '#F59E0B' }}>+₹{ret.profit}</strong></span>
+                  <span>Timeline: <strong style={{ color: '#C9D1D9' }}>{ret.days}</strong></span>
                 </div>
               </div>
             );
@@ -544,7 +555,7 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       {/* 3. FILTER & SEARCH BAR */}
       {/* ========================================================================= */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '26px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '24px' }}>
         
         {/* Category Pills */}
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
@@ -558,17 +569,17 @@ export const BusinessProjectsDashboard = () => {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
+              className="font-mono-numbers"
               style={{
-                padding: '8px 16px',
-                borderRadius: '10px',
-                fontSize: '0.82rem',
+                padding: '7px 14px',
+                borderRadius: '8px',
+                fontSize: '0.78rem',
                 fontWeight: '700',
-                border: selectedCategory === cat.id ? '1px solid #0f172a' : '1px solid #e2e8f0',
-                background: selectedCategory === cat.id ? '#0f172a' : '#ffffff',
-                color: selectedCategory === cat.id ? '#ffffff' : '#475569',
+                border: selectedCategory === cat.id ? '1px solid #38BDF8' : '1px solid rgba(255, 255, 255, 0.08)',
+                background: selectedCategory === cat.id ? 'rgba(56, 189, 248, 0.15)' : '#161B22',
+                color: selectedCategory === cat.id ? '#38BDF8' : '#8B949E',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease',
-                boxShadow: selectedCategory === cat.id ? '0 2px 8px rgba(15, 23, 42, 0.15)' : 'none'
+                transition: 'all 0.15s ease'
               }}
             >
               {cat.label}
@@ -578,22 +589,21 @@ export const BusinessProjectsDashboard = () => {
 
         {/* Search Input */}
         <div style={{ position: 'relative' }}>
-          <Search size={15} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+          <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6E7681' }} />
           <input 
             type="text"
             placeholder="Search business ventures..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
-              padding: '9px 14px 9px 36px',
-              borderRadius: '10px',
-              border: '1px solid #cbd5e1',
-              background: '#ffffff',
-              fontSize: '0.86rem',
-              color: '#0f172a',
+              padding: '8px 14px 8px 34px',
+              borderRadius: '8px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              background: '#161B22',
+              fontSize: '0.82rem',
+              color: '#F0F6FC',
               outline: 'none',
-              minWidth: '240px',
-              boxShadow: '0 1px 2px rgba(0,0,0,0.04)'
+              minWidth: '240px'
             }}
           />
         </div>
@@ -603,39 +613,53 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       {/* 4. BUSINESS PROJECT CARDS (WITH PROFIT RATIO & APPROVAL WORKFLOW) */}
       {/* ========================================================================= */}
+      {/* ========================================================================= */}
+      {/* 4. BUSINESS PROJECT CARDS (DARK TRADING INSTRUMENTS GRID) */}
+      {/* ========================================================================= */}
       <div id="projects-grid" className="responsive-projects-grid">
-        {filteredProjects.map(project => {
+        {filteredProjects.map((project, idx) => {
           const customUnits = project.id === 'proj-bamboo-cup' ? bambooScenario : null;
           const financials = calculateProjectFinancials(project, customUnits);
           const currentTab = cardActiveTab[project.id] || 'overview';
           const sample500 = calculateInvestmentReturn(project, 500);
 
+          const tickerCode = project.id === 'proj-unavukadai' ? 'UNAVU' :
+                             project.id === 'proj-carpenterbullet' ? 'CARPB' :
+                             project.id === 'proj-wooden-laptop-case' ? 'WLC' : 'WCUP';
+
           return (
-            <div 
+            <motion.div 
               key={project.id}
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: idx * 0.08, ease: "easeOut" }}
+              className="trading-panel-card"
               style={{
-                background: '#ffffff',
-                borderRadius: '18px',
-                border: '1px solid #e2e8f0',
-                padding: '20px 16px',
-                boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.02)',
+                background: '#0D1117',
+                borderRadius: '16px',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                padding: '22px 18px',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between',
-                transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                justifyContent: 'space-between'
               }}
             >
               <div>
                 {/* Header Badge, Admin Milestone Button & Title */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
                   <div>
-                    <span className="badge badge-emerald" style={{ fontSize: '0.68rem', marginBottom: '6px' }}>
-                      OPEN FOR INVESTMENT
-                    </span>
-                    <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#0f172a', margin: '4px 0 2px 0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                      <span className="badge font-mono-numbers" style={{ fontSize: '0.64rem', padding: '2px 7px', background: 'rgba(0, 245, 155, 0.12)', color: '#00F59B', border: '1px solid rgba(0, 245, 155, 0.3)' }}>
+                        OPEN FOR SYNDICATE
+                      </span>
+                      <span className="font-mono-numbers" style={{ fontSize: '0.66rem', color: '#38BDF8', background: 'rgba(56, 189, 248, 0.1)', padding: '2px 6px', borderRadius: '4px', border: '1px solid rgba(56, 189, 248, 0.25)' }}>
+                        [{tickerCode}]
+                      </span>
+                    </div>
+                    <h2 style={{ fontSize: '1.30rem', fontWeight: '800', color: '#F0F6FC', margin: '4px 0 2px 0', letterSpacing: '-0.02em' }}>
                       {project.name}
                     </h2>
-                    <span style={{ fontSize: '0.78rem', color: '#64748b', fontWeight: '600' }}>
+                    <span style={{ fontSize: '0.76rem', color: '#8B949E', fontWeight: '600' }}>
                       {project.category}
                     </span>
                   </div>
@@ -647,76 +671,76 @@ export const BusinessProjectsDashboard = () => {
                         onClick={() => setAdminMilestoneProject(project)}
                         className="btn btn-secondary btn-sm"
                         title="Manage Milestones & Live Work (Admin)"
-                        style={{ padding: '6px 8px', fontSize: '0.72rem', gap: '4px', background: '#f8fafc' }}
+                        style={{ padding: '5px 8px', fontSize: '0.70rem', gap: '4px', background: '#161B22', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.3)' }}
                       >
-                        <SlidersHorizontal size={13} className="text-amber-500" />
+                        <SlidersHorizontal size={13} />
                         <span>Admin Milestones</span>
                       </button>
                       <button 
                         onClick={() => handleOpenEdit(project)}
                         className="btn btn-ghost btn-sm"
                         title="Edit Assumptions"
-                        style={{ padding: '6px' }}
+                        style={{ padding: '5px', color: '#8B949E' }}
                       >
-                        <Edit3 size={14} />
+                        <Edit3 size={13} />
                       </button>
                     </div>
                   )}
                 </div>
 
-                <p style={{ fontSize: '0.86rem', color: '#475569', margin: '6px 0 16px 0', lineHeight: '1.5' }}>
+                <p style={{ fontSize: '0.84rem', color: '#8B949E', margin: '6px 0 16px 0', lineHeight: '1.5' }}>
                   {project.description}
                 </p>
 
-                {/* Return on ₹500 Snapshot Pill */}
-                <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', borderRadius: '10px', padding: '8px 12px', marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.76rem', color: '#065f46', fontWeight: '600' }}>
-                    Invest ₹500 → Return:
+                {/* Return on ₹500 Snapshot Pill (Dark Trading Style) */}
+                <div style={{ background: '#161B22', border: '1px solid rgba(0, 245, 155, 0.25)', borderRadius: '10px', padding: '8px 12px', marginBottom: '14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.74rem', color: '#8B949E', fontWeight: '600' }}>
+                    Order ₹500 → Return:
                   </span>
-                  <div style={{ fontSize: '0.85rem', fontWeight: '800', color: '#065f46' }}>
-                    ₹{sample500.totalReturn} <span style={{ fontSize: '0.72rem', color: '#d97706' }}>(+₹{sample500.profit} in {sample500.days})</span>
+                  <div className="font-mono-numbers" style={{ fontSize: '0.86rem', fontWeight: '800', color: '#00F59B' }}>
+                    ₹{sample500.totalReturn} <span style={{ fontSize: '0.72rem', color: '#F59E0B' }}>(+₹{sample500.profit} in {sample500.days})</span>
                   </div>
                 </div>
 
                 {/* Live Funding Progress Bar */}
                 <div style={{ 
-                  background: '#f8fafc', 
+                  background: '#161B22', 
                   padding: '14px 16px', 
                   borderRadius: '12px', 
-                  border: '1px solid #e2e8f0',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
                   marginBottom: '16px' 
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '8px' }}>
                     <div>
-                      <span style={{ fontSize: '1.3rem', fontWeight: '900', color: '#059669' }}>
+                      <span className="font-mono-numbers" style={{ fontSize: '1.3rem', fontWeight: '900', color: '#00F59B' }}>
                         {formatMoney(financials.capitalRaised)}
                       </span>
-                      <span style={{ fontSize: '0.76rem', color: '#64748b', marginLeft: '6px' }}>
+                      <span style={{ fontSize: '0.74rem', color: '#8B949E', marginLeft: '6px' }}>
                         raised of {formatMoney(financials.capitalRequested)}
                       </span>
                     </div>
-                    <span style={{ fontSize: '0.95rem', fontWeight: '800', color: '#d97706' }}>
+                    <span className="font-mono-numbers" style={{ fontSize: '0.92rem', fontWeight: '800', color: '#F59E0B' }}>
                       {financials.fundingPercent}%
                     </span>
                   </div>
 
                   {/* Progress Line */}
-                  <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '6px', overflow: 'hidden' }}>
+                  <div style={{ width: '100%', height: '7px', background: '#21262D', borderRadius: '6px', overflow: 'hidden' }}>
                     <div 
                       style={{ 
                         width: `${financials.fundingPercent}%`, 
                         height: '100%', 
-                        background: 'linear-gradient(90deg, #d97706 0%, #059669 100%)',
+                        background: 'linear-gradient(90deg, #F59E0B 0%, #00F59B 100%)',
                         borderRadius: '6px',
                         transition: 'width 0.4s ease'
                       }}
                     />
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontSize: '0.74rem', color: '#64748b' }}>
+                  <div className="font-mono-numbers" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontSize: '0.72rem', color: '#8B949E' }}>
                     <span>👥 {financials.investorsCount} Backers</span>
                     <span>Min: {formatMoney(financials.minInvestment)}</span>
-                    <span style={{ color: '#0284c7', fontWeight: '700' }}>Yield: {financials.expectedTermYield}</span>
+                    <span style={{ color: '#38BDF8', fontWeight: '700' }}>Yield: {financials.expectedTermYield}</span>
                   </div>
                 </div>
 
@@ -724,115 +748,71 @@ export const BusinessProjectsDashboard = () => {
                 <div style={{ 
                   display: 'flex', 
                   gap: '4px', 
-                  background: '#f1f5f9', 
+                  background: '#161B22', 
                   padding: '3px', 
                   borderRadius: '10px', 
                   marginBottom: '14px',
-                  border: '1px solid #e2e8f0'
+                  border: '1px solid rgba(255, 255, 255, 0.08)'
                 }}>
-                  <button
-                    type="button"
-                    onClick={() => setProjectCardTab(project.id, 'overview')}
-                    style={{
-                      flex: 1,
-                      padding: '7px 4px',
-                      borderRadius: '8px',
-                      fontSize: '0.74rem',
-                      fontWeight: '700',
-                      border: 'none',
-                      background: currentTab === 'overview' ? '#ffffff' : 'transparent',
-                      color: currentTab === 'overview' ? '#0f172a' : '#64748b',
-                      boxShadow: currentTab === 'overview' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Economics
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setProjectCardTab(project.id, 'costs')}
-                    style={{
-                      flex: 1,
-                      padding: '7px 4px',
-                      borderRadius: '8px',
-                      fontSize: '0.74rem',
-                      fontWeight: '700',
-                      border: 'none',
-                      background: currentTab === 'costs' ? '#ffffff' : 'transparent',
-                      color: currentTab === 'costs' ? '#0f172a' : '#64748b',
-                      boxShadow: currentTab === 'costs' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    All Costs
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setProjectCardTab(project.id, 'timeline')}
-                    style={{
-                      flex: 1,
-                      padding: '7px 4px',
-                      borderRadius: '8px',
-                      fontSize: '0.74rem',
-                      fontWeight: '700',
-                      border: 'none',
-                      background: currentTab === 'timeline' ? '#ffffff' : 'transparent',
-                      color: currentTab === 'timeline' ? '#0f172a' : '#64748b',
-                      boxShadow: currentTab === 'timeline' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Milestones
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setProjectCardTab(project.id, 'activity')}
-                    style={{
-                      flex: 1,
-                      padding: '7px 4px',
-                      borderRadius: '8px',
-                      fontSize: '0.74rem',
-                      fontWeight: '700',
-                      border: 'none',
-                      background: currentTab === 'activity' ? '#ffffff' : 'transparent',
-                      color: currentTab === 'activity' ? '#0f172a' : '#64748b',
-                      boxShadow: currentTab === 'activity' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
-                      cursor: 'pointer'
-                    }}
-                  >
-                    Live Work
-                  </button>
+                  {[
+                    { id: 'overview', label: 'Economics' },
+                    { id: 'costs', label: 'All Costs' },
+                    { id: 'timeline', label: 'Milestones' },
+                    { id: 'activity', label: 'Live Work' }
+                  ].map(tab => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setProjectCardTab(project.id, tab.id)}
+                      className="font-mono-numbers"
+                      style={{
+                        flex: 1,
+                        padding: '6px 4px',
+                        borderRadius: '7px',
+                        fontSize: '0.72rem',
+                        fontWeight: '700',
+                        border: 'none',
+                        background: currentTab === tab.id ? '#21262D' : 'transparent',
+                        color: currentTab === tab.id ? '#F0F6FC' : '#8B949E',
+                        boxShadow: currentTab === tab.id ? '0 1px 3px rgba(0,0,0,0.4)' : 'none',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease'
+                      }}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
                 </div>
 
                 {/* TAB 1: ECONOMICS */}
                 {currentTab === 'overview' && (
                   <div>
                     <div style={{ 
-                      background: '#f8fafc', 
+                      background: '#161B22', 
                       borderRadius: '12px', 
                       padding: '12px 14px', 
-                      border: '1px solid #e2e8f0',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
                       display: 'grid', 
                       gridTemplateColumns: '1fr 1fr', 
                       gap: '10px',
                       marginBottom: '14px',
-                      fontSize: '0.78rem'
+                      fontSize: '0.76rem'
                     }}>
                       <div>
-                        <span style={{ color: '#64748b' }}>Target Revenue:</span>
-                        <div style={{ fontWeight: '800', color: '#0f172a', fontSize: '0.95rem' }}>{formatMoney(financials.projectedRevenue)}</div>
+                        <span style={{ color: '#8B949E' }}>Target Revenue:</span>
+                        <div className="font-mono-numbers" style={{ fontWeight: '800', color: '#F0F6FC', fontSize: '0.92rem' }}>{formatMoney(financials.projectedRevenue)}</div>
                       </div>
                       <div>
-                        <span style={{ color: '#64748b' }}>Projected Net Profit:</span>
-                        <div style={{ fontWeight: '800', color: '#059669', fontSize: '0.95rem' }}>{formatMoney(financials.projectedNetProfit)}</div>
+                        <span style={{ color: '#8B949E' }}>Projected Net Profit:</span>
+                        <div className="font-mono-numbers" style={{ fontWeight: '800', color: '#00F59B', fontSize: '0.92rem' }}>{formatMoney(financials.projectedNetProfit)}</div>
                       </div>
                       <div>
-                        <span style={{ color: '#64748b' }}>Sprint Payout:</span>
-                        <div style={{ fontWeight: '700', color: '#d97706' }}>{financials.payoutTimeline}</div>
+                        <span style={{ color: '#8B949E' }}>Sprint Payout:</span>
+                        <div className="font-mono-numbers" style={{ fontWeight: '700', color: '#F59E0B' }}>{financials.payoutTimeline}</div>
                       </div>
                       <div>
-                        <span style={{ color: '#64748b' }}>Ad Spend Allocation:</span>
-                        <div style={{ fontWeight: '700', color: '#0284c7' }}>{formatMoney(financials.totalAdSpend)}</div>
+                        <span style={{ color: '#8B949E' }}>Ad Spend Allocation:</span>
+                        <div className="font-mono-numbers" style={{ fontWeight: '700', color: '#38BDF8' }}>{formatMoney(financials.totalAdSpend)}</div>
                       </div>
                     </div>
                   </div>
@@ -841,74 +821,74 @@ export const BusinessProjectsDashboard = () => {
                 {/* TAB 2: ALL COSTS */}
                 {currentTab === 'costs' && (
                   <div style={{ marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {(project.expenseBreakdown || []).slice(0, 4).map((exp, idx) => (
-                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 10px', borderRadius: '8px', background: '#f8fafc', border: '1px solid #e2e8f0', fontSize: '0.76rem' }}>
-                        <span style={{ color: '#334155' }}>{exp.item}</span>
-                        <strong style={{ color: '#d97706' }}>{formatMoney(exp.amount)}</strong>
+                    {(project.expenseBreakdown || []).slice(0, 4).map((exp, expIdx) => (
+                      <div key={expIdx} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 10px', borderRadius: '8px', background: '#161B22', border: '1px solid rgba(255, 255, 255, 0.06)', fontSize: '0.74rem' }}>
+                        <span style={{ color: '#C9D1D9' }}>{exp.item}</span>
+                        <strong className="font-mono-numbers" style={{ color: '#F59E0B' }}>{formatMoney(exp.amount)}</strong>
                       </div>
                     ))}
-                    <div style={{ fontSize: '0.7rem', color: '#64748b', textAlign: 'right', marginTop: '2px' }}>
+                    <div style={{ fontSize: '0.68rem', color: '#6E7681', textAlign: 'right', marginTop: '2px' }}>
                       All items verified & ring-fenced in escrow
                     </div>
                   </div>
                 )}
 
-                {/* TAB 3: MILESTONES (WITH DIRECT STATUS TOGGLE & TIME SPRINT) */}
+                {/* TAB 3: MILESTONES (UPCOMING SPRINTS) */}
                 {currentTab === 'timeline' && (
                   <div style={{ marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {(project.timeline || []).map((m, idx) => (
-                      <div key={m.id || idx} style={{ padding: '10px 12px', borderRadius: '10px', background: '#f8fafc', border: '1px solid #e2e8f0', fontSize: '0.75rem' }}>
+                    {(project.timeline || []).map((m, stepIdx) => (
+                      <div key={m.id || stepIdx} style={{ padding: '10px 12px', borderRadius: '10px', background: '#161B22', border: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '0.74rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '4px' }}>
                           <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                              <span style={{ fontSize: '0.65rem', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                                Step {m.stepNumber || idx + 1}/{m.stepTotal || (project.timeline?.length || 5)}:
+                              <span style={{ fontSize: '0.65rem', fontWeight: '800', color: '#8B949E', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                                Step {m.stepNumber || stepIdx + 1}/{m.stepTotal || (project.timeline?.length || 5)}:
                               </span>
-                              <strong style={{ color: m.status === 'COMPLETED' ? '#059669' : m.status === 'IN_PROGRESS' ? '#0284c7' : '#0f172a', fontSize: '0.78rem' }}>
+                              <strong style={{ color: '#F0F6FC', fontSize: '0.76rem' }}>
                                 {m.phase}
                               </strong>
                             </div>
                             
                             {/* Sprint Duration & Time Badge */}
-                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '4px', background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '6px', fontSize: '0.68rem', fontWeight: '700', border: '1px solid #fde68a' }}>
-                              <Clock size={12} strokeWidth={2.4} />
+                            <div className="font-mono-numbers" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '4px', background: 'rgba(245, 158, 11, 0.12)', color: '#F59E0B', padding: '2px 8px', borderRadius: '6px', fontSize: '0.66rem', fontWeight: '700', border: '1px solid rgba(245, 158, 11, 0.25)' }}>
+                              <Clock size={11} />
                               <span>Sprint: {m.sprintDuration || m.period}</span>
                             </div>
                           </div>
                           
-                          <span className={`badge ${m.status === 'COMPLETED' ? 'badge-emerald' : m.status === 'IN_PROGRESS' ? 'badge-cyan' : 'badge-gold'}`} style={{ fontSize: '0.62rem', padding: '2px 7px', flexShrink: 0 }}>
-                            {m.status}
+                          <span className="badge font-mono-numbers" style={{ fontSize: '0.60rem', padding: '2px 6px', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.3)', flexShrink: 0 }}>
+                            {m.status || 'UPCOMING'}
                           </span>
                         </div>
 
-                        <div style={{ color: '#475569', fontSize: '0.72rem', marginTop: '4px', lineHeight: '1.4' }}>{m.deliverables}</div>
+                        <div style={{ color: '#8B949E', fontSize: '0.70rem', marginTop: '4px', lineHeight: '1.4' }}>{m.deliverables}</div>
                         
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', fontSize: '0.68rem', color: '#64748b' }}>
-                          <span>Dates: <strong style={{ color: '#334155' }}>{m.period}</strong></span>
-                          <span>Budget: <strong style={{ color: '#334155' }}>{formatMoney(m.allocatedBudget)}</strong></span>
+                        <div className="font-mono-numbers" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', fontSize: '0.68rem', color: '#8B949E' }}>
+                          <span>Dates: <strong style={{ color: '#C9D1D9' }}>{m.period}</strong></span>
+                          <span>Budget: <strong style={{ color: '#00F59B' }}>{formatMoney(m.allocatedBudget)}</strong></span>
                         </div>
                         
                         {/* Quick Status Buttons - Strictly Sovereign Admin */}
                         {isAdminLoggedIn && (
-                          <div style={{ display: 'flex', gap: '4px', marginTop: '6px', paddingTop: '6px', borderTop: '1px dashed #e2e8f0' }}>
+                          <div style={{ display: 'flex', gap: '4px', marginTop: '6px', paddingTop: '6px', borderTop: '1px dashed rgba(255, 255, 255, 0.08)' }}>
                             <button
                               type="button"
                               onClick={() => updateProjectMilestone(project.id, m.id, { status: 'COMPLETED' })}
-                              style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #a7f3d0', background: m.status === 'COMPLETED' ? '#d1fae5' : '#ffffff', color: '#065f46', cursor: 'pointer', fontWeight: '700' }}
+                              style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid rgba(0, 245, 155, 0.3)', background: m.status === 'COMPLETED' ? 'rgba(0, 245, 155, 0.2)' : '#161B22', color: '#00F59B', cursor: 'pointer', fontWeight: '700' }}
                             >
                               ✓ Completed
                             </button>
                             <button
                               type="button"
                               onClick={() => updateProjectMilestone(project.id, m.id, { status: 'IN_PROGRESS' })}
-                              style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #bae6fd', background: m.status === 'IN_PROGRESS' ? '#e0f2fe' : '#ffffff', color: '#075985', cursor: 'pointer', fontWeight: '700' }}
+                              style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid rgba(56, 189, 248, 0.3)', background: m.status === 'IN_PROGRESS' ? 'rgba(56, 189, 248, 0.2)' : '#161B22', color: '#38BDF8', cursor: 'pointer', fontWeight: '700' }}
                             >
                               ▶ In Progress
                             </button>
                             <button
                               type="button"
                               onClick={() => updateProjectMilestone(project.id, m.id, { status: 'UPCOMING' })}
-                              style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #e2e8f0', background: m.status === 'UPCOMING' ? '#f1f5f9' : '#ffffff', color: '#64748b', cursor: 'pointer' }}
+                              style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid rgba(255, 255, 255, 0.1)', background: m.status === 'UPCOMING' ? 'rgba(255, 255, 255, 0.08)' : '#161B22', color: '#8B949E', cursor: 'pointer' }}
                             >
                               Upcoming
                             </button>
@@ -922,10 +902,10 @@ export const BusinessProjectsDashboard = () => {
                 {/* TAB 4: LIVE WORK */}
                 {currentTab === 'activity' && (
                   <div style={{ marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {(project.liveUpdates || []).slice(0, 3).map((upd, idx) => (
-                      <div key={idx} style={{ padding: '8px 10px', borderRadius: '8px', background: '#f8fafc', borderLeft: '3px solid #059669', borderTop: '1px solid #e2e8f0', borderRight: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', fontSize: '0.75rem' }}>
-                        <div style={{ color: '#0f172a', fontWeight: '600' }}>{upd.note}</div>
-                        <div style={{ color: '#64748b', fontSize: '0.68rem', marginTop: '2px' }}>{upd.date} • {upd.author}</div>
+                    {(project.liveUpdates || []).slice(0, 3).map((upd, updIdx) => (
+                      <div key={updIdx} style={{ padding: '8px 10px', borderRadius: '8px', background: '#161B22', borderLeft: '3px solid #00F59B', borderTop: '1px solid rgba(255, 255, 255, 0.06)', borderRight: '1px solid rgba(255, 255, 255, 0.06)', borderBottom: '1px solid rgba(255, 255, 255, 0.06)', fontSize: '0.74rem' }}>
+                        <div style={{ color: '#F0F6FC', fontWeight: '600' }}>{upd.note}</div>
+                        <div style={{ color: '#8B949E', fontSize: '0.66rem', marginTop: '2px' }}>{upd.date} • {upd.author}</div>
                       </div>
                     ))}
                   </div>
@@ -933,50 +913,43 @@ export const BusinessProjectsDashboard = () => {
 
               </div>
 
-              {/* Card Footer: PRIMARY "INVEST IN THIS BUSINESS" + DETAILED OVERVIEW BUTTON */}
+              {/* Card Footer: PRIMARY "EXECUTE BACKING ORDER" + DETAILED OVERVIEW BUTTON */}
               <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <button 
                   type="button"
                   onClick={() => handleOpenInvest(project)}
-                  className="btn btn-primary"
+                  className="btn-order-cta"
                   style={{
                     width: '100%',
                     padding: '12px',
-                    borderRadius: '12px',
-                    fontSize: '0.96rem',
-                    fontWeight: '800',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px'
+                    fontSize: '0.88rem'
                   }}
                 >
-                  <Building2 size={18} />
-                  <span>Invest in this Business (Min {formatMoney(financials.minInvestment)})</span>
+                  <Building2 size={16} />
+                  <span>Execute Backing Order (Min {formatMoney(financials.minInvestment)})</span>
                 </button>
 
                 <button 
                   type="button"
                   onClick={() => setDetailedOverviewProject(project)}
-                  className="btn btn-secondary btn-sm"
+                  className="btn-secondary-trading"
                   style={{
                     width: '100%',
                     padding: '8px',
-                    borderRadius: '10px',
-                    fontSize: '0.82rem',
-                    fontWeight: '700',
+                    fontSize: '0.78rem',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    gap: '6px'
+                    gap: '6px',
+                    cursor: 'pointer'
                   }}
                 >
-                  <FileText size={14} className="text-amber-500" />
-                  <span>Detailed Investment Overview & Terms</span>
+                  <FileText size={13} style={{ color: '#F59E0B' }} />
+                  <span>Audit Terms & Unit Economics</span>
                 </button>
               </div>
 
-            </div>
+            </motion.div>
           );
         })}
       </div>
@@ -984,66 +957,67 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       {/* 5. HOW IT WORKS SECTION (NORMAL & PROFESSIONAL WHITE THEME) */}
       {/* ========================================================================= */}
+      {/* ========================================================================= */}
+      {/* 5. HOW IT WORKS SECTION (DARK TRADING DESK WORKFLOW) */}
+      {/* ========================================================================= */}
       <div 
         id="how-it-works-section"
+        className="trading-panel-card"
         style={{
-          marginTop: '60px',
-          background: '#ffffff',
-          borderRadius: '20px',
-          padding: '36px',
-          border: '1px solid #e2e8f0',
-          boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)'
+          marginTop: '48px',
+          padding: '32px 28px',
+          background: '#0D1117'
         }}
       >
-        <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 36px auto' }}>
-          <span className="badge badge-gold" style={{ fontSize: '0.72rem', padding: '3px 10px', marginBottom: '8px' }}>
-            HOW IT WORKS
+        <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 32px auto' }}>
+          <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', padding: '3px 10px', background: 'rgba(245, 158, 11, 0.12)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.25)', marginBottom: '8px' }}>
+            EXECUTION WORKFLOW
           </span>
-          <h3 style={{ fontSize: '1.75rem', fontWeight: '800', color: '#0f172a', margin: '4px 0 8px 0' }}>
+          <h3 style={{ fontSize: '1.65rem', fontWeight: '800', color: '#F0F6FC', margin: '6px 0 8px 0', letterSpacing: '-0.02em' }}>
             Straightforward Business Capital Allocation
           </h3>
-          <p style={{ color: '#475569', fontSize: '0.9rem', margin: 0 }}>
+          <p style={{ color: '#8B949E', fontSize: '0.88rem', margin: 0 }}>
             Four simple steps to back verified local enterprises with complete escrow protection and clear yield terms.
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
-          <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#fef3c7', color: '#92400e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
-              1
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <div className="font-mono-numbers" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
+              01
             </div>
-            <h4 style={{ color: '#0f172a', fontSize: '1rem', margin: '0 0 6px 0', fontWeight: '700' }}>Choose Business</h4>
-            <p style={{ color: '#475569', fontSize: '0.82rem', margin: 0, lineHeight: '1.5' }}>
+            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Choose Venture</h4>
+            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
               Select a verified venture based on unit economics, operational timeline, and targeted term yields.
             </p>
           </div>
 
-          <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#e0f2fe', color: '#075985', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
-              2
+          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <div className="font-mono-numbers" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
+              02
             </div>
-            <h4 style={{ color: '#0f172a', fontSize: '1rem', margin: '0 0 6px 0', fontWeight: '700' }}>Review All Costs</h4>
-            <p style={{ color: '#475569', fontSize: '0.82rem', margin: 0, lineHeight: '1.5' }}>
+            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Review All Costs</h4>
+            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
               Inspect where every rupee is spent across materials, labour, packaging, delivery, and marketing.
             </p>
           </div>
 
-          <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#ecfdf5', color: '#065f46', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
-              3
+          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <div className="font-mono-numbers" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(0, 245, 155, 0.15)', color: '#00F59B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
+              03
             </div>
-            <h4 style={{ color: '#0f172a', fontSize: '1rem', margin: '0 0 6px 0', fontWeight: '700' }}>Pay via UPI & Attach Screenshot</h4>
-            <p style={{ color: '#475569', fontSize: '0.82rem', margin: 0, lineHeight: '1.5' }}>
-              Scan QR to pay UPI ID <strong>8248651695-3@ybl</strong>, enter your UTR number, and upload screenshot.
+            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Instant UPI Clearing</h4>
+            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
+              Scan QR to pay UPI ID <strong style={{ color: '#00F59B' }}>8248651695-3@ybl</strong>, enter your UTR number, and upload screenshot.
             </p>
           </div>
 
-          <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#f3e8ff', color: '#6b21a8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
-              4
+          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <div className="font-mono-numbers" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(168, 85, 247, 0.15)', color: '#A855F7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '12px' }}>
+              04
             </div>
-            <h4 style={{ color: '#0f172a', fontSize: '1rem', margin: '0 0 6px 0', fontWeight: '700' }}>Admin Approval & Certificate</h4>
-            <p style={{ color: '#475569', fontSize: '0.82rem', margin: 0, lineHeight: '1.5' }}>
+            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Escrow Audit & Cert</h4>
+            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
               Admin verifies the payment against bank escrow rails, approves allocation, and issues your certificate.
             </p>
           </div>
@@ -1055,28 +1029,26 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       <div 
         id="investor-protection-section"
+        className="trading-panel-card"
         style={{
-          marginTop: '36px',
-          background: 'linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%)',
-          borderRadius: '20px',
-          padding: '32px 36px',
-          border: '1px solid #bbf7d0',
+          marginTop: '32px',
+          background: '#0D1117',
+          padding: '28px 32px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '24px',
-          boxShadow: '0 4px 20px -2px rgba(5, 150, 105, 0.08)'
+          gap: '24px'
         }}
       >
         <div style={{ maxWidth: '720px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <ShieldCheck size={24} className="text-emerald-500" />
-            <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
+            <ShieldCheck size={22} className="text-emerald-400" />
+            <h3 style={{ fontSize: '1.30rem', fontWeight: '800', color: '#F0F6FC', margin: 0 }}>
               Royal Bank of Investment Institutional Escrow Ring-Fence
             </h3>
           </div>
-          <p style={{ color: '#475569', fontSize: '0.88rem', margin: 0, lineHeight: '1.6' }}>
+          <p style={{ color: '#8B949E', fontSize: '0.86rem', margin: 0, lineHeight: '1.6' }}>
             All investor funds are held in segregated, audited escrow accounts. Capital is disbursed in strict tranches only upon verified milestone completion. In the event a project does not meet targets, 100% of unspent funds are returned to backers.
           </p>
         </div>
@@ -1085,10 +1057,10 @@ export const BusinessProjectsDashboard = () => {
           <button 
             type="button"
             onClick={() => window.print()}
-            className="btn btn-secondary btn-sm"
-            style={{ borderRadius: '10px' }}
+            className="btn-secondary-trading"
+            style={{ padding: '8px 14px', fontSize: '0.80rem', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
           >
-            <Printer size={15} /> Print Due Diligence
+            <Printer size={14} /> <span>Print Due Diligence</span>
           </button>
         </div>
       </div>
@@ -1098,28 +1070,26 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       <div 
         id="my-investments-section"
+        className="trading-panel-card"
         style={{
-          marginTop: '36px',
-          background: '#ffffff',
-          borderRadius: '20px',
-          padding: '32px',
-          border: '1px solid #e2e8f0',
-          boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)'
+          marginTop: '32px',
+          background: '#0D1117',
+          padding: '28px'
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '24px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Layers size={22} className="text-amber-500" />
-              <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#0f172a', margin: 0 }}>
+              <Layers size={20} className="text-amber-400" />
+              <h3 style={{ fontSize: '1.30rem', fontWeight: '800', color: '#F0F6FC', margin: 0 }}>
                 My Portfolio & Investment Certificates
               </h3>
             </div>
-            <p style={{ color: '#475569', fontSize: '0.86rem', margin: '4px 0 0 0' }}>
+            <p style={{ color: '#8B949E', fontSize: '0.84rem', margin: '4px 0 0 0' }}>
               View your registered business allocations, payment confirmation references, and instant printable certificates.
             </p>
           </div>
-          <span className="badge badge-gold" style={{ fontSize: '0.75rem', padding: '4px 10px' }}>
+          <span className="badge font-mono-numbers" style={{ fontSize: '0.72rem', padding: '4px 10px', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
             {projectInvestments?.length || 0} Total Allocations
           </span>
         </div>
@@ -1130,10 +1100,10 @@ export const BusinessProjectsDashboard = () => {
               <div 
                 key={inv.id}
                 style={{
-                  background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '16px',
-                  padding: '20px',
+                  background: '#161B22',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '14px',
+                  padding: '18px',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '12px'
@@ -1141,58 +1111,58 @@ export const BusinessProjectsDashboard = () => {
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>
-                    <span className="badge badge-gold" style={{ fontSize: '0.65rem', marginBottom: '4px' }}>
+                    <span className="badge font-mono-numbers" style={{ fontSize: '0.64rem', marginBottom: '4px', background: 'rgba(245, 158, 11, 0.12)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.25)' }}>
                       {inv.category || 'Business Venture'}
                     </span>
-                    <h4 style={{ fontSize: '1.1rem', fontWeight: '800', color: '#0f172a', margin: '4px 0 0 0' }}>
+                    <h4 style={{ fontSize: '1.05rem', fontWeight: '800', color: '#F0F6FC', margin: '4px 0 0 0' }}>
                       {inv.projectName}
                     </h4>
                   </div>
                   
                   {/* Status Badge */}
                   {inv.status === 'CONFIRMED' ? (
-                    <span className="badge badge-emerald" style={{ fontSize: '0.7rem' }}>
+                    <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', background: 'rgba(0, 245, 155, 0.15)', color: '#00F59B', border: '1px solid rgba(0, 245, 155, 0.3)' }}>
                       ✓ Verified & Allocated
                     </span>
                   ) : inv.status === 'REJECTED' ? (
-                    <span className="badge badge-rose" style={{ fontSize: '0.7rem' }}>
+                    <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', background: 'rgba(255, 51, 102, 0.15)', color: '#FF3366', border: '1px solid rgba(255, 51, 102, 0.3)' }}>
                       ✕ Rejected
                     </span>
                   ) : (
-                    <span className="badge badge-gold" style={{ fontSize: '0.7rem' }}>
+                    <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
                       ⏳ Awaiting Admin Approval
                     </span>
                   )}
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', padding: '12px', background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '10px' }}>
+                <div className="font-mono-numbers" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', padding: '12px', background: '#0D1117', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '10px' }}>
                   <div>
-                    <div style={{ fontSize: '0.68rem', color: '#64748b' }}>Invested Capital</div>
-                    <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#059669' }}>{formatMoney(inv.amount)}</div>
+                    <div style={{ fontSize: '0.68rem', color: '#8B949E' }}>Invested Capital</div>
+                    <div style={{ fontSize: '1.05rem', fontWeight: '800', color: '#00F59B' }}>{formatMoney(inv.amount)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.68rem', color: '#64748b' }}>Target Yield</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: '700', color: '#d97706' }}>{inv.expectedYield || '14.5%'}</div>
+                    <div style={{ fontSize: '0.68rem', color: '#8B949E' }}>Target Yield</div>
+                    <div style={{ fontSize: '0.95rem', fontWeight: '700', color: '#F59E0B' }}>{inv.expectedYield || '14.5%'}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.68rem', color: '#64748b' }}>Payout Timeline</div>
-                    <div style={{ fontSize: '0.8rem', color: '#0f172a', fontWeight: '600' }}>{inv.payoutTimeline || 'Sprint End'}</div>
+                    <div style={{ fontSize: '0.68rem', color: '#8B949E' }}>Payout Timeline</div>
+                    <div style={{ fontSize: '0.80rem', color: '#C9D1D9', fontWeight: '600' }}>{inv.payoutTimeline || 'Sprint End'}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.68rem', color: '#64748b' }}>Ref ID</div>
-                    <div style={{ fontSize: '0.72rem', color: '#64748b', fontFamily: 'monospace' }}>{inv.id}</div>
+                    <div style={{ fontSize: '0.68rem', color: '#8B949E' }}>Ref ID</div>
+                    <div style={{ fontSize: '0.72rem', color: '#6E7681' }}>{inv.id}</div>
                   </div>
                 </div>
 
                 {/* Attached Screenshot or UTR info */}
                 {(inv.utrNumber || inv.screenshotUrl) && (
-                  <div style={{ fontSize: '0.75rem', background: '#ffffff', padding: '8px 10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                    {inv.utrNumber && <div><span style={{ color: '#64748b' }}>UTR:</span> <strong style={{ color: '#0f172a' }}>{inv.utrNumber}</strong></div>}
+                  <div style={{ fontSize: '0.74rem', background: '#0D1117', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    {inv.utrNumber && <div><span style={{ color: '#8B949E' }}>UTR:</span> <strong className="font-mono-numbers" style={{ color: '#F0F6FC' }}>{inv.utrNumber}</strong></div>}
                     {inv.screenshotUrl && (
                       <button
                         type="button"
                         onClick={() => setPreviewScreenshotUrl(inv.screenshotUrl)}
-                        style={{ background: 'none', border: 'none', color: '#0284c7', cursor: 'pointer', padding: 0, fontWeight: '700', fontSize: '0.72rem', marginTop: '4px' }}
+                        style={{ background: 'none', border: 'none', color: '#38BDF8', cursor: 'pointer', padding: 0, fontWeight: '700', fontSize: '0.72rem', marginTop: '4px' }}
                       >
                         👁 View Attached Payment Screenshot
                       </button>
@@ -1201,19 +1171,19 @@ export const BusinessProjectsDashboard = () => {
                 )}
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                  <span style={{ fontSize: '0.72rem', color: '#64748b' }}>Submitted: {inv.date}</span>
+                  <span className="font-mono-numbers" style={{ fontSize: '0.70rem', color: '#8B949E' }}>Submitted: {inv.date}</span>
                   {inv.status === 'CONFIRMED' ? (
                     <button
                       type="button"
                       onClick={() => setActiveCertificate(inv)}
-                      className="btn btn-secondary btn-sm"
-                      style={{ borderRadius: '8px', fontSize: '0.75rem', gap: '5px' }}
+                      className="btn-secondary-trading"
+                      style={{ padding: '6px 12px', borderRadius: '8px', fontSize: '0.74rem', gap: '5px', cursor: 'pointer' }}
                     >
-                      <FileText size={13} className="text-amber-500" />
+                      <FileText size={13} style={{ color: '#F59E0B' }} />
                       <span>View Certificate</span>
                     </button>
                   ) : (
-                    <span style={{ fontSize: '0.72rem', color: '#d97706', fontWeight: '600' }}>
+                    <span style={{ fontSize: '0.70rem', color: '#F59E0B', fontWeight: '600' }}>
                       Admin verification in progress
                     </span>
                   )}
@@ -1222,19 +1192,19 @@ export const BusinessProjectsDashboard = () => {
             ))}
           </div>
         ) : (
-          <div style={{ textAlign: 'center', padding: '40px 20px', background: '#f8fafc', borderRadius: '16px', border: '1px dashed #cbd5e1' }}>
-            <Building2 size={36} style={{ color: '#94a3b8', margin: '0 auto 12px auto' }} />
-            <h4 style={{ color: '#0f172a', fontSize: '1rem', margin: '0 0 6px 0', fontWeight: '700' }}>No Active Investments Yet</h4>
-            <p style={{ color: '#64748b', fontSize: '0.84rem', margin: '0 0 16px 0', maxWidth: '480px', marginInline: 'auto' }}>
-              Select any of the 4 verified business projects above and click <strong>"Invest in this Business"</strong> to fund and receive your official digital allocation certificate.
+          <div style={{ textAlign: 'center', padding: '40px 20px', background: '#161B22', borderRadius: '14px', border: '1px dashed rgba(255, 255, 255, 0.12)' }}>
+            <Building2 size={36} style={{ color: '#6E7681', margin: '0 auto 12px auto' }} />
+            <h4 style={{ color: '#F0F6FC', fontSize: '1rem', margin: '0 0 6px 0', fontWeight: '700' }}>No Active Investments Yet</h4>
+            <p style={{ color: '#8B949E', fontSize: '0.84rem', margin: '0 0 16px 0', maxWidth: '480px', marginInline: 'auto' }}>
+              Select any of the 4 verified business projects above and click <strong style={{ color: '#00F59B' }}>"Execute Backing Order"</strong> to fund and receive your official digital allocation certificate.
             </p>
             <button
               onClick={() => {
                 const el = document.getElementById('projects-grid');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="btn btn-primary btn-sm"
-              style={{ borderRadius: '10px' }}
+              className="btn-order-cta"
+              style={{ padding: '8px 16px', fontSize: '0.82rem' }}
             >
               Browse Active Business Deals
             </button>

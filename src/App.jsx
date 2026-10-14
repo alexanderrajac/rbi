@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from './context/AppContext';
 import { Navbar } from './components/Navbar';
+import { MarqueeTicker } from './components/MarqueeTicker';
 import { BusinessProjectsDashboard } from './components/BusinessProjectsDashboard';
 import { AdminPortal } from './components/AdminPortal';
 import { KYCModal } from './components/KYCModal';
@@ -14,9 +15,12 @@ export const App = () => {
   );
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#0B0E14', color: '#F0F6FC' }}>
       {/* Universal Institutional Header */}
       <Navbar />
+
+      {/* Streaming High-Frequency Marquee Ticker */}
+      <MarqueeTicker />
 
       {/* Main Content Area: Business Projects Investment Syndicate */}
       <main style={{ flex: 1 }}>

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 :root {
   --bg-primary: #f8fafc;
   --bg-secondary: #ffffff;
@@ -711,4 +713,161 @@ html, body {
     padding: 20px 14px !important;
     border-radius: 16px !important;
   }
+}
+
+/* =========================================================================
+   HIGH-PERFORMANCE TRADING TERMINAL TOKENS & ANIMATIONS (DARK/OBSIDIAN THEME)
+   ========================================================================= */
+
+
+
+:root {
+  --trading-bg-deep: #0B0E14;
+  --trading-bg-panel: #0D1117;
+  --trading-bg-elevated: #161B22;
+  --trading-border-hairline: rgba(255, 255, 255, 0.08);
+  --trading-border-cyan: rgba(56, 189, 248, 0.2);
+  --trading-text-primary: #F0F6FC;
+  --trading-text-secondary: #8B949E;
+  --trading-text-muted: #6E7681;
+  --trading-bullish-green: #00F59B;
+  --trading-bullish-glow: rgba(0, 245, 155, 0.35);
+  --trading-bearish-red: #FF3366;
+  --trading-gold: #F59E0B;
+  --trading-cyan: #38BDF8;
+}
+
+body {
+  background-color: var(--trading-bg-deep) !important;
+  color: var(--trading-text-primary) !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Sharp Monospace Font Stack for Financial Precision */
+.font-mono-numbers {
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace !important;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* Continuous Marquee Ticker Loop */
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marqueeScroll 32s linear infinite;
+  display: flex;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* State Change & Metric Alert Pulses */
+@keyframes pulse-bullish {
+  0%, 100% {
+    border-color: rgba(0, 245, 155, 0.3);
+    box-shadow: 0 0 10px rgba(0, 245, 155, 0.15);
+  }
+  50% {
+    border-color: rgba(0, 245, 155, 0.85);
+    box-shadow: 0 0 25px rgba(0, 245, 155, 0.45);
+  }
+}
+
+@keyframes pulse-bearish {
+  0%, 100% {
+    border-color: rgba(255, 51, 102, 0.3);
+    box-shadow: 0 0 10px rgba(255, 51, 102, 0.15);
+  }
+  50% {
+    border-color: rgba(255, 51, 102, 0.85);
+    box-shadow: 0 0 25px rgba(255, 51, 102, 0.45);
+  }
+}
+
+.card-pulse-bullish {
+  animation: pulse-bullish 2.2s infinite ease-in-out;
+}
+
+.card-pulse-bearish {
+  animation: pulse-bearish 2.2s infinite ease-in-out;
+}
+
+/* Glassmorphism Execution CTA Buttons with Neon Glow */
+.btn-order-cta {
+  background: linear-gradient(135deg, rgba(0, 245, 155, 0.16) 0%, rgba(0, 245, 155, 0.05) 100%) !important;
+  border: 1px solid rgba(0, 245, 155, 0.4) !important;
+  color: #00F59B !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 14px rgba(0, 245, 155, 0.15) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+}
+
+.btn-order-cta:hover {
+  background: linear-gradient(135deg, rgba(0, 245, 155, 0.28) 0%, rgba(0, 245, 155, 0.12) 100%) !important;
+  border-color: #00F59B !important;
+  box-shadow: 0 0 20px rgba(0, 245, 155, 0.45), 0 4px 18px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-1px) !important;
+}
+
+.btn-secondary-trading {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #E6EDF3 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 600 !important;
+  border-radius: 10px !important;
+  transition: all 0.2s ease !important;
+}
+
+.btn-secondary-trading:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #FFFFFF !important;
+}
+
+/* Modular Technical Grid Card */
+.trading-panel-card {
+  background: #0D1117;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  position: relative;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.trading-panel-card:hover {
+  border-color: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+
+/* Custom dark scrollbar for trading tape */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0E14;
+}
+::-webkit-scrollbar-thumb {
+  background: #21262D;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #30363D;
 }

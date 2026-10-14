@@ -54,9 +54,18 @@ export const Navbar = () => {
   const pendingApprovalsCount = (projectInvestments || []).filter(i => i.status === 'PENDING_APPROVAL').length;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#e2e8f0] bg-white/95 backdrop-blur-xl shadow-sm">
+    <header style={{
+      position: 'sticky',
+      top: 0,
+      zIndex: 50,
+      borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+      background: 'rgba(11, 14, 20, 0.95)',
+      backdropFilter: 'blur(16px)',
+      WebkitBackdropFilter: 'blur(16px)',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)'
+    }}>
       {/* Main Navbar */}
-      <div className="container" style={{ padding: '14px 24px' }}>
+      <div className="container" style={{ padding: '12px 20px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
           
           {/* Logo & Platform Title */}
@@ -65,34 +74,34 @@ export const Navbar = () => {
             style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }}
           >
             <div style={{ 
-              width: '42px', 
-              height: '42px', 
-              borderRadius: '12px', 
-              background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
+              width: '40px', 
+              height: '40px', 
+              borderRadius: '10px', 
+              background: 'linear-gradient(135deg, #00F59B 0%, #059669 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 20px rgba(245, 158, 11, 0.4)',
-              color: '#000'
+              boxShadow: '0 0 18px rgba(0, 245, 155, 0.35)',
+              color: '#0B0E14'
             }}>
-              <Building2 size={24} strokeWidth={2.4} />
+              <Building2 size={22} strokeWidth={2.5} />
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.2rem', fontWeight: '800', letterSpacing: '-0.02em' }} className="gold-gradient-text">
+                <span style={{ fontSize: '1.15rem', fontWeight: '800', letterSpacing: '-0.02em', color: '#F0F6FC' }}>
                   ROYAL BANK OF INVESTMENT
                 </span>
-                <span className="badge badge-gold" style={{ fontSize: '0.62rem', padding: '2px 7px' }}>
-                  VENTURE CAPITAL
+                <span className="badge font-mono-numbers" style={{ fontSize: '0.62rem', padding: '2px 7px', background: 'rgba(0, 245, 155, 0.12)', color: '#00F59B', border: '1px solid rgba(0, 245, 155, 0.3)' }}>
+                  SYNDICATE TERMINAL
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '1px' }}>
-                <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', margin: 0, letterSpacing: '0.02em' }}>
+                <p style={{ fontSize: '0.70rem', color: '#8B949E', margin: 0, letterSpacing: '0.02em' }}>
                   Real Business Projects Syndicate & Escrow
                 </p>
-                <span style={{ color: 'var(--text-dim)', fontSize: '0.65rem' }}>•</span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.7rem', color: '#10b981', fontWeight: '600' }}>
-                  <span className="live-pulse-dot" style={{ width: '6px', height: '6px' }}></span>
+                <span style={{ color: 'rgba(255, 255, 255, 0.2)', fontSize: '0.65rem' }}>•</span>
+                <span className="font-mono-numbers" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.70rem', color: '#00F59B', fontWeight: '600' }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00F59B', boxShadow: '0 0 6px #00F59B' }}></span>
                   4 Active Ventures
                 </span>
               </div>

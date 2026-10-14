@@ -458,15 +458,15 @@ export const LiveCandlestickTerminal = ({
     <div 
       id="candlestick-terminal-section"
       ref={containerRef}
+      className="trading-panel-card"
       style={{
-        background: '#090d16',
-        borderRadius: '24px',
-        border: '1px solid #1e293b',
-        boxShadow: '0 24px 48px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.04)',
+        background: '#0D1117',
+        borderRadius: '20px',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        boxShadow: '0 24px 48px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255,255,255,0.04)',
         overflow: 'hidden',
         marginBottom: '32px',
-        color: '#f8fafc',
-        fontFamily: 'Inter, system-ui, -apple-system, sans-serif'
+        color: '#F0F6FC'
       }}
     >
       {/* ===================================================================== */}

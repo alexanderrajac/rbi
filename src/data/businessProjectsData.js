@@ -67,10 +67,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "48h Sprint",
         sprintHours: 48,
         period: "Oct 10 - Oct 12, 2026",
-        status: "COMPLETED",
+        status: "UPCOMING",
         deliverables: "Domain purchased, WhatsApp catalog live, QR stickers printed.",
         allocatedBudget: 1600,
-        spent: 1600
+        spent: 0
       },
       {
         id: "uk-m2",
@@ -81,10 +81,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "48h Sprint",
         sprintHours: 48,
         period: "Oct 13 - Oct 14, 2026",
-        status: "COMPLETED",
+        status: "UPCOMING",
         deliverables: "Banners erected at Thudiyalur checkpost, 500 posters distributed.",
         allocatedBudget: 500,
-        spent: 300
+        spent: 0
       },
       {
         id: "uk-m3",
@@ -95,10 +95,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "144h Sprint",
         sprintHours: 144,
         period: "Oct 15 - Oct 20, 2026",
-        status: "IN_PROGRESS",
+        status: "UPCOMING",
         deliverables: "Daily ₹200 ad targeting radius within 4km of kitchen. Target 10 orders/day.",
         allocatedBudget: 1200,
-        spent: 400
+        spent: 0
       },
       {
         id: "uk-m4",
@@ -109,10 +109,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "144h Sprint",
         sprintHours: 144,
         period: "Oct 15 - Oct 21, 2026",
-        status: "IN_PROGRESS",
+        status: "UPCOMING",
         deliverables: "Onboarding delivery fleet, tracking prepaid vs COD orders, zero delivery lag.",
         allocatedBudget: 500,
-        spent: 200
+        spent: 0
       },
       {
         id: "uk-m5",
@@ -202,10 +202,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "168h Sprint",
         sprintHours: 168,
         period: "Oct 01 - Oct 08, 2026",
-        status: "COMPLETED",
+        status: "UPCOMING",
         deliverables: "18 master carpenter guilds vetted, rate card agreed, escrow terms signed.",
         allocatedBudget: 1000,
-        spent: 1000
+        spent: 0
       },
       {
         id: "cb-m2",
@@ -216,10 +216,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "48h Sprint",
         sprintHours: 48,
         period: "Oct 08 - Oct 10, 2026",
-        status: "COMPLETED",
+        status: "UPCOMING",
         deliverables: "Exotel IVR routing, WhatsApp quotation bot, and escrow link generator setup.",
         allocatedBudget: 1500,
-        spent: 1500
+        spent: 0
       },
       {
         id: "cb-m3",
@@ -230,10 +230,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "960h Campaign",
         sprintHours: 960,
         period: "Oct 10 - Nov 19, 2026 (40 Days)",
-        status: "IN_PROGRESS",
+        status: "UPCOMING",
         deliverables: "Running ₹250/day ads. Generated 214 homeowner leads in first 13 days.",
         allocatedBudget: 10000,
-        spent: 3250
+        spent: 0
       },
       {
         id: "cb-m4",
@@ -244,10 +244,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "888h Conversion",
         sprintHours: 888,
         period: "Oct 15 - Nov 22, 2026",
-        status: "IN_PROGRESS",
+        status: "UPCOMING",
         deliverables: "Carpenters executing home visits, converting into 5 paid jobs/day.",
         allocatedBudget: 500,
-        spent: 150
+        spent: 0
       },
       {
         id: "cb-m5",
@@ -348,10 +348,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "192h Prep",
         sprintHours: 192,
         period: "Oct 20 - Oct 28, 2026",
-        status: "COMPLETED",
+        status: "UPCOMING",
         deliverables: "Kiln-dried teak boards inspected for <10% moisture content to prevent heat warping.",
         allocatedBudget: 3500,
-        spent: 3500
+        spent: 0
       },
       {
         id: "wlc-m2",
@@ -362,10 +362,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "168h Pilot",
         sprintHours: 168,
         period: "Oct 29 - Nov 05, 2026",
-        status: "IN_PROGRESS",
+        status: "UPCOMING",
         deliverables: "25 prototype sleeves milled. MacBook Pro 14 & 16 fitment tolerances verified.",
         allocatedBudget: 15000,
-        spent: 8500
+        spent: 0
       },
       {
         id: "wlc-m3",
@@ -494,10 +494,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "216h Harvest",
         sprintHours: 216,
         period: "Oct 05 - Oct 14, 2026",
-        status: "COMPLETED",
+        status: "UPCOMING",
         deliverables: "Organic thick-walled bamboo culms harvested, cured against fungal moisture.",
         allocatedBudget: 7500,
-        spent: 5000
+        spent: 0
       },
       {
         id: "bc-m2",
@@ -508,10 +508,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "120h Testing",
         sprintHours: 120,
         period: "Oct 15 - Oct 20, 2026",
-        status: "COMPLETED",
+        status: "UPCOMING",
         deliverables: "Certified non-toxic plant oil sealant verified by laboratory test report.",
         allocatedBudget: 2500,
-        spent: 2500
+        spent: 0
       },
       {
         id: "bc-m3",
@@ -522,10 +522,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "360h Production",
         sprintHours: 360,
         period: "Oct 21 - Nov 05, 2026",
-        status: "IN_PROGRESS",
+        status: "UPCOMING",
         deliverables: "60 cups turned, 42 polished. Remaining 40-90 cups in active production queue.",
         allocatedBudget: 15000,
-        spent: 6000
+        spent: 0
       },
       {
         id: "bc-m4",
@@ -536,10 +536,10 @@ export const INITIAL_BUSINESS_PROJECTS = [
         sprintTag: "720h Campaign",
         sprintHours: 720,
         period: "Oct 25 - Nov 24, 2026 (30 Days)",
-        status: "IN_PROGRESS",
+        status: "UPCOMING",
         deliverables: "₹200/day ads running on Instagram targeting zero-waste eco communities.",
         allocatedBudget: 6000,
-        spent: 800
+        spent: 0
       },
       {
         id: "bc-m5",
