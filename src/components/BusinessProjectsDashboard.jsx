@@ -60,7 +60,8 @@ export const BusinessProjectsDashboard = () => {
     projectInvestments,
     formatMoney, 
     currency,
-    user
+    user,
+    isAdminLoggedIn
   } = useApp();
 
   // Active Filter & Search
@@ -384,25 +385,27 @@ export const BusinessProjectsDashboard = () => {
             </div>
           </div>
 
-          {/* Admin Approval Quick Gate */}
-          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', minWidth: '240px' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '8px' }}>
-              Admin Verification Desk
+          {/* Admin Approval Quick Gate - STRICTLY SOVEREIGN ADMIN */}
+          {isAdminLoggedIn && (
+            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', minWidth: '240px' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', marginBottom: '8px' }}>
+                Admin Verification Desk
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                <span className={`badge ${pendingInvestments.length > 0 ? 'badge-gold' : 'badge-emerald'}`} style={{ fontSize: '0.8rem', padding: '4px 10px' }}>
+                  {pendingInvestments.length} Pending Approval
+                </span>
+              </div>
+              <button
+                onClick={() => setIsAdminApprovalModalOpen(true)}
+                className="btn btn-secondary btn-sm"
+                style={{ width: '100%', borderRadius: '10px', fontWeight: '700', gap: '6px' }}
+              >
+                <UserCheck size={15} className="text-amber-500" />
+                <span>Review Submissions</span>
+              </button>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-              <span className={`badge ${pendingInvestments.length > 0 ? 'badge-gold' : 'badge-emerald'}`} style={{ fontSize: '0.8rem', padding: '4px 10px' }}>
-                {pendingInvestments.length} Pending Approval
-              </span>
-            </div>
-            <button
-              onClick={() => setIsAdminApprovalModalOpen(true)}
-              className="btn btn-secondary btn-sm"
-              style={{ width: '100%', borderRadius: '10px', fontWeight: '700', gap: '6px' }}
-            >
-              <UserCheck size={15} className="text-amber-500" />
-              <span>Review Submissions</span>
-            </button>
-          </div>
+          )}
         </div>
       </div>
 
@@ -596,26 +599,28 @@ export const BusinessProjectsDashboard = () => {
                     </span>
                   </div>
 
-                  {/* Top Action Buttons (Admin Milestones & Assumptions) */}
-                  <div style={{ display: 'flex', gap: '6px' }}>
-                    <button 
-                      onClick={() => setAdminMilestoneProject(project)}
-                      className="btn btn-secondary btn-sm"
-                      title="Manage Milestones & Live Work (Admin)"
-                      style={{ padding: '6px 8px', fontSize: '0.72rem', gap: '4px', background: '#f8fafc' }}
-                    >
-                      <SlidersHorizontal size={13} className="text-amber-500" />
-                      <span>Admin Milestones</span>
-                    </button>
-                    <button 
-                      onClick={() => handleOpenEdit(project)}
-                      className="btn btn-ghost btn-sm"
-                      title="Edit Assumptions"
-                      style={{ padding: '6px' }}
-                    >
-                      <Edit3 size={14} />
-                    </button>
-                  </div>
+                  {/* Top Action Buttons - STRICTLY SOVEREIGN ADMIN */}
+                  {isAdminLoggedIn && (
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <button 
+                        onClick={() => setAdminMilestoneProject(project)}
+                        className="btn btn-secondary btn-sm"
+                        title="Manage Milestones & Live Work (Admin)"
+                        style={{ padding: '6px 8px', fontSize: '0.72rem', gap: '4px', background: '#f8fafc' }}
+                      >
+                        <SlidersHorizontal size={13} className="text-amber-500" />
+                        <span>Admin Milestones</span>
+                      </button>
+                      <button 
+                        onClick={() => handleOpenEdit(project)}
+                        className="btn btn-ghost btn-sm"
+                        title="Edit Assumptions"
+                        style={{ padding: '6px' }}
+                      >
+                        <Edit3 size={14} />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <p style={{ fontSize: '0.86rem', color: '#475569', margin: '6px 0 16px 0', lineHeight: '1.5' }}>

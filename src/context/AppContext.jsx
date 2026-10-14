@@ -56,21 +56,20 @@ export const AppProvider = ({ children }) => {
   const [currency, setCurrency] = useState('INR'); // Default to INR based on project report & blueprint, toggleable to USD
   const USD_TO_INR = 83.5;
 
-  // Admin authentication state
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
-    return localStorage.getItem('rbi_admin_auth') === 'true';
-  });
+  // Admin authentication state - false by default, strictly enabled by Google Auth
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
-  // User details
+  // User details - defaults to Investor Backer for visitors & new users
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('rbi_user');
     return saved ? JSON.parse(saved) : {
-      name: "Raja (Admin)",
-      email: "rajacofficial369@gmail.com",
-      phone: "+91 82486 51695",
-      kycStatus: "verified",
-      memberTier: "RBI Sovereign Syndicate Comptroller",
-      investorId: "RBI-ADM-369"
+      name: "Investor Backer",
+      email: "",
+      phone: "",
+      kycStatus: "pending",
+      memberTier: "RBI Syndicate Investor",
+      investorId: "RBI-INV-99214",
+      isAdmin: false
     };
   });
 
@@ -93,18 +92,15 @@ export const AppProvider = ({ children }) => {
       }
     });
 
-    // 2. Check active auth session
+    // 2. Check active auth session - STRICTLY GOOGLE LOGIN WITH rajacofficial369@gmail.com
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setSupabaseUser(session.user);
         const isAdmin = isSuperAdmin(session.user);
+        setIsAdminLoggedIn(isAdmin);
         if (isAdmin) {
-          setIsAdminLoggedIn(true);
-          localStorage.setItem('rbi_admin_auth', 'true');
           setCurrentRole('admin');
         } else {
-          setIsAdminLoggedIn(false);
-          localStorage.removeItem('rbi_admin_auth');
           setCurrentRole('investor');
         }
 
@@ -117,21 +113,13 @@ export const AppProvider = ({ children }) => {
           isAdmin
         }));
       } else {
-        // If not signed into Google, check if sovereign admin was logged in locally
-        const savedAuth = localStorage.getItem('rbi_admin_auth') === 'true';
-        if (savedAuth) {
-          setIsAdminLoggedIn(true);
-          setCurrentRole('admin');
-        }
+        setIsAdminLoggedIn(false);
+        setCurrentRole('investor');
       }
       setIsAuthLoading(false);
     }).catch(err => {
       console.warn('Session check note:', err?.message || err);
-      const savedAuth = localStorage.getItem('rbi_admin_auth') === 'true';
-      if (savedAuth) {
-        setIsAdminLoggedIn(true);
-        setCurrentRole('admin');
-      }
+      setIsAdminLoggedIn(false);
       setIsAuthLoading(false);
     });
 
@@ -140,13 +128,10 @@ export const AppProvider = ({ children }) => {
       if (session?.user) {
         setSupabaseUser(session.user);
         const isAdmin = isSuperAdmin(session.user);
+        setIsAdminLoggedIn(isAdmin);
         if (isAdmin) {
-          setIsAdminLoggedIn(true);
-          localStorage.setItem('rbi_admin_auth', 'true');
           setCurrentRole('admin');
         } else {
-          setIsAdminLoggedIn(false);
-          localStorage.removeItem('rbi_admin_auth');
           setCurrentRole('investor');
         }
 
@@ -160,6 +145,8 @@ export const AppProvider = ({ children }) => {
         }));
       } else {
         setSupabaseUser(null);
+        setIsAdminLoggedIn(false);
+        setCurrentRole('investor');
       }
       setIsAuthLoading(false);
     });
@@ -943,49 +930,24 @@ export const AppProvider = ({ children }) => {
     setPendingApplications(prev => prev.map(a => a.id === appId ? { ...a, status: "Rejected" } : a));
   };
 
-  // Admin Login Verification - Strictly rajacofficial369@gmail.com
-  const adminLogin = (credential, email) => {
-    const inputEmail = (email || '').toLowerCase().trim();
-    const currentEmail = (supabaseUser?.email || user?.email || '').toLowerCase().trim();
-    const pass = (credential || '').trim();
-
-    const isTargetEmail = 
-      inputEmail === ADMIN_EMAIL.toLowerCase() || 
-      currentEmail === ADMIN_EMAIL.toLowerCase() ||
-      inputEmail === 'rajacofficial369@gmail.com' ||
-      inputEmail === 'admin@rbi-group.org' ||
-      !inputEmail;
-
-    const isMasterPasskey = 
-      pass === 'admin123' || 
-      pass === 'admin' || 
-      pass === 'rbi2026' || 
-      pass === 'raja369' || 
-      pass === '369' || 
-      pass === '';
-
-    if (isTargetEmail || isMasterPasskey) {
+  // Admin Login - Strictly Google OAuth with rajacofficial369@gmail.com
+  const adminLogin = () => {
+    if (supabaseUser?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
       setIsAdminLoggedIn(true);
       setCurrentRole('admin');
       setActiveTab('admin');
-      localStorage.setItem('rbi_admin_auth', 'true');
-      setUser(prev => ({
-        ...prev,
-        email: ADMIN_EMAIL,
-        name: prev.name?.includes('Raja') ? prev.name : 'Raja (Sovereign Admin)',
-        isAdmin: true
-      }));
       return true;
     }
-
+    // Automatically invoke Google Sign-In for rajacofficial369@gmail.com
+    loginWithGoogle();
     return false;
   };
 
-  const adminLogout = () => {
+  const adminLogout = async () => {
     setIsAdminLoggedIn(false);
-    localStorage.removeItem('rbi_admin_auth');
     setCurrentRole('investor');
     setActiveTab('projects');
+    await logoutUser();
   };
 
   // Fund Collection Engine

@@ -34,7 +34,8 @@ export const FundCollectionPortal = () => {
     recordContribution, 
     clearContributions,
     formatMoney, 
-    currency 
+    currency,
+    isAdminLoggedIn
   } = useApp();
 
   // Contribution Form State
@@ -201,27 +202,30 @@ export const FundCollectionPortal = () => {
 
           {/* Quick Actions */}
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button 
-              onClick={() => {
-                setEditForm({
-                  title: fundCampaign.title,
-                  targetAmount: fundCampaign.targetAmount,
-                  organizer: fundCampaign.organizer,
-                  upiId: fundCampaign.upiId,
-                  bankName: fundCampaign.bankName,
-                  accountNumber: fundCampaign.accountNumber,
-                  ifscCode: fundCampaign.ifscCode,
-                  accountHolder: fundCampaign.accountHolder,
-                  description: fundCampaign.description
-                });
-                setIsEditModalOpen(true);
-              }}
-              className="btn btn-secondary btn-sm"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', borderRadius: '10px' }}
-            >
-              <SlidersHorizontal size={15} />
-              <span>Configure Details</span>
-            </button>
+            {/* Configure Details - Strictly Sovereign Admin */}
+            {isAdminLoggedIn && (
+              <button 
+                onClick={() => {
+                  setEditForm({
+                    title: fundCampaign.title,
+                    targetAmount: fundCampaign.targetAmount,
+                    organizer: fundCampaign.organizer,
+                    upiId: fundCampaign.upiId,
+                    bankName: fundCampaign.bankName,
+                    accountNumber: fundCampaign.accountNumber,
+                    ifscCode: fundCampaign.ifscCode,
+                    accountHolder: fundCampaign.accountHolder,
+                    description: fundCampaign.description
+                  });
+                  setIsEditModalOpen(true);
+                }}
+                className="btn btn-secondary btn-sm"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', borderRadius: '10px' }}
+              >
+                <SlidersHorizontal size={15} />
+                <span>Configure Details</span>
+              </button>
+            )}
 
             <a 
               href={`https://api.whatsapp.com/send?text=${whatsappShareText}`}

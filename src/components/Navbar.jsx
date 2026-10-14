@@ -158,30 +158,32 @@ export const Navbar = () => {
               <span>My Investments</span>
             </button>
 
-            {/* Individual Admin Portal Nav Link */}
-            <button 
-              onClick={() => setActiveTab('admin')}
-              className={`btn btn-sm ${activeTab === 'admin' ? 'btn-primary' : 'btn-ghost'}`}
-              style={{ 
-                borderRadius: '10px', 
-                fontWeight: '700', 
-                gap: '6px',
-                border: activeTab === 'admin' ? 'none' : '1px solid #e2e8f0'
-              }}
-              title="Individual Admin Management Portal"
-            >
-              <ShieldCheck size={16} color={activeTab === 'admin' ? '#000' : '#d97706'} />
-              <span>Admin Desk</span>
-              {pendingApprovalsCount > 0 ? (
-                <span style={{ background: '#f59e0b', color: '#000', borderRadius: '12px', padding: '1px 7px', fontSize: '0.62rem', fontWeight: '800' }}>
-                  {pendingApprovalsCount}
-                </span>
-              ) : (
-                <span className="badge badge-gold" style={{ fontSize: '0.6rem', padding: '1px 5px' }}>
-                  Portal
-                </span>
-              )}
-            </button>
+            {/* Sovereign Admin Desk Nav Link - Strictly for verified rajacofficial369@gmail.com */}
+            {isAdminLoggedIn && (
+              <button 
+                onClick={() => setActiveTab('admin')}
+                className={`btn btn-sm ${activeTab === 'admin' ? 'btn-primary' : 'btn-ghost'}`}
+                style={{ 
+                  borderRadius: '10px', 
+                  fontWeight: '700', 
+                  gap: '6px',
+                  border: activeTab === 'admin' ? 'none' : '1px solid #e2e8f0'
+                }}
+                title="Sovereign Admin Management Desk"
+              >
+                <ShieldCheck size={16} color={activeTab === 'admin' ? '#000' : '#d97706'} />
+                <span>Admin Desk</span>
+                {pendingApprovalsCount > 0 ? (
+                  <span style={{ background: '#f59e0b', color: '#000', borderRadius: '12px', padding: '1px 7px', fontSize: '0.62rem', fontWeight: '800' }}>
+                    {pendingApprovalsCount}
+                  </span>
+                ) : (
+                  <span className="badge badge-gold" style={{ fontSize: '0.6rem', padding: '1px 5px' }}>
+                    Admin
+                  </span>
+                )}
+              </button>
+            )}
           </nav>
 
           {/* Right Action Bar */}
