@@ -1372,12 +1372,32 @@ export const AppProvider = ({ children }) => {
       return;
     }
 
+    let previouslyConfirmedInv = null;
     setProjectInvestments(prev => prev.map(inv => {
       if (inv.id === investmentId) {
+        if (inv.status === 'CONFIRMED') {
+          previouslyConfirmedInv = inv;
+        }
         return { ...inv, status: 'REJECTED', rejectionReason: reason };
       }
       return inv;
     }));
+
+    // If it was previously confirmed, decrement capitalRaised and investorsCount
+    if (previouslyConfirmedInv) {
+      setBusinessProjects(prev => prev.map(p => {
+        if (p.id === previouslyConfirmedInv.projectId) {
+          const updated = {
+            ...p,
+            capitalRaised: Math.max((Number(p.capitalRaised) || 0) - previouslyConfirmedInv.amount, 0),
+            investorsCount: Math.max((Number(p.investorsCount) || 0) - 1, 0)
+          };
+          syncBusinessProjectToSupabase(updated);
+          return updated;
+        }
+        return p;
+      }));
+    }
 
     const historyEntry = {
       id: `hist-rej-${Date.now()}`,

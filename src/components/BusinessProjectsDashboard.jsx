@@ -151,36 +151,39 @@ export const BusinessProjectsDashboard = () => {
   // Quick Amount Presets
   const quickInvestmentPresets = [500, 1000, 2500, 5000, 10000, 25000];
 
-  // Helper: Calculate exact return & profit for any project & amount
+  // Helper: Calculate exact return & profit for any project & amount (Dynamic Logic)
   const calculateInvestmentReturn = (project, amountVal) => {
     const amt = parseFloat(amountVal) || 0;
     let yieldRate = 0.145; // default 14.5%
-    let days = "8-Day Sprint";
-    if (project.id === 'proj-unavukadai') {
-      yieldRate = 0.142; // 14.2%
-      days = "6-Day Sprint";
-    } else if (project.id === 'proj-carpenterbullet') {
-      yieldRate = 0.150; // 15.0%
-      days = "7-Day Sprint";
-    } else if (project.id === 'proj-wooden-laptop-case') {
-      yieldRate = 0.168; // 16.8%
-      days = "10-Day Sprint";
-    } else if (project.id === 'proj-bamboo-cup') {
-      yieldRate = 0.145; // 14.5%
-      days = "8-Day Sprint";
+    
+    // Dynamically extract yield percentage from project.expectedTermYield (e.g. "14.2% Net Term Yield")
+    if (project?.expectedTermYield) {
+      const match = project.expectedTermYield.match(/(\d+(?:\.\d+)?)\s*%/);
+      if (match) {
+        yieldRate = parseFloat(match[1]) / 100;
+      }
+    } else if (project?.id === 'proj-unavukadai') {
+      yieldRate = 0.142;
+    } else if (project?.id === 'proj-carpenterbullet') {
+      yieldRate = 0.150;
+    } else if (project?.id === 'proj-wooden-laptop-case') {
+      yieldRate = 0.168;
+    } else if (project?.id === 'proj-bamboo-cup') {
+      yieldRate = 0.145;
     }
 
     const profit = Math.round(amt * yieldRate * 100) / 100;
     const totalReturn = Math.round((amt + profit) * 100) / 100;
     const yieldPercent = (yieldRate * 100).toFixed(1) + '%';
+    const timeline = project?.payoutTimeline || "Sprint Completion";
 
     return {
       invested: amt,
       profit,
       totalReturn,
       yieldPercent,
-      days,
-      payoutTimeline: project.payoutTimeline || days
+      days: timeline,
+      payoutTimeline: timeline
     };
   };
 
@@ -205,6 +208,8 @@ export const BusinessProjectsDashboard = () => {
     setInvestingProject(project);
     setInvestmentAmount(project.minInvestment ? project.minInvestment.toString() : '500');
     setInvestmentNote(`Capital backing for ${project.name}`);
+    if (user?.name && !investorName) setInvestorName(user.name);
+    if (user?.email && !investorEmail) setInvestorEmail(user.email);
     setInvestorUtr('');
     setScreenshotPreview('');
   };
@@ -1570,7 +1575,7 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       {/* MODAL 3: ADMIN APPROVAL DESK (APPROVE / REJECT SUBMISSIONS) */}
       {/* ========================================================================= */}
-      {isAdminApprovalModalOpen && (
+      {isAdminLoggedIn && isAdminApprovalModalOpen && (
         <div className="modal-overlay" onClick={() => setIsAdminApprovalModalOpen(false)}>
           <div 
             className="modal-content" 
@@ -1887,7 +1892,7 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       {/* MODAL 6: ADMIN MILESTONE & LIVE OPERATIONS MANAGER */}
       {/* ========================================================================= */}
-      {adminMilestoneProject && (() => {
+      {isAdminLoggedIn && adminMilestoneProject && (() => {
         const liveAdminProject = businessProjects.find(p => p.id === adminMilestoneProject.id) || adminMilestoneProject;
         return (
           <div className="modal-overlay" onClick={() => setAdminMilestoneProject(null)}>
@@ -2311,7 +2316,7 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       {/* MODAL 8: EDIT PROJECT ASSUMPTIONS (ADMIN) */}
       {/* ========================================================================= */}
-      {editingProject && (
+      {isAdminLoggedIn && editingProject && (
         <div className="modal-overlay" onClick={() => setEditingProject(null)}>
           <div 
             className="modal-content" 

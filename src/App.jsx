@@ -7,7 +7,11 @@ import { KYCModal } from './components/KYCModal';
 import { Footer } from './components/Footer';
 
 export const App = () => {
-  const { activeTab } = useApp();
+  const { activeTab, isAdminLoggedIn } = useApp();
+  const isExplicitAdminUrl = typeof window !== 'undefined' && (
+    window.location.search.includes('admin') || 
+    window.location.hash.includes('admin')
+  );
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -16,7 +20,7 @@ export const App = () => {
 
       {/* Main Content Area: Business Projects Investment Syndicate */}
       <main style={{ flex: 1 }}>
-        {activeTab === 'admin' ? (
+        {activeTab === 'admin' && (isAdminLoggedIn || isExplicitAdminUrl) ? (
           <AdminPortal />
         ) : (
           <BusinessProjectsDashboard />
