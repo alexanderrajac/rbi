@@ -119,7 +119,7 @@ export const AdminPortal = () => {
   };
 
   const handleSaveMilestoneEdit = (milestoneId) => {
-    updateProjectMilestone(selectedProjectId, milestoneId, {
+    updateProjectMilestone(activeSelectedProject.id, milestoneId, {
       ...editingMilestoneForm,
       allocatedBudget: parseFloat(editingMilestoneForm.allocatedBudget) || 0,
       spent: parseFloat(editingMilestoneForm.spent) || 0
@@ -291,7 +291,7 @@ export const AdminPortal = () => {
     e.preventDefault();
     if (!newMilestonePhase.trim()) return;
 
-    addProjectMilestone(selectedProjectId, {
+    addProjectMilestone(activeSelectedProject.id, {
       phase: newMilestonePhase.trim(),
       sprintDuration: newMilestoneSprintDuration.trim(),
       sprintTag: newMilestoneSprintDuration.slice(0, 8),
@@ -1446,7 +1446,7 @@ export const AdminPortal = () => {
                           <div style={{ display: 'flex', gap: '5px' }}>
                             <button
                               type="button"
-                              onClick={() => updateProjectMilestone(selectedProjectId, m.id, { status: 'COMPLETED' })}
+                              onClick={() => updateProjectMilestone(activeSelectedProject.id, m.id, { status: 'COMPLETED' })}
                               style={{
                                 padding: '4px 10px',
                                 borderRadius: '6px',
@@ -1462,7 +1462,7 @@ export const AdminPortal = () => {
                             </button>
                             <button
                               type="button"
-                              onClick={() => updateProjectMilestone(selectedProjectId, m.id, { status: 'IN_PROGRESS' })}
+                              onClick={() => updateProjectMilestone(activeSelectedProject.id, m.id, { status: 'IN_PROGRESS' })}
                               style={{
                                 padding: '4px 10px',
                                 borderRadius: '6px',
@@ -1478,7 +1478,7 @@ export const AdminPortal = () => {
                             </button>
                             <button
                               type="button"
-                              onClick={() => updateProjectMilestone(selectedProjectId, m.id, { status: 'UPCOMING' })}
+                              onClick={() => updateProjectMilestone(activeSelectedProject.id, m.id, { status: 'UPCOMING' })}
                               style={{
                                 padding: '4px 10px',
                                 borderRadius: '6px',
@@ -1519,7 +1519,7 @@ export const AdminPortal = () => {
 
                             <button
                               type="button"
-                              onClick={() => deleteProjectMilestone(selectedProjectId, m.id)}
+                              onClick={() => deleteProjectMilestone(activeSelectedProject.id, m.id)}
                               style={{
                                 background: 'none',
                                 border: 'none',

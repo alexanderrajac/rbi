@@ -31,14 +31,30 @@ export const fetchBusinessProjects = async () => {
     }
 
     if (data && data.length > 0) {
-      // Map JSON fields if stored as JSONB
-      return data.map(item => ({
-        ...item,
-        expenseBreakdown: item.expense_breakdown || item.expenseBreakdown || [],
-        timeline: item.timeline || [],
-        liveUpdates: item.live_updates || item.liveUpdates || [],
-        actuals: item.actuals || {}
-      }));
+      // Map and merge Supabase projects with initial data definitions
+      return data.map(item => {
+        const initial = INITIAL_BUSINESS_PROJECTS.find(p => p.id === item.id) || {};
+        return {
+          ...initial,
+          ...item,
+          capitalRequested: item.capital_requested ?? item.capitalRequested ?? initial.capitalRequested,
+          capitalRaised: item.capital_raised ?? item.capitalRaised ?? initial.capitalRaised ?? 0,
+          minInvestment: item.min_investment ?? item.minInvestment ?? initial.minInvestment ?? 500,
+          investorsCount: item.investors_count ?? item.investorsCount ?? initial.investorsCount ?? 0,
+          expectedTermYield: item.expected_term_yield || item.expectedTermYield || initial.expectedTermYield,
+          payoutTimeline: item.payout_timeline || item.payoutTimeline || initial.payoutTimeline,
+          expenseBreakdown: (item.expense_breakdown && item.expense_breakdown.length > 0) 
+            ? item.expense_breakdown 
+            : (item.expenseBreakdown || initial.expenseBreakdown || []),
+          timeline: (item.timeline && Array.isArray(item.timeline) && item.timeline.length > 0) 
+            ? item.timeline 
+            : (initial.timeline || []),
+          liveUpdates: (item.live_updates && Array.isArray(item.live_updates) && item.live_updates.length > 0) 
+            ? item.live_updates 
+            : (item.liveUpdates || initial.liveUpdates || []),
+          actuals: item.actuals || initial.actuals || {}
+        };
+      });
     }
   } catch (err) {
     console.warn('Supabase network notice:', err?.message || err);

@@ -1869,25 +1869,27 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       {/* MODAL 6: ADMIN MILESTONE & LIVE OPERATIONS MANAGER */}
       {/* ========================================================================= */}
-      {adminMilestoneProject && (
-        <div className="modal-overlay" onClick={() => setAdminMilestoneProject(null)}>
-          <div 
-            className="modal-content" 
-            onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: '680px', width: '100%', padding: '28px', borderRadius: '20px' }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px', borderBottom: '1px solid #e2e8f0', paddingBottom: '14px' }}>
-              <div>
-                <div style={{ fontSize: '0.74rem', fontWeight: '700', color: '#d97706', textTransform: 'uppercase' }}>
-                  Admin Operations Desk
+      {adminMilestoneProject && (() => {
+        const liveAdminProject = businessProjects.find(p => p.id === adminMilestoneProject.id) || adminMilestoneProject;
+        return (
+          <div className="modal-overlay" onClick={() => setAdminMilestoneProject(null)}>
+            <div 
+              className="modal-content" 
+              onClick={(e) => e.stopPropagation()}
+              style={{ maxWidth: '680px', width: '100%', padding: '28px', borderRadius: '20px' }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px', borderBottom: '1px solid #e2e8f0', paddingBottom: '14px' }}>
+                <div>
+                  <div style={{ fontSize: '0.74rem', fontWeight: '700', color: '#d97706', textTransform: 'uppercase' }}>
+                    Admin Operations Desk
+                  </div>
+                  <h3 style={{ fontSize: '1.35rem', color: '#0f172a', margin: '2px 0', fontWeight: '800' }}>
+                    Manage Milestones: {liveAdminProject.name}
+                  </h3>
+                  <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                    Update live progress, release milestone escrow tranches, and post live operational updates.
+                  </div>
                 </div>
-                <h3 style={{ fontSize: '1.35rem', color: '#0f172a', margin: '2px 0', fontWeight: '800' }}>
-                  Manage Milestones: {adminMilestoneProject.name}
-                </h3>
-                <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
-                  Update live progress, release milestone escrow tranches, and post live operational updates.
-                </div>
-              </div>
               <button onClick={() => setAdminMilestoneProject(null)} className="btn btn-ghost btn-sm" style={{ padding: '4px' }}>
                 <X size={18} />
               </button>
@@ -1898,10 +1900,10 @@ export const BusinessProjectsDashboard = () => {
               {/* 1. Existing Milestones List */}
               <div>
                 <h4 style={{ fontSize: '0.9rem', fontWeight: '800', color: '#0f172a', marginBottom: '8px' }}>
-                  Current Project Milestones ({adminMilestoneProject.timeline?.length || 0})
+                  Current Project Milestones ({liveAdminProject.timeline?.length || 0})
                 </h4>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {(adminMilestoneProject.timeline || []).map((m) => (
+                  {(liveAdminProject.timeline || []).map((m) => (
                     <div key={m.id} style={{ padding: '12px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px' }}>
                       {editingMilestoneId === m.id ? (
                         /* Inline Edit Form */
@@ -2161,7 +2163,8 @@ export const BusinessProjectsDashboard = () => {
             </div>
           </div>
         </div>
-      )}
+      );
+    })()}
 
       {/* ========================================================================= */}
       {/* MODAL 7: OFFICIAL DIGITAL INVESTMENT CERTIFICATE (INSTITUTIONAL GRADE) */}
