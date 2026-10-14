@@ -807,41 +807,61 @@ export const BusinessProjectsDashboard = () => {
                   </div>
                 )}
 
-                {/* TAB 3: MILESTONES (WITH DIRECT STATUS TOGGLE) */}
+                {/* TAB 3: MILESTONES (WITH DIRECT STATUS TOGGLE & TIME SPRINT) */}
                 {currentTab === 'timeline' && (
-                  <div style={{ marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {(project.timeline || []).slice(0, 4).map((m) => (
-                      <div key={m.id} style={{ padding: '8px 10px', borderRadius: '8px', background: '#f8fafc', border: '1px solid #e2e8f0', fontSize: '0.75rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <strong style={{ color: m.status === 'COMPLETED' ? '#059669' : m.status === 'IN_PROGRESS' ? '#0284c7' : '#64748b' }}>
-                            {m.phase}
-                          </strong>
-                          <span className={`badge ${m.status === 'COMPLETED' ? 'badge-emerald' : m.status === 'IN_PROGRESS' ? 'badge-cyan' : 'badge-gold'}`} style={{ fontSize: '0.62rem', padding: '1px 6px' }}>
+                  <div style={{ marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {(project.timeline || []).map((m, idx) => (
+                      <div key={m.id || idx} style={{ padding: '10px 12px', borderRadius: '10px', background: '#f8fafc', border: '1px solid #e2e8f0', fontSize: '0.75rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '4px' }}>
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                              <span style={{ fontSize: '0.65rem', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                                Step {m.stepNumber || idx + 1}/{m.stepTotal || (project.timeline?.length || 5)}:
+                              </span>
+                              <strong style={{ color: m.status === 'COMPLETED' ? '#059669' : m.status === 'IN_PROGRESS' ? '#0284c7' : '#0f172a', fontSize: '0.78rem' }}>
+                                {m.phase}
+                              </strong>
+                            </div>
+                            
+                            {/* Sprint Duration & Time Badge */}
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '4px', background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '6px', fontSize: '0.68rem', fontWeight: '700', border: '1px solid #fde68a' }}>
+                              <Clock size={12} strokeWidth={2.4} />
+                              <span>Sprint: {m.sprintDuration || m.period}</span>
+                            </div>
+                          </div>
+                          
+                          <span className={`badge ${m.status === 'COMPLETED' ? 'badge-emerald' : m.status === 'IN_PROGRESS' ? 'badge-cyan' : 'badge-gold'}`} style={{ fontSize: '0.62rem', padding: '2px 7px', flexShrink: 0 }}>
                             {m.status}
                           </span>
                         </div>
-                        <div style={{ color: '#475569', fontSize: '0.7rem', marginTop: '3px' }}>{m.deliverables}</div>
+
+                        <div style={{ color: '#475569', fontSize: '0.72rem', marginTop: '4px', lineHeight: '1.4' }}>{m.deliverables}</div>
+                        
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', fontSize: '0.68rem', color: '#64748b' }}>
+                          <span>Dates: <strong style={{ color: '#334155' }}>{m.period}</strong></span>
+                          <span>Budget: <strong style={{ color: '#334155' }}>{formatMoney(m.allocatedBudget)}</strong></span>
+                        </div>
                         
                         {/* Quick Status Buttons */}
                         <div style={{ display: 'flex', gap: '4px', marginTop: '6px', paddingTop: '6px', borderTop: '1px dashed #e2e8f0' }}>
                           <button
                             type="button"
                             onClick={() => updateProjectMilestone(project.id, m.id, { status: 'COMPLETED' })}
-                            style={{ padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', border: '1px solid #a7f3d0', background: m.status === 'COMPLETED' ? '#d1fae5' : '#ffffff', color: '#065f46', cursor: 'pointer', fontWeight: '700' }}
+                            style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #a7f3d0', background: m.status === 'COMPLETED' ? '#d1fae5' : '#ffffff', color: '#065f46', cursor: 'pointer', fontWeight: '700' }}
                           >
                             ✓ Completed
                           </button>
                           <button
                             type="button"
                             onClick={() => updateProjectMilestone(project.id, m.id, { status: 'IN_PROGRESS' })}
-                            style={{ padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', border: '1px solid #bae6fd', background: m.status === 'IN_PROGRESS' ? '#e0f2fe' : '#ffffff', color: '#075985', cursor: 'pointer', fontWeight: '700' }}
+                            style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #bae6fd', background: m.status === 'IN_PROGRESS' ? '#e0f2fe' : '#ffffff', color: '#075985', cursor: 'pointer', fontWeight: '700' }}
                           >
                             ▶ In Progress
                           </button>
                           <button
                             type="button"
                             onClick={() => updateProjectMilestone(project.id, m.id, { status: 'UPCOMING' })}
-                            style={{ padding: '2px 6px', borderRadius: '4px', fontSize: '0.65rem', border: '1px solid #e2e8f0', background: m.status === 'UPCOMING' ? '#f1f5f9' : '#ffffff', color: '#64748b', cursor: 'pointer' }}
+                            style={{ padding: '2px 7px', borderRadius: '5px', fontSize: '0.65rem', border: '1px solid #e2e8f0', background: m.status === 'UPCOMING' ? '#f1f5f9' : '#ffffff', color: '#64748b', cursor: 'pointer' }}
                           >
                             Upcoming
                           </button>
@@ -1749,16 +1769,30 @@ export const BusinessProjectsDashboard = () => {
                   <h4 style={{ fontSize: '0.92rem', fontWeight: '800', color: '#0f172a', marginBottom: '8px' }}>
                     4. Milestone Escrow Release Tranches
                   </h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {(detailedOverviewProject.timeline || []).map((m) => (
-                      <div key={m.id} style={{ padding: '8px 12px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', fontSize: '0.78rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700' }}>
-                          <span style={{ color: '#0f172a' }}>{m.phase}</span>
-                          <span style={{ color: m.status === 'COMPLETED' ? '#059669' : '#0284c7' }}>{m.status}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {(detailedOverviewProject.timeline || []).map((m, idx) => (
+                      <div key={m.id || idx} style={{ padding: '10px 14px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', fontSize: '0.78rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px', marginBottom: '4px' }}>
+                          <div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                              <span style={{ fontSize: '0.65rem', fontWeight: '800', color: '#64748b' }}>
+                                Step {m.stepNumber || idx + 1}/{m.stepTotal || (detailedOverviewProject.timeline?.length || 5)}:
+                              </span>
+                              <span style={{ color: '#0f172a', fontWeight: '700' }}>{m.phase}</span>
+                            </div>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', marginTop: '3px', background: '#fef3c7', color: '#92400e', padding: '2px 8px', borderRadius: '6px', fontSize: '0.68rem', fontWeight: '700', border: '1px solid #fde68a' }}>
+                              <Clock size={12} strokeWidth={2.4} />
+                              <span>Sprint: {m.sprintDuration || m.period}</span>
+                            </div>
+                          </div>
+                          <span className={`badge ${m.status === 'COMPLETED' ? 'badge-emerald' : m.status === 'IN_PROGRESS' ? 'badge-cyan' : 'badge-gold'}`} style={{ fontSize: '0.65rem', padding: '2px 8px' }}>
+                            {m.status}
+                          </span>
                         </div>
-                        <div style={{ color: '#475569', marginTop: '2px' }}>{m.deliverables}</div>
-                        <div style={{ color: '#64748b', fontSize: '0.72rem', marginTop: '4px' }}>
-                          Budget: {formatMoney(m.allocatedBudget)} • Spent: {formatMoney(m.spent)}
+                        <div style={{ color: '#475569', marginTop: '4px', lineHeight: '1.4' }}>{m.deliverables}</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: '#64748b', fontSize: '0.72rem', marginTop: '6px', paddingTop: '4px', borderTop: '1px dashed #e2e8f0' }}>
+                          <span>Dates: <strong style={{ color: '#334155' }}>{m.period}</strong></span>
+                          <span>Budget: <strong style={{ color: '#334155' }}>{formatMoney(m.allocatedBudget)}</strong> • Spent: <strong style={{ color: '#334155' }}>{formatMoney(m.spent)}</strong></span>
                         </div>
                       </div>
                     ))}

@@ -59,11 +59,16 @@ export const INITIAL_BUSINESS_PROJECTS = [
       verifiedDirectCosts: 3920
     },
 
-    // Detailed Project Execution Timeline (Investor Visibility)
+    // Detailed Project Execution Timeline & Time Sprints (Investor Visibility)
     timeline: [
       {
         id: "uk-m1",
+        stepNumber: 1,
+        stepTotal: 5,
         phase: "Phase 1: Setup & Digital Assets",
+        sprintDuration: "48 Hours (Days 1–2)",
+        sprintTag: "48h Sprint",
+        sprintHours: 48,
         period: "Oct 10 - Oct 12, 2026",
         status: "COMPLETED",
         deliverables: "Domain purchased, WhatsApp catalog live, QR stickers printed.",
@@ -72,7 +77,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "uk-m2",
+        stepNumber: 2,
+        stepTotal: 5,
         phase: "Phase 2: Collateral & Cluster Signage",
+        sprintDuration: "48 Hours (Days 3–4)",
+        sprintTag: "48h Sprint",
+        sprintHours: 48,
         period: "Oct 13 - Oct 14, 2026",
         status: "COMPLETED",
         deliverables: "Banners erected at Thudiyalur checkpost, 500 posters distributed.",
@@ -81,7 +91,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "uk-m3",
+        stepNumber: 3,
+        stepTotal: 5,
         phase: "Phase 3: Hyper-Local Meta Ad Push",
+        sprintDuration: "144 Hours / 6 Days (Days 5–10)",
+        sprintTag: "144h Sprint",
+        sprintHours: 144,
         period: "Oct 15 - Oct 20, 2026",
         status: "IN_PROGRESS",
         deliverables: "Daily ₹200 ad targeting radius within 4km of kitchen. Target 10 orders/day.",
@@ -90,7 +105,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "uk-m4",
+        stepNumber: 4,
+        stepTotal: 5,
         phase: "Phase 4: Order Dispatch & Delivery",
+        sprintDuration: "144 Hours / 6 Days (Days 5–11)",
+        sprintTag: "144h Sprint",
+        sprintHours: 144,
         period: "Oct 15 - Oct 21, 2026",
         status: "IN_PROGRESS",
         deliverables: "Onboarding delivery fleet, tracking prepaid vs COD orders, zero delivery lag.",
@@ -99,7 +119,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "uk-m5",
+        stepNumber: 5,
+        stepTotal: 5,
         phase: "Phase 5: Financial Reconciliation & Payout",
+        sprintDuration: "24 Hours (Day 12)",
+        sprintTag: "24h Settlement",
+        sprintHours: 24,
         period: "Oct 22, 2026",
         status: "UPCOMING",
         deliverables: "Final ledger reconciliation of 60 orders, vendor settlement, investor reporting.",
@@ -172,11 +197,16 @@ export const INITIAL_BUSINESS_PROJECTS = [
       otherOperatingExpenses: 650
     },
 
-    // Detailed Project Execution Timeline (Investor Visibility)
+    // Detailed Project Execution Timeline & Time Sprints (Investor Visibility)
     timeline: [
       {
         id: "cb-m1",
+        stepNumber: 1,
+        stepTotal: 5,
         phase: "Phase 1: Guild Onboarding & Vetting",
+        sprintDuration: "168 Hours / 7 Days (Sprint W1)",
+        sprintTag: "168h Sprint",
+        sprintHours: 168,
         period: "Oct 01 - Oct 08, 2026",
         status: "COMPLETED",
         deliverables: "18 master carpenter guilds vetted, rate card agreed, escrow terms signed.",
@@ -185,7 +215,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "cb-m2",
+        stepNumber: 2,
+        stepTotal: 5,
         phase: "Phase 2: CRM & Tele-calling Pipeline",
+        sprintDuration: "48 Hours (Sprint W1)",
+        sprintTag: "48h Sprint",
+        sprintHours: 48,
         period: "Oct 08 - Oct 10, 2026",
         status: "COMPLETED",
         deliverables: "Exotel IVR routing, WhatsApp quotation bot, and escrow link generator setup.",
@@ -194,7 +229,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "cb-m3",
+        stepNumber: 3,
+        stepTotal: 5,
         phase: "Phase 3: Meta & Search Lead Campaign",
+        sprintDuration: "960 Hours / 40 Days (Sprint W2–W7)",
+        sprintTag: "960h Campaign",
+        sprintHours: 960,
         period: "Oct 10 - Nov 19, 2026 (40 Days)",
         status: "IN_PROGRESS",
         deliverables: "Running ₹250/day ads. Generated 214 homeowner leads in first 13 days.",
@@ -203,7 +243,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "cb-m4",
+        stepNumber: 4,
+        stepTotal: 5,
         phase: "Phase 4: Site Visits & Job Conversion",
+        sprintDuration: "888 Hours / 37 Days (Sprint W2–W8)",
+        sprintTag: "888h Conversion",
+        sprintHours: 888,
         period: "Oct 15 - Nov 22, 2026",
         status: "IN_PROGRESS",
         deliverables: "Carpenters executing home visits, converting into 5 paid jobs/day.",
@@ -212,7 +257,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "cb-m5",
+        stepNumber: 5,
+        stepTotal: 5,
         phase: "Phase 5: Escrow Payouts & Yield Distribution",
+        sprintDuration: "72 Hours (Sprint W8)",
+        sprintTag: "72h Settlement",
+        sprintHours: 72,
         period: "Nov 25, 2026",
         status: "UPCOMING",
         deliverables: "Reconcile all 200 completed jobs, collect ₹20,000 commission, settle investor capital.",
@@ -296,11 +346,16 @@ export const INITIAL_BUSINESS_PROJECTS = [
       otherOperatingExpenses: 400
     },
 
-    // Detailed Project Execution Timeline (Investor Visibility)
+    // Detailed Project Execution Timeline & Time Sprints (Investor Visibility)
     timeline: [
       {
         id: "wlc-m1",
+        stepNumber: 1,
+        stepTotal: 5,
         phase: "Phase 1: Timber Seasoning & Moisture Testing",
+        sprintDuration: "192 Hours / 8 Days (Prep Sprint)",
+        sprintTag: "192h Prep",
+        sprintHours: 192,
         period: "Oct 20 - Oct 28, 2026",
         status: "COMPLETED",
         deliverables: "Kiln-dried teak boards inspected for <10% moisture content to prevent heat warping.",
@@ -309,7 +364,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "wlc-m2",
+        stepNumber: 2,
+        stepTotal: 5,
         phase: "Phase 2: CNC Tooling, Jigs & Prototype Batch",
+        sprintDuration: "168 Hours / 7 Days (Pilot Sprint)",
+        sprintTag: "168h Pilot",
+        sprintHours: 168,
         period: "Oct 29 - Nov 05, 2026",
         status: "IN_PROGRESS",
         deliverables: "25 prototype sleeves milled. MacBook Pro 14 & 16 fitment tolerances verified.",
@@ -318,7 +378,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "wlc-m3",
+        stepNumber: 3,
+        stepTotal: 5,
         phase: "Phase 3: Full Batch Production (150 Units)",
+        sprintDuration: "336 Hours / 14 Days (Manufacturing Sprint)",
+        sprintTag: "336h Production",
+        sprintHours: 336,
         period: "Nov 06 - Nov 20, 2026",
         status: "UPCOMING",
         deliverables: "Assembly line sanding, natural wax polishing, velvet inner lining installation.",
@@ -327,7 +392,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "wlc-m4",
+        stepNumber: 4,
+        stepTotal: 5,
         phase: "Phase 4: D2C E-Commerce & Meta Ad Campaign",
+        sprintDuration: "720 Hours / 30 Days (Sales Sprint)",
+        sprintTag: "720h Sales",
+        sprintHours: 720,
         period: "Nov 10 - Dec 10, 2026 (30 Days)",
         status: "UPCOMING",
         deliverables: "Run ₹200 daily ads across Instagram D2C luxury segments. Target 5-10 orders/day.",
@@ -336,7 +406,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "wlc-m5",
+        stepNumber: 5,
+        stepTotal: 5,
         phase: "Phase 5: Customer Shipping & Return Payout",
+        sprintDuration: "480 Hours / 20 Days (Fulfillment Sprint)",
+        sprintTag: "480h Delivery",
+        sprintHours: 480,
         period: "Nov 25 - Dec 15, 2026",
         status: "UPCOMING",
         deliverables: "Shipment through BlueDart express. Settle raw material vendors and investor yield.",
@@ -420,11 +495,16 @@ export const INITIAL_BUSINESS_PROJECTS = [
       otherOperatingExpenses: 520
     },
 
-    // Detailed Project Execution Timeline (Investor Visibility)
+    // Detailed Project Execution Timeline & Time Sprints (Investor Visibility)
     timeline: [
       {
         id: "bc-m1",
+        stepNumber: 1,
+        stepTotal: 5,
         phase: "Phase 1: Sustainable Stalk Harvesting & Curing",
+        sprintDuration: "216 Hours / 9 Days (Harvest Sprint)",
+        sprintTag: "216h Harvest",
+        sprintHours: 216,
         period: "Oct 05 - Oct 14, 2026",
         status: "COMPLETED",
         deliverables: "Organic thick-walled bamboo culms harvested, cured against fungal moisture.",
@@ -433,7 +513,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "bc-m2",
+        stepNumber: 2,
+        stepTotal: 5,
         phase: "Phase 2: Food-Grade Certification & Wax Prep",
+        sprintDuration: "120 Hours / 5 Days (Compliance Sprint)",
+        sprintTag: "120h Testing",
+        sprintHours: 120,
         period: "Oct 15 - Oct 20, 2026",
         status: "COMPLETED",
         deliverables: "Certified non-toxic plant oil sealant verified by laboratory test report.",
@@ -442,7 +527,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "bc-m3",
+        stepNumber: 3,
+        stepTotal: 5,
         phase: "Phase 3: Artisan Lathe Turning (Batch Production)",
+        sprintDuration: "360 Hours / 15 Days (Craft Sprint)",
+        sprintTag: "360h Production",
+        sprintHours: 360,
         period: "Oct 21 - Nov 05, 2026",
         status: "IN_PROGRESS",
         deliverables: "60 cups turned, 42 polished. Remaining 40-90 cups in active production queue.",
@@ -451,7 +541,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "bc-m4",
+        stepNumber: 4,
+        stepTotal: 5,
         phase: "Phase 4: Eco-Packaging & Social Media Ad Campaign",
+        sprintDuration: "720 Hours / 30 Days (Marketing Sprint)",
+        sprintTag: "720h Campaign",
+        sprintHours: 720,
         period: "Oct 25 - Nov 24, 2026 (30 Days)",
         status: "IN_PROGRESS",
         deliverables: "₹200/day ads running on Instagram targeting zero-waste eco communities.",
@@ -460,7 +555,12 @@ export const INITIAL_BUSINESS_PROJECTS = [
       },
       {
         id: "bc-m5",
+        stepNumber: 5,
+        stepTotal: 5,
         phase: "Phase 5: Retail Deliveries & Investor Payout",
+        sprintDuration: "240 Hours / 10 Days (Distribution & Payout Sprint)",
+        sprintTag: "240h Settlement",
+        sprintHours: 240,
         period: "Nov 25 - Dec 05, 2026",
         status: "UPCOMING",
         deliverables: "Fulfill all 100–150 customer orders, collect ₹49,900 to ₹74,850, settle investor accounts.",

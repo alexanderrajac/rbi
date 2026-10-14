@@ -13,16 +13,18 @@ import {
   calculateProjectFinancials 
 } from '../data/businessProjectsData';
 import confetti from 'canvas-confetti';
+import { supabase, signInWithGoogle, signOut } from '../lib/supabase';
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   // Production Data Version Migration: clears old mock cache
-  const DATA_VERSION = 'rbi_v4_upi_approval';
+  const DATA_VERSION = 'rbi_v5_sprint_admin';
   if (typeof window !== 'undefined') {
     const currentVer = localStorage.getItem('rbi_data_version');
     if (currentVer !== DATA_VERSION) {
       localStorage.removeItem('rbi_business_projects');
+      localStorage.removeItem('rbi_proj_investments');
       localStorage.removeItem('rbi_startups');
       localStorage.removeItem('rbi_holdings');
       localStorage.removeItem('rbi_transactions');
@@ -61,6 +63,71 @@ export const AppProvider = ({ children }) => {
       investorId: "RBI-INV-99214"
     };
   });
+
+  // Supabase Google Auth State
+  const [supabaseUser, setSupabaseUser] = useState(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
+  useEffect(() => {
+    // Check active session on initial load
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setSupabaseUser(session.user);
+        setUser(prev => ({
+          ...prev,
+          name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0] || prev.name,
+          email: session.user.email || prev.email,
+          avatarUrl: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || null,
+          authProvider: 'google'
+        }));
+      }
+      setIsAuthLoading(false);
+    }).catch(err => {
+      console.warn('Session check note:', err?.message || err);
+      setIsAuthLoading(false);
+    });
+
+    // Subscribe to OAuth redirects and auth events
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setSupabaseUser(session.user);
+        setUser(prev => ({
+          ...prev,
+          name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || session.user.email?.split('@')[0] || prev.name,
+          email: session.user.email || prev.email,
+          avatarUrl: session.user.user_metadata?.avatar_url || session.user.user_metadata?.picture || null,
+          authProvider: 'google'
+        }));
+      } else {
+        setSupabaseUser(null);
+      }
+      setIsAuthLoading(false);
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, []);
+
+  const loginWithGoogle = async () => {
+    try {
+      setIsAuthLoading(true);
+      await signInWithGoogle();
+    } catch (err) {
+      console.error('Google Sign In failed:', err);
+      setIsAuthLoading(false);
+      throw err;
+    }
+  };
+
+  const logoutUser = async () => {
+    try {
+      await signOut();
+      setSupabaseUser(null);
+    } catch (err) {
+      console.error('Sign Out error:', err);
+    }
+  };
 
   // Wallet Balance (in INR by default)
   const [walletBalance, setWalletBalance] = useState(() => {
@@ -1232,7 +1299,12 @@ export const AppProvider = ({ children }) => {
       setIsKYCModalOpen,
       isWalletModalOpen,
       setIsWalletModalOpen,
-      triggerConfetti
+      triggerConfetti,
+      supabase,
+      supabaseUser,
+      isAuthLoading,
+      loginWithGoogle,
+      logoutUser
     }}>
       {children}
     </AppContext.Provider>
