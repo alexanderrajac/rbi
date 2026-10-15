@@ -15,7 +15,7 @@ export const App = () => {
   );
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#0B0E14', color: '#F0F6FC' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#F8FAFC', color: '#0F172A' }}>
       {/* Universal Institutional Header */}
       <Navbar />
 

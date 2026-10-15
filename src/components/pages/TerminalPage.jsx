@@ -19,9 +19,9 @@ export const TerminalPage = ({
       {/* Page Header */}
       <div className="page-header-trading">
         <div className="page-breadcrumb">
-          <button onClick={() => setActiveTab('ventures')}>Ventures</button>
-          <span>/</span>
-          <span style={{ color: '#F0F6FC' }}>Live Candlestick Terminal</span>
+          <button onClick={() => setActiveTab('ventures')} style={{ color: '#64748B' }}>Ventures</button>
+          <span style={{ color: '#CBD5E1' }}>/</span>
+          <span style={{ color: '#0F172A', fontWeight: '600' }}>Live Candlestick Terminal</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
           <div>
@@ -29,22 +29,22 @@ export const TerminalPage = ({
               <span className="badge badge-cyan font-mono-numbers" style={{ fontSize: '0.62rem', padding: '2px 8px' }}>
                 MARKET FEED ACTIVE
               </span>
-              <span style={{ fontSize: '0.72rem', color: '#00F59B', display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00F59B', boxShadow: '0 0 6px #00F59B' }}></span>
+              <span style={{ fontSize: '0.72rem', color: '#059669', display: 'inline-flex', alignItems: 'center', gap: '5px', fontWeight: '700' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#059669', boxShadow: '0 0 6px rgba(5, 150, 105, 0.4)' }}></span>
                 Sub-Second Tick Processing
               </span>
             </div>
-            <h2 style={{ fontSize: '1.65rem', fontWeight: '800', color: '#F0F6FC', margin: 0, letterSpacing: '-0.02em' }}>
+            <h2 style={{ fontSize: '1.65rem', fontWeight: '800', color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>
               High-Frequency Candlestick & Order Book Terminal
             </h2>
-            <p style={{ color: '#8B949E', fontSize: '0.86rem', margin: '4px 0 0 0' }}>
+            <p style={{ color: '#64748B', fontSize: '0.86rem', margin: '4px 0 0 0' }}>
               Real-time synthetic moving candles, deal depth, recent execution tape, and instant capital allocation desk.
             </p>
           </div>
           <button 
             onClick={() => setActiveTab('ventures')}
             className="btn btn-secondary btn-sm"
-            style={{ gap: '6px' }}
+            style={{ gap: '6px', background: '#FFFFFF', border: '1px solid #CBD5E1', color: '#0F172A' }}
           >
             <Building2 size={15} />
             <span>Browse All 4 Deals</span>

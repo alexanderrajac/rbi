@@ -33,9 +33,9 @@ export const HowItWorksPage = ({ setActiveTab }) => {
       {/* Page Header */}
       <div className="page-header-trading">
         <div className="page-breadcrumb">
-          <button onClick={() => setActiveTab('ventures')}>Ventures</button>
-          <span>/</span>
-          <span style={{ color: '#F0F6FC' }}>How It Works</span>
+          <button onClick={() => setActiveTab('ventures')} style={{ color: '#64748B' }}>Ventures</button>
+          <span style={{ color: '#CBD5E1' }}>/</span>
+          <span style={{ color: '#0F172A', fontWeight: '600' }}>How It Works</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
           <div>
@@ -43,21 +43,21 @@ export const HowItWorksPage = ({ setActiveTab }) => {
               <span className="badge badge-gold font-mono-numbers" style={{ fontSize: '0.62rem', padding: '2px 8px' }}>
                 SYNDICATE GUIDE
               </span>
-              <span style={{ fontSize: '0.72rem', color: '#8B949E' }}>
+              <span style={{ fontSize: '0.72rem', color: '#64748B' }}>
                 Democratized SME Order Financing & Escrow
               </span>
             </div>
-            <h2 style={{ fontSize: '1.65rem', fontWeight: '800', color: '#F0F6FC', margin: 0, letterSpacing: '-0.02em' }}>
+            <h2 style={{ fontSize: '1.65rem', fontWeight: '800', color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>
               Straightforward Business Capital Allocation Workflow
             </h2>
-            <p style={{ color: '#8B949E', fontSize: '0.86rem', margin: '4px 0 0 0' }}>
+            <p style={{ color: '#64748B', fontSize: '0.86rem', margin: '4px 0 0 0' }}>
               Four simple steps to back verified local enterprises with complete escrow protection and clear yield terms.
             </p>
           </div>
           <button 
             onClick={() => setActiveTab('ventures')}
             className="btn btn-secondary btn-sm"
-            style={{ gap: '6px' }}
+            style={{ gap: '6px', background: '#FFFFFF', border: '1px solid #CBD5E1', color: '#0F172A' }}
           >
             <Building2 size={15} />
             <span>Browse All 4 Deals</span>
@@ -71,58 +71,60 @@ export const HowItWorksPage = ({ setActiveTab }) => {
         style={{
           padding: '32px 28px',
           marginBottom: '28px',
-          background: '#0D1117'
+          background: '#FFFFFF',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)'
         }}
       >
         <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 32px auto' }}>
-          <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', padding: '3px 10px', background: 'rgba(245, 158, 11, 0.12)', color: '#F59E0B', border: '1px solid rgba(245, 158, 11, 0.25)', marginBottom: '8px' }}>
+          <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', padding: '3px 10px', background: '#FEF3C7', color: '#D97706', border: '1px solid #FDE68A', marginBottom: '8px', fontWeight: '700' }}>
             EXECUTION WORKFLOW
           </span>
-          <h3 style={{ fontSize: '1.65rem', fontWeight: '800', color: '#F0F6FC', margin: '6px 0 8px 0', letterSpacing: '-0.02em' }}>
+          <h3 style={{ fontSize: '1.65rem', fontWeight: '800', color: '#0F172A', margin: '6px 0 8px 0', letterSpacing: '-0.02em' }}>
             From Due Diligence to Profit Settlement
           </h3>
-          <p style={{ color: '#8B949E', fontSize: '0.88rem', margin: 0 }}>
+          <p style={{ color: '#64748B', fontSize: '0.88rem', margin: 0 }}>
             Every step is ring-fenced to ensure zero default and complete financial transparency.
           </p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
-          <div style={{ background: '#161B22', padding: '22px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div className="font-mono-numbers" style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '14px' }}>
+          <div style={{ background: '#F8FAFC', padding: '22px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+            <div className="font-mono-numbers" style={{ width: '36px', height: '36px', borderRadius: '8px', background: '#FEF3C7', color: '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '14px' }}>
               01
             </div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '1rem', margin: '0 0 8px 0', fontWeight: '700' }}>Choose Venture</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.82rem', margin: 0, lineHeight: '1.6' }}>
+            <h4 style={{ color: '#0F172A', fontSize: '1rem', margin: '0 0 8px 0', fontWeight: '700' }}>Choose Venture</h4>
+            <p style={{ color: '#64748B', fontSize: '0.82rem', margin: 0, lineHeight: '1.6' }}>
               Select a verified enterprise across Cloud Kitchens, Marketplace Franchises, or Manufacturing based on unit economics, sprint days, and targeted term yields.
             </p>
           </div>
 
-          <div style={{ background: '#161B22', padding: '22px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div className="font-mono-numbers" style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '14px' }}>
+          <div style={{ background: '#F8FAFC', padding: '22px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+            <div className="font-mono-numbers" style={{ width: '36px', height: '36px', borderRadius: '8px', background: '#F0F9FF', color: '#0284C7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '14px' }}>
               02
             </div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '1rem', margin: '0 0 8px 0', fontWeight: '700' }}>Inspect All Costs</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.82rem', margin: 0, lineHeight: '1.6' }}>
+            <h4 style={{ color: '#0F172A', fontSize: '1rem', margin: '0 0 8px 0', fontWeight: '700' }}>Inspect All Costs</h4>
+            <p style={{ color: '#64748B', fontSize: '0.82rem', margin: 0, lineHeight: '1.6' }}>
               Inspect where every rupee is spent across materials, labour, packaging, delivery, and marketing. Full cost visibility with no hidden promoter fees.
             </p>
           </div>
 
-          <div style={{ background: '#161B22', padding: '22px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div className="font-mono-numbers" style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(0, 245, 155, 0.15)', color: '#00F59B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '14px' }}>
+          <div style={{ background: '#F8FAFC', padding: '22px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+            <div className="font-mono-numbers" style={{ width: '36px', height: '36px', borderRadius: '8px', background: '#ECFDF5', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '14px' }}>
               03
             </div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '1rem', margin: '0 0 8px 0', fontWeight: '700' }}>Instant UPI Clearing</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.82rem', margin: 0, lineHeight: '1.6' }}>
-              Scan the dynamic QR or transfer directly to official UPI ID <strong style={{ color: '#00F59B' }}>8248651695-3@ybl</strong>. Submit your 12-digit UTR reference and receipt.
+            <h4 style={{ color: '#0F172A', fontSize: '1rem', margin: '0 0 8px 0', fontWeight: '700' }}>Instant UPI Clearing</h4>
+            <p style={{ color: '#64748B', fontSize: '0.82rem', margin: 0, lineHeight: '1.6' }}>
+              Scan the dynamic QR or transfer directly to official UPI ID <strong style={{ color: '#059669' }}>8248651695-3@ybl</strong>. Submit your 12-digit UTR reference and receipt.
             </p>
           </div>
 
-          <div style={{ background: '#161B22', padding: '22px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div className="font-mono-numbers" style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(168, 85, 247, 0.15)', color: '#A855F7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '14px' }}>
+          <div style={{ background: '#F8FAFC', padding: '22px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+            <div className="font-mono-numbers" style={{ width: '36px', height: '36px', borderRadius: '8px', background: '#FAF5FF', color: '#9333EA', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', marginBottom: '14px' }}>
               04
             </div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '1rem', margin: '0 0 8px 0', fontWeight: '700' }}>Escrow Audit & Cert</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.82rem', margin: 0, lineHeight: '1.6' }}>
+            <h4 style={{ color: '#0F172A', fontSize: '1rem', margin: '0 0 8px 0', fontWeight: '700' }}>Escrow Audit & Cert</h4>
+            <p style={{ color: '#64748B', fontSize: '0.82rem', margin: 0, lineHeight: '1.6' }}>
               Sovereign admin clears the payment against depository rails, issues your legal digital allocation certificate, and locks capital in milestone escrow.
             </p>
           </div>
@@ -135,12 +137,14 @@ export const HowItWorksPage = ({ setActiveTab }) => {
         style={{
           padding: '28px',
           marginBottom: '28px',
-          background: '#0D1117'
+          background: '#FFFFFF',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-          <ShieldCheck size={20} className="text-emerald-400" />
-          <h3 style={{ fontSize: '1.25rem', fontWeight: '800', color: '#F0F6FC', margin: 0 }}>
+          <ShieldCheck size={20} className="text-emerald-600" />
+          <h3 style={{ fontSize: '1.25rem', fontWeight: '800', color: '#0F172A', margin: 0 }}>
             Frequently Asked Questions
           </h3>
         </div>
@@ -150,9 +154,9 @@ export const HowItWorksPage = ({ setActiveTab }) => {
             <div 
               key={i}
               style={{
-                background: '#161B22',
+                background: '#FFFFFF',
                 borderRadius: '12px',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
+                border: '1px solid #E2E8F0',
                 overflow: 'hidden'
               }}
             >
@@ -162,12 +166,12 @@ export const HowItWorksPage = ({ setActiveTab }) => {
                 style={{
                   width: '100%',
                   padding: '16px 20px',
-                  background: 'none',
+                  background: openFaq === i ? '#F8FAFC' : 'none',
                   border: 'none',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  color: '#F0F6FC',
+                  color: '#0F172A',
                   fontSize: '0.92rem',
                   fontWeight: '700',
                   textAlign: 'left',
@@ -175,10 +179,10 @@ export const HowItWorksPage = ({ setActiveTab }) => {
                 }}
               >
                 <span>{faq.q}</span>
-                {openFaq === i ? <ChevronUp size={18} color="#00F59B" /> : <ChevronDown size={18} color="#8B949E" />}
+                {openFaq === i ? <ChevronUp size={18} color="#059669" /> : <ChevronDown size={18} color="#94A3B8" />}
               </button>
               {openFaq === i && (
-                <div style={{ padding: '0 20px 16px 20px', color: '#8B949E', fontSize: '0.84rem', lineHeight: '1.6', borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '12px' }}>
+                <div style={{ padding: '0 20px 16px 20px', color: '#64748B', fontSize: '0.84rem', lineHeight: '1.6', borderTop: '1px solid #E2E8F0', paddingTop: '12px', background: '#F8FAFC' }}>
                   {faq.a}
                 </div>
               )}

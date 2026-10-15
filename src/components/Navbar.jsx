@@ -59,11 +59,11 @@ export const Navbar = () => {
       position: 'sticky',
       top: 0,
       zIndex: 50,
-      borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-      background: 'rgba(11, 14, 20, 0.95)',
+      borderBottom: '1px solid #E2E8F0',
+      background: 'rgba(255, 255, 255, 0.95)',
       backdropFilter: 'blur(16px)',
       WebkitBackdropFilter: 'blur(16px)',
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)'
+      boxShadow: '0 4px 20px rgba(15, 23, 42, 0.06)'
     }}>
       {/* Main Navbar */}
       <div className="container" style={{ padding: '12px 20px' }}>
@@ -78,31 +78,31 @@ export const Navbar = () => {
               width: '40px', 
               height: '40px', 
               borderRadius: '10px', 
-              background: 'linear-gradient(135deg, #00F59B 0%, #059669 100%)',
+              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 0 18px rgba(0, 245, 155, 0.35)',
-              color: '#0B0E14'
+              boxShadow: '0 4px 14px rgba(16, 185, 129, 0.35)',
+              color: '#FFFFFF'
             }}>
               <Building2 size={22} strokeWidth={2.5} />
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.15rem', fontWeight: '800', letterSpacing: '-0.02em', color: '#F0F6FC' }}>
+                <span style={{ fontSize: '1.15rem', fontWeight: '800', letterSpacing: '-0.02em', color: '#0F172A' }}>
                   ROYAL BANK OF INVESTMENT
                 </span>
-                <span className="badge font-mono-numbers" style={{ fontSize: '0.62rem', padding: '2px 7px', background: 'rgba(0, 245, 155, 0.12)', color: '#00F59B', border: '1px solid rgba(0, 245, 155, 0.3)' }}>
+                <span className="badge font-mono-numbers" style={{ fontSize: '0.62rem', padding: '2px 7px', background: 'rgba(16, 185, 129, 0.12)', color: '#059669', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
                   SYNDICATE TERMINAL
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '1px' }}>
-                <p style={{ fontSize: '0.70rem', color: '#8B949E', margin: 0, letterSpacing: '0.02em' }}>
+                <p style={{ fontSize: '0.70rem', color: '#64748B', margin: 0, letterSpacing: '0.02em' }}>
                   Real Business Projects Syndicate & Escrow
                 </p>
-                <span style={{ color: 'rgba(255, 255, 255, 0.2)', fontSize: '0.65rem' }}>•</span>
-                <span className="font-mono-numbers" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.70rem', color: '#00F59B', fontWeight: '600' }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00F59B', boxShadow: '0 0 6px #00F59B' }}></span>
+                <span style={{ color: '#CBD5E1', fontSize: '0.65rem' }}>•</span>
+                <span className="font-mono-numbers" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.70rem', color: '#059669', fontWeight: '700' }}>
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 6px rgba(16, 185, 129, 0.6)' }}></span>
                   4 Active Ventures
                 </span>
               </div>
@@ -342,7 +342,7 @@ export const Navbar = () => {
               gap: '6px', 
               paddingTop: '12px', 
               marginTop: '12px', 
-              borderTop: '1px solid rgba(255, 255, 255, 0.1)' 
+              borderTop: '1px solid #E2E8F0' 
             }}
           >
             <button 

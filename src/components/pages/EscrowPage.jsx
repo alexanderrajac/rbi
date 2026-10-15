@@ -12,9 +12,9 @@ export const EscrowPage = ({ setActiveTab }) => {
       {/* Page Header */}
       <div className="page-header-trading">
         <div className="page-breadcrumb">
-          <button onClick={() => setActiveTab('ventures')}>Ventures</button>
-          <span>/</span>
-          <span style={{ color: '#F0F6FC' }}>Escrow & Safety</span>
+          <button onClick={() => setActiveTab('ventures')} style={{ color: '#64748B' }}>Ventures</button>
+          <span style={{ color: '#CBD5E1' }}>/</span>
+          <span style={{ color: '#0F172A', fontWeight: '600' }}>Escrow & Safety</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
           <div>
@@ -22,14 +22,14 @@ export const EscrowPage = ({ setActiveTab }) => {
               <span className="badge badge-gold font-mono-numbers" style={{ fontSize: '0.62rem', padding: '2px 8px' }}>
                 SEGREGATED CUSTODY
               </span>
-              <span style={{ fontSize: '0.72rem', color: '#00F59B', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ fontSize: '0.72rem', color: '#059669', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: '700' }}>
                 <ShieldCheck size={13} /> 100% Principal Ring-Fence
               </span>
             </div>
-            <h2 style={{ fontSize: '1.65rem', fontWeight: '800', color: '#F0F6FC', margin: 0, letterSpacing: '-0.02em' }}>
+            <h2 style={{ fontSize: '1.65rem', fontWeight: '800', color: '#0F172A', margin: 0, letterSpacing: '-0.02em' }}>
               Segregated Escrow Vault & Statutory Legal Protection
             </h2>
-            <p style={{ color: '#8B949E', fontSize: '0.86rem', margin: '4px 0 0 0' }}>
+            <p style={{ color: '#64748B', fontSize: '0.86rem', margin: '4px 0 0 0' }}>
               Tri-party escrow custody, milestone-gated capital disbursement, and legally enforceable syndicate protection.
             </p>
           </div>
@@ -38,14 +38,14 @@ export const EscrowPage = ({ setActiveTab }) => {
               type="button"
               onClick={() => window.print()}
               className="btn-secondary-trading"
-              style={{ padding: '8px 14px', fontSize: '0.80rem', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
+              style={{ padding: '8px 14px', fontSize: '0.80rem', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', background: '#FFFFFF', border: '1px solid #CBD5E1', color: '#0F172A' }}
             >
               <Printer size={14} /> <span>Print Security Charter</span>
             </button>
             <button 
               onClick={() => setActiveTab('ventures')}
               className="btn btn-secondary btn-sm"
-              style={{ gap: '6px' }}
+              style={{ gap: '6px', background: '#FFFFFF', border: '1px solid #CBD5E1', color: '#0F172A' }}
             >
               <Building2 size={15} />
               <span>Browse Deals</span>
@@ -60,18 +60,20 @@ export const EscrowPage = ({ setActiveTab }) => {
         style={{
           padding: '32px 28px',
           marginBottom: '26px',
-          background: '#0D1117'
+          background: '#FFFFFF',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)'
         }}
       >
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px', marginBottom: '24px' }}>
-          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(0, 245, 155, 0.15)', color: '#00F59B', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#ECFDF5', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid #A7F3D0' }}>
             <ShieldCheck size={28} />
           </div>
           <div>
-            <h3 style={{ fontSize: '1.40rem', fontWeight: '800', color: '#F0F6FC', margin: '0 0 6px 0' }}>
+            <h3 style={{ fontSize: '1.40rem', fontWeight: '800', color: '#0F172A', margin: '0 0 6px 0' }}>
               Institutional Escrow Custody Standard
             </h3>
-            <p style={{ color: '#8B949E', fontSize: '0.88rem', margin: 0, lineHeight: '1.6', maxWidth: '820px' }}>
+            <p style={{ color: '#64748B', fontSize: '0.88rem', margin: 0, lineHeight: '1.6', maxWidth: '820px' }}>
               All investor capital allocated to business ventures is deposited into a segregated depository account operated under Royal Bank of Investment custody. Funds are never transferred directly into personal accounts of business founders. Every disbursement requires verified commercial invoices, physical inventory inspection, and milestone sign-off.
             </p>
           </div>
@@ -79,34 +81,34 @@ export const EscrowPage = ({ setActiveTab }) => {
 
         {/* 4 Pillars Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginTop: '20px' }}>
-          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div style={{ color: '#00F59B', marginBottom: '10px' }}><Lock size={22} /></div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Segregated Escrow Vault</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
+          <div style={{ background: '#F8FAFC', padding: '20px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+            <div style={{ color: '#059669', marginBottom: '10px' }}><Lock size={22} /></div>
+            <h4 style={{ color: '#0F172A', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Segregated Escrow Vault</h4>
+            <p style={{ color: '#64748B', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
               Capital is ring-fenced from company operating overhead. Funds can only be utilized for approved inventory line items.
             </p>
           </div>
 
-          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div style={{ color: '#F59E0B', marginBottom: '10px' }}><CheckCircle2 size={22} /></div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Milestone-Gated Tranches</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
+          <div style={{ background: '#F8FAFC', padding: '20px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+            <div style={{ color: '#D97706', marginBottom: '10px' }}><CheckCircle2 size={22} /></div>
+            <h4 style={{ color: '#0F172A', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Milestone-Gated Tranches</h4>
+            <p style={{ color: '#64748B', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
               Disbursements occur only as milestones are verified. Unspent capital remains locked until the previous stage is delivered.
             </p>
           </div>
 
-          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div style={{ color: '#38BDF8', marginBottom: '10px' }}><Award size={22} /></div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>100% Refund Assurance</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
+          <div style={{ background: '#F8FAFC', padding: '20px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+            <div style={{ color: '#0284C7', marginBottom: '10px' }}><Award size={22} /></div>
+            <h4 style={{ color: '#0F172A', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>100% Refund Assurance</h4>
+            <p style={{ color: '#64748B', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
               In the unlikely event a venture fails to meet operational milestones, 100% of unspent escrow balance is refunded directly to backers.
             </p>
           </div>
 
-          <div style={{ background: '#161B22', padding: '20px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div style={{ color: '#A855F7', marginBottom: '10px' }}><FileText size={22} /></div>
-            <h4 style={{ color: '#F0F6FC', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Enforceable Syndicate Deed</h4>
-            <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
+          <div style={{ background: '#F8FAFC', padding: '20px', borderRadius: '14px', border: '1px solid #E2E8F0' }}>
+            <div style={{ color: '#9333EA', marginBottom: '10px' }}><FileText size={22} /></div>
+            <h4 style={{ color: '#0F172A', fontSize: '0.96rem', margin: '0 0 6px 0', fontWeight: '700' }}>Enforceable Syndicate Deed</h4>
+            <p style={{ color: '#64748B', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
               Digital Certificates are accompanied by an immutable cryptographic hash and backed by legally binding Indian Contract Act syndicate agreements.
             </p>
           </div>
@@ -119,28 +121,30 @@ export const EscrowPage = ({ setActiveTab }) => {
         style={{
           padding: '24px 28px',
           marginBottom: '28px',
-          background: '#0D1117'
+          background: '#FFFFFF',
+          border: '1px solid #E2E8F0',
+          boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)'
         }}
       >
-        <h4 style={{ fontSize: '1.10rem', fontWeight: '800', color: '#F0F6FC', margin: '0 0 14px 0' }}>
+        <h4 style={{ fontSize: '1.10rem', fontWeight: '800', color: '#0F172A', margin: '0 0 14px 0' }}>
           Depository & Settlement Clearing Rails
         </h4>
         <div className="font-mono-numbers" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
-          <div style={{ background: '#161B22', padding: '14px 16px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-            <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase' }}>Official UPI Gateway</div>
-            <div style={{ fontSize: '0.96rem', fontWeight: '800', color: '#00F59B', marginTop: '4px' }}>8248651695-3@ybl</div>
+          <div style={{ background: '#F8FAFC', padding: '14px 16px', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
+            <div style={{ fontSize: '0.70rem', color: '#64748B', textTransform: 'uppercase' }}>Official UPI Gateway</div>
+            <div style={{ fontSize: '0.96rem', fontWeight: '800', color: '#059669', marginTop: '4px' }}>8248651695-3@ybl</div>
           </div>
-          <div style={{ background: '#161B22', padding: '14px 16px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-            <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase' }}>Depository Protocol</div>
-            <div style={{ fontSize: '0.96rem', fontWeight: '800', color: '#F0F6FC', marginTop: '4px' }}>NPCI UPI 2.0 / IMPS</div>
+          <div style={{ background: '#F8FAFC', padding: '14px 16px', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
+            <div style={{ fontSize: '0.70rem', color: '#64748B', textTransform: 'uppercase' }}>Depository Protocol</div>
+            <div style={{ fontSize: '0.96rem', fontWeight: '800', color: '#0F172A', marginTop: '4px' }}>NPCI UPI 2.0 / IMPS</div>
           </div>
-          <div style={{ background: '#161B22', padding: '14px 16px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-            <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase' }}>Verification Turnaround</div>
-            <div style={{ fontSize: '0.96rem', fontWeight: '800', color: '#38BDF8', marginTop: '4px' }}>Instant to 4 Hours</div>
+          <div style={{ background: '#F8FAFC', padding: '14px 16px', borderRadius: '10px', border: '1px solid #E2E8F0' }}>
+            <div style={{ fontSize: '0.70rem', color: '#64748B', textTransform: 'uppercase' }}>Verification Turnaround</div>
+            <div style={{ fontSize: '0.96rem', fontWeight: '800', color: '#0284C7', marginTop: '4px' }}>Instant to 4 Hours</div>
           </div>
-          <div style={{ background: '#161B22', padding: '14px 16px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
-            <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase' }}>Default History</div>
-            <div style={{ fontSize: '0.96rem', fontWeight: '800', color: '#00F59B', marginTop: '4px' }}>0.00% (Zero Default)</div>
+          <div style={{ background: '#ECFDF5', padding: '14px 16px', borderRadius: '10px', border: '1px solid #A7F3D0' }}>
+            <div style={{ fontSize: '0.70rem', color: '#059669', textTransform: 'uppercase' }}>Default History</div>
+            <div style={{ fontSize: '0.96rem', fontWeight: '800', color: '#059669', marginTop: '4px' }}>0.00% (Zero Default)</div>
           </div>
         </div>
       </div>

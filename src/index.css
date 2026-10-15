@@ -1,32 +1,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800;900&display=swap');
 
 :root {
-  /* True Obsidian Base System */
-  --bg-primary: #080B0F;
-  --bg-secondary: #0D1117;
-  --bg-card: #0D1117;
-  --bg-card-hover: #161B22;
-  --bg-elevated: #161B22;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(0, 245, 155, 0.25);
-  --border-cyan-glow: rgba(56, 189, 248, 0.25);
+  /* Radiant White & Light Mode Foundation */
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #FFFFFF;
+  --bg-elevated: #F1F5F9;
+  --border-color: #E2E8F0;
+  --border-glow: rgba(16, 185, 129, 0.25);
+  --border-cyan-glow: rgba(14, 165, 233, 0.25);
   
-  /* Accent Tokens */
-  --emerald-accent: #00F59B;
-  --emerald-gradient: linear-gradient(135deg, #00F59B 0%, #059669 100%);
-  --cyan-accent: #38BDF8;
-  --cyan-gradient: linear-gradient(135deg, #38BDF8 0%, #0284c7 100%);
-  --gold-primary: #F59E0B;
-  --gold-glow: #d97706;
-  --gold-gradient: linear-gradient(135deg, #F59E0B 0%, #d97706 100%);
-  --gold-royal: linear-gradient(135deg, #F59E0B 0%, #b45309 100%);
-  --gold-glass: rgba(245, 158, 11, 0.12);
-  --rose-accent: #FF3366;
+  /* High-Vibrancy FinTech Accents */
+  --emerald-accent: #059669;
+  --emerald-gradient: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  --cyan-accent: #0284C7;
+  --cyan-gradient: linear-gradient(135deg, #0EA5E9 0%, #0284C7 100%);
+  --gold-primary: #D97706;
+  --gold-glow: #B45309;
+  --gold-gradient: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  --gold-royal: linear-gradient(135deg, #D97706 0%, #92400E 100%);
+  --gold-glass: rgba(245, 158, 11, 0.10);
+  --purple-accent: #6366F1;
+  --purple-gradient: linear-gradient(135deg, #818CF8 0%, #4F46E5 100%);
+  --coral-accent: #FF5722;
+  --coral-gradient: linear-gradient(135deg, #FF6B4A 0%, #FF5722 100%);
+  --rose-accent: #E11D48;
   
-  /* Text Contrast Hierarchy */
-  --text-main: #F0F6FC;
-  --text-muted: #8B949E;
-  --text-dim: #6E7681;
+  /* Text Contrast Hierarchy for Crisp White Mode */
+  --text-main: #0F172A;
+  --text-muted: #475569;
+  --text-dim: #94A3B8;
   
   /* Typography Stacks */
   --font-heading: 'Outfit', 'Plus Jakarta Sans', sans-serif;
@@ -39,10 +43,11 @@
   --radius-xl: 20px;
   --radius-full: 9999px;
   
-  --shadow-card: 0 4px 24px -2px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.4);
-  --shadow-glow-emerald: 0 0 16px rgba(0, 245, 155, 0.25);
-  --shadow-glow-gold: 0 0 16px rgba(245, 158, 11, 0.25);
-  --shadow-glow-cyan: 0 0 16px rgba(56, 189, 248, 0.25);
+  --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --shadow-card-hover: 0 16px 36px -4px rgba(15, 23, 42, 0.12), 0 0 20px rgba(59, 130, 246, 0.08);
+  --shadow-glow-emerald: 0 4px 18px rgba(16, 185, 129, 0.25);
+  --shadow-glow-gold: 0 4px 18px rgba(245, 158, 11, 0.25);
+  --shadow-glow-cyan: 0 4px 18px rgba(14, 165, 233, 0.25);
 }
 
 * {
@@ -58,9 +63,10 @@ body {
   line-height: 1.5;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(circle at 12% 12%, rgba(0, 245, 155, 0.03) 0%, transparent 40%),
-    radial-gradient(circle at 88% 70%, rgba(56, 189, 248, 0.03) 0%, transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.02) 0%, transparent 50%);
+    radial-gradient(circle at 10% 12%, rgba(255, 107, 74, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 16%, rgba(59, 130, 246, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 85% 85%, rgba(245, 158, 11, 0.05) 0%, transparent 45%);
   background-attachment: fixed;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -394,9 +400,9 @@ select.form-input option {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(8, 11, 15, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -406,13 +412,13 @@ select.form-input option {
 }
 
 .modal-content {
-  background: #161B22;
-  color: #F0F6FC;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #FFFFFF;
+  color: #0F172A;
+  border: 1px solid #E2E8F0;
   border-radius: var(--radius-xl);
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 25px 60px -12px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(15, 23, 42, 0.06);
   animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -423,9 +429,9 @@ select.form-input option {
 .modal-content input[type="tel"],
 .modal-content textarea,
 .modal-content select {
-  background: #0D1117 !important;
-  color: #F0F6FC !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: #F8FAFC !important;
+  color: #0F172A !important;
+  border: 1px solid #CBD5E1 !important;
   border-radius: 8px;
   transition: all 0.2s ease;
 }
@@ -433,8 +439,9 @@ select.form-input option {
 .modal-content input:focus,
 .modal-content textarea:focus,
 .modal-content select:focus {
-  border-color: #00F59B !important;
-  box-shadow: 0 0 0 2px rgba(0, 245, 155, 0.25) !important;
+  background: #FFFFFF !important;
+  border-color: #059669 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
   outline: none !important;
 }
 
@@ -443,7 +450,7 @@ select.form-input option {
   font-size: 0.68rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #8B949E;
+  color: #64748B;
   font-weight: 700;
 }
 
@@ -775,25 +782,23 @@ html, body {
 }
 
 /* =========================================================================
-   HIGH-PERFORMANCE TRADING TERMINAL TOKENS & ANIMATIONS (DARK/OBSIDIAN THEME)
+   HIGH-PERFORMANCE TRADING TERMINAL TOKENS & ANIMATIONS (RADIANT WHITE THEME)
    ========================================================================= */
 
-
-
 :root {
-  --trading-bg-deep: #0B0E14;
-  --trading-bg-panel: #0D1117;
-  --trading-bg-elevated: #161B22;
-  --trading-border-hairline: rgba(255, 255, 255, 0.08);
-  --trading-border-cyan: rgba(56, 189, 248, 0.2);
-  --trading-text-primary: #F0F6FC;
-  --trading-text-secondary: #8B949E;
-  --trading-text-muted: #6E7681;
-  --trading-bullish-green: #00F59B;
-  --trading-bullish-glow: rgba(0, 245, 155, 0.35);
-  --trading-bearish-red: #FF3366;
-  --trading-gold: #F59E0B;
-  --trading-cyan: #38BDF8;
+  --trading-bg-deep: #F8FAFC;
+  --trading-bg-panel: #FFFFFF;
+  --trading-bg-elevated: #F1F5F9;
+  --trading-border-hairline: #E2E8F0;
+  --trading-border-cyan: rgba(14, 165, 233, 0.35);
+  --trading-text-primary: #0F172A;
+  --trading-text-secondary: #475569;
+  --trading-text-muted: #64748B;
+  --trading-bullish-green: #059669;
+  --trading-bullish-glow: rgba(16, 185, 129, 0.25);
+  --trading-bearish-red: #E11D48;
+  --trading-gold: #D97706;
+  --trading-cyan: #0284C7;
 }
 
 body {
@@ -831,23 +836,23 @@ body {
 /* State Change & Metric Alert Pulses */
 @keyframes pulse-bullish {
   0%, 100% {
-    border-color: rgba(0, 245, 155, 0.3);
-    box-shadow: 0 0 10px rgba(0, 245, 155, 0.15);
+    border-color: rgba(16, 185, 129, 0.35);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.15);
   }
   50% {
-    border-color: rgba(0, 245, 155, 0.85);
-    box-shadow: 0 0 25px rgba(0, 245, 155, 0.45);
+    border-color: rgba(16, 185, 129, 0.85);
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.35);
   }
 }
 
 @keyframes pulse-bearish {
   0%, 100% {
-    border-color: rgba(255, 51, 102, 0.3);
-    box-shadow: 0 0 10px rgba(255, 51, 102, 0.15);
+    border-color: rgba(225, 29, 72, 0.3);
+    box-shadow: 0 0 10px rgba(225, 29, 72, 0.15);
   }
   50% {
-    border-color: rgba(255, 51, 102, 0.85);
-    box-shadow: 0 0 25px rgba(255, 51, 102, 0.45);
+    border-color: rgba(225, 29, 72, 0.85);
+    box-shadow: 0 0 25px rgba(225, 29, 72, 0.35);
   }
 }
 
@@ -859,17 +864,17 @@ body {
   animation: pulse-bearish 2.2s infinite ease-in-out;
 }
 
-/* Glassmorphism Execution CTA Buttons with Neon Glow */
+/* Execution CTA Buttons with Vibrant FinTech Emerald Gradient */
 .btn-order-cta {
-  background: linear-gradient(135deg, rgba(0, 245, 155, 0.16) 0%, rgba(0, 245, 155, 0.05) 100%) !important;
-  border: 1px solid rgba(0, 245, 155, 0.4) !important;
-  color: #00F59B !important;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+  border: 1px solid #059669 !important;
+  color: #FFFFFF !important;
   font-family: 'JetBrains Mono', monospace !important;
   font-weight: 700 !important;
-  letter-spacing: 0.05em !important;
+  letter-spacing: 0.03em !important;
   text-transform: uppercase !important;
   border-radius: 10px !important;
-  box-shadow: 0 4px 14px rgba(0, 245, 155, 0.15) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.30) !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   display: inline-flex !important;
   align-items: center !important;
@@ -879,59 +884,60 @@ body {
 }
 
 .btn-order-cta:hover {
-  background: linear-gradient(135deg, rgba(0, 245, 155, 0.28) 0%, rgba(0, 245, 155, 0.12) 100%) !important;
-  border-color: #00F59B !important;
-  box-shadow: 0 0 20px rgba(0, 245, 155, 0.45), 0 4px 18px rgba(0, 0, 0, 0.4) !important;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45) !important;
   transform: translateY(-1px) !important;
 }
 
 .btn-secondary-trading {
-  background: rgba(255, 255, 255, 0.04) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: #E6EDF3 !important;
+  background: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
   font-family: 'JetBrains Mono', monospace !important;
   font-weight: 600 !important;
   border-radius: 10px !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
   transition: all 0.2s ease !important;
 }
 
 .btn-secondary-trading:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
-  color: #FFFFFF !important;
+  background: #F8FAFC !important;
+  border-color: #94A3B8 !important;
+  color: #0F172A !important;
 }
 
 /* Modular Technical Grid Card */
 .trading-panel-card {
-  background: #0D1117;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
   position: relative;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
   transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
               box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
               transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .trading-panel-card:hover {
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 245, 155, 0.15);
+  border-color: #38BDF8;
+  box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.12), 0 0 20px rgba(56, 189, 248, 0.15);
   transform: translateY(-3px);
 }
 
-/* Custom dark scrollbar for trading tape */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0B0E14;
+  background: #F1F5F9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #21262D;
+  background: #CBD5E1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #30363D;
+  background: #94A3B8;
 }
 
 /* =========================================================================
@@ -941,7 +947,7 @@ body {
 .page-header-trading {
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid #E2E8F0;
 }
 
 .page-breadcrumb {
@@ -949,14 +955,14 @@ body {
   align-items: center;
   gap: 8px;
   font-size: 0.76rem;
-  color: #8B949E;
+  color: #64748B;
   margin-bottom: 8px;
 }
 
 .page-breadcrumb button {
   background: none;
   border: none;
-  color: #38BDF8;
+  color: #0284C7;
   cursor: pointer;
   padding: 0;
   font-size: inherit;
@@ -980,15 +986,15 @@ body {
     left: 0;
     right: 0;
     height: 60px;
-    background: rgba(11, 14, 20, 0.95);
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid #E2E8F0;
     z-index: 1000;
     align-items: center;
     justify-content: space-around;
     padding: 0 4px;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 -4px 20px rgba(15, 23, 42, 0.08);
   }
 
   .mobile-bottom-nav-item {
@@ -999,7 +1005,7 @@ body {
     gap: 3px;
     background: none;
     border: none;
-    color: #8B949E;
+    color: #64748B;
     font-size: 0.65rem;
     font-weight: 600;
     padding: 6px 10px;
@@ -1011,11 +1017,12 @@ body {
   }
 
   .mobile-bottom-nav-item.active {
-    color: #00F59B;
+    color: #059669;
+    font-weight: 700;
   }
 
   .mobile-bottom-nav-item.active svg {
-    filter: drop-shadow(0 0 6px rgba(0, 245, 155, 0.6));
+    filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.4));
   }
 
   /* Add padding to page container so bottom nav does not overlap content */

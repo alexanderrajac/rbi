@@ -18,9 +18,9 @@ export const MarqueeTicker = () => {
   return (
     <div style={{
       width: '100%',
-      background: '#080B0F',
-      borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-      borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+      background: '#FFFFFF',
+      borderTop: '1px solid #E2E8F0',
+      borderBottom: '1px solid #E2E8F0',
       overflow: 'hidden',
       position: 'relative',
       height: '38px',
@@ -35,14 +35,14 @@ export const MarqueeTicker = () => {
       <div style={{
         position: 'relative',
         zIndex: 2,
-        background: '#0B0E14',
+        background: '#F8FAFC',
         padding: '0 14px',
         height: '100%',
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
-        borderRight: '1px solid rgba(255, 255, 255, 0.1)',
-        boxShadow: '10px 0 15px rgba(0,0,0,0.5)',
+        borderRight: '1px solid #E2E8F0',
+        boxShadow: '4px 0 10px rgba(15, 23, 42, 0.04)',
         whiteSpace: 'nowrap'
       }}>
         <span style={{ 
@@ -50,10 +50,10 @@ export const MarqueeTicker = () => {
           width: '7px', 
           height: '7px', 
           borderRadius: '50%', 
-          background: '#00F59B', 
-          boxShadow: '0 0 8px #00F59B' 
+          background: '#10B981', 
+          boxShadow: '0 0 8px rgba(16, 185, 129, 0.6)' 
         }}></span>
-        <span style={{ color: '#00F59B', fontWeight: '800', letterSpacing: '0.08em' }}>MARKET TAPE</span>
+        <span style={{ color: '#059669', fontWeight: '800', letterSpacing: '0.08em' }}>MARKET TAPE</span>
       </div>
 
       {/* Marquee Continuous Stream */}
@@ -71,28 +71,29 @@ export const MarqueeTicker = () => {
               alignItems: 'center',
               gap: '10px',
               padding: '0 20px',
-              borderRight: '1px solid rgba(255, 255, 255, 0.05)',
-              color: '#8B949E'
+              borderRight: '1px solid #E2E8F0',
+              color: '#475569'
             }}
           >
-            <span style={{ color: '#F0F6FC', fontWeight: '700', letterSpacing: '0.04em' }}>
+            <span style={{ color: '#0F172A', fontWeight: '800', letterSpacing: '0.04em' }}>
               {item.ticker}
             </span>
             <span style={{ 
               fontSize: '0.64rem', 
-              padding: '1px 5px', 
+              padding: '2px 6px', 
               borderRadius: '4px', 
-              background: 'rgba(255, 255, 255, 0.05)', 
-              color: '#7D8590' 
+              background: '#F1F5F9', 
+              color: '#475569',
+              fontWeight: '600'
             }}>
               {item.label}
             </span>
-            <span style={{ color: '#C9D1D9', fontWeight: '600' }}>
+            <span style={{ color: '#0F172A', fontWeight: '700' }}>
               {item.cap}
             </span>
             <span style={{ 
-              color: item.type === 'emerald' ? '#10B981' : item.type === 'cyan' ? '#38BDF8' : item.type === 'gold' ? '#F59E0B' : '#00F59B', 
-              fontWeight: '700',
+              color: item.type === 'emerald' ? '#059669' : item.type === 'cyan' ? '#0284C7' : item.type === 'gold' ? '#D97706' : '#059669', 
+              fontWeight: '800',
               display: 'flex',
               alignItems: 'center',
               gap: '2px'
@@ -100,12 +101,14 @@ export const MarqueeTicker = () => {
               <TrendingUp size={12} />
               {item.yield}
             </span>
-            <span style={{
-              fontSize: '0.62rem',
-              color: '#6E7681',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              padding: '1px 4px',
-              borderRadius: '3px'
+            <span style={{ 
+              fontSize: '0.62rem', 
+              padding: '2px 6px', 
+              borderRadius: '4px', 
+              border: item.status === 'UPCOMING SPRINT' ? '1px solid rgba(217, 119, 6, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)',
+              background: item.status === 'UPCOMING SPRINT' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+              color: item.status === 'UPCOMING SPRINT' ? '#D97706' : '#059669',
+              fontWeight: '700'
             }}>
               {item.status}
             </span>
