@@ -1,0 +1,72 @@
+Act as an elite Principal Design Systems Architect and Senior React Frontend Engineer specializing in institutional FinTech, venture syndication, and high-frequency trading terminals (e.g., Stripe, TradingView, Robinhood Gold, Linear, and Bloomberg Terminal).
+
+Review and overhaul the entire UI/UX of our React financial application to achieve a tier-1, award-winning, institutional-grade finish. Every screen, card, button, and data point must exude maximum trust, surgical precision, and visual luxury.
+
+Implement the following architectural directives:
+
+---
+
+### 1. LUXURY INSTITUTIONAL DESIGN TOKENS (Deep Dark Mode)
+- **Background Palette**: Replace flat blacks with layered obsidian depths:
+  - Base canvas: `#080B0F` (True Obsidian)
+  - Surface panels: `#0D1117` with subtle inner hairline borders (`1px solid rgba(255, 255, 255, 0.08)`)
+  - Elevated cards & modals: `#161B22` with 16px backdrop blur (`backdrop-filter: blur(16px)`)
+- **Accent Calibration**:
+  - Bullish Green: `#00F59B` (Laser Neon, with soft radial drop-shadows `0 0 16px rgba(0, 245, 155, 0.25)`)
+  - Warning/Yield Gold: `#F59E0B` (Sovereign Amber)
+  - Institutional Cyan: `#38BDF8` (Terminal Data)
+  - Bearish/Critical: `#FF3366` (Crimson Pulse)
+- **Hairline Precision**: Use ultra-subtle `1px` structural borders (`rgba(255, 255, 255, 0.07)`) separating viewports and modular grid panels instead of heavy drop shadows or thick borders.
+
+---
+
+### 2. SURGICAL TYPOGRAPHY & FINANCIAL NUMBER FORMATTING
+- **Font Stack Hierarchy**:
+  - Headings & Branding: High-end geometric sans (`'Outfit'` or `'Plus Jakarta Sans'`, 800/900 weight, tight tracking `-0.03em`).
+  - Body & UI Labels: Clean, legible sans (`'Inter'`, 500/600 weight, 1.5 line height).
+  - All Numeric Data & Financial Metrics: Strict tabular monospace (`'JetBrains Mono'` or `'Fira Code'`) with `font-variant-numeric: tabular-nums` to ensure zero jitter during real-time value updates.
+- **Label Discipline**: Pair every financial metric with a micro-label in uppercase, muted text (`fontSize: 0.68rem`, `letterSpacing: 0.05em`, `color: #8B949E`).
+
+---
+
+### 3. COMPONENT ARCHITECTURE & HIGH-DENSITY TRADING GRIDS
+- **Venture Instrument Cards**:
+  - Refactor into technical trading cards with ticker badges (e.g., `[UNAVU]`, `[CARPB]`, `[WLC]`, `[WCUP]`).
+  - Clear visual division between:
+    1. Header: Enterprise identity, category pill, and sovereign escrow badge.
+    2. Telemetry Ribbon: Funding progress bar with neon fill, target capital, and investor count.
+    3. Unit Economics & Cost Ledger: Transparent itemized cost breakdowns (Raw Materials, Labour, Packaging, Delivery).
+    4. Milestone Progress: Interactive sprint tabs with progress indicators and status pills (`UPCOMING`, `ACTIVE`, `SETTLED`).
+    5. Execution Deck: High-contrast, glassmorphic CTA button (`.btn-order-cta`) with glowing borders on hover.
+- **Return & Yield Simulators**:
+  - Fast-action order size chips (`₹500`, `₹1,000`, `₹2,500`, `₹5,000`, `₹10,000`, `₹25,000`) with instant reactive recalculation.
+  - Interactive ROI breakdown displaying Total Return, Net Profit, and Sprint Payback Days side-by-side.
+
+---
+
+### 4. MICRO-INTERACTIONS & MOTION DESIGN (Framer Motion)
+- **Spring-Driven Staggered Mounting**: Apply `staggerChildren: 0.06` with dampening springs (`stiffness: 300, damping: 24`) on card grids.
+- **Micro-Glow Feedback**: Hover states on interactive cards should lift `translateY(-3px)` with smooth cyan/green border glow transition.
+- **Real-Time Data Counters**: Animate all numeric changes using ease-out counters (`useAnimatedCounter`) so metrics count up smoothly on mount.
+- **Pulsing Status Dots**: Live feeds, escrow verifications, and active trades must feature hardware-accelerated pulsating green dots (`box-shadow: 0 0 8px #00F59B`).
+
+---
+
+### 5. MOBILE-FIRST ERGONOMICS & MULTI-PAGE FLOW
+- **Dedicated Route Navigation**: Keep views cleanly partitioned (`#/ventures`, `#/terminal`, `#/calculator`, `#/how-it-works`, `#/escrow`, `#/portfolio`) to eliminate 8,000px single-page scroll fatigue.
+- **Thumb-Zone Bottom Navigation**: Fixed bottom navigation bar on mobile viewports (`height: 60px`, `backdrop-filter: blur(16px)`) with clean icon tabs and active neon glow indicators.
+- **Tactile Touch Targets**: Ensure all buttons, modal close triggers, and tab pills have a minimum touch hit-box of `44px x 44px`.
+
+---
+
+### 6. ESCROW & TRANSACTION MODAL POLISH
+- **Capital Allocation Modal**:
+  - Prominent QR Code display with clear UPI ID (`8248651695-3@ybl`) and 1-tap copy button.
+  - Interactive file dropzone / camera preview for payment screenshot verification.
+  - Form validation with clear feedback and instant receipt generation.
+- **Digital Certificates**:
+  - Official, high-resolution certificate modal featuring tamper-evident cryptographic hash, serial number, and printable view (`window.print()`).
+
+---
+
+Refactor the components cleanly, preserving all business logic, database hooks, and authentication mechanisms while elevating the visual fidelity to world-class FinTech standards.

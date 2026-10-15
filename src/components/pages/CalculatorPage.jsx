@@ -121,28 +121,28 @@ export const CalculatorPage = ({
                     <span className="badge font-mono-numbers" style={{ fontSize: '0.62rem', background: 'rgba(56, 189, 248, 0.12)', color: '#38BDF8', border: '1px solid rgba(56, 189, 248, 0.25)', marginBottom: '4px' }}>
                       {proj.category}
                     </span>
-                    <strong style={{ display: 'block', fontSize: '0.96rem', color: '#F0F6FC' }}>{proj.name}</strong>
+                    <strong style={{ display: 'block', fontSize: '0.98rem', color: '#F0F6FC', letterSpacing: '-0.01em' }}>{proj.name}</strong>
                   </div>
-                  <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', background: 'rgba(0, 245, 155, 0.12)', color: '#00F59B', border: '1px solid rgba(0, 245, 155, 0.25)' }}>
+                  <span className="badge font-mono-numbers" style={{ fontSize: '0.70rem', background: 'rgba(0, 245, 155, 0.12)', color: '#00F59B', border: '1px solid rgba(0, 245, 155, 0.25)' }}>
                     +{ret.yieldPercent}
                   </span>
                 </div>
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', paddingTop: '8px', borderTop: '1px dashed rgba(255, 255, 255, 0.1)' }}>
-                  <span style={{ fontSize: '0.76rem', color: '#8B949E' }}>Total Payout:</span>
-                  <span className="font-mono-numbers" style={{ fontSize: '1.30rem', fontWeight: '800', color: '#00F59B' }}>
+                  <span className="micro-label">Total Payout:</span>
+                  <span className="font-mono-numbers" style={{ fontSize: '1.30rem', fontWeight: '900', color: '#00F59B' }}>
                     ₹{ret.totalReturn}
                   </span>
                 </div>
 
-                <div className="font-mono-numbers" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.74rem', background: '#0D1117', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                <div className="font-mono-numbers" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '0.74rem', background: '#0D1117', padding: '10px 12px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
                   <div>
-                    <span style={{ color: '#8B949E', display: 'block' }}>Net Profit</span>
-                    <strong style={{ color: '#F59E0B' }}>+₹{ret.profit}</strong>
+                    <span className="micro-label" style={{ display: 'block', marginBottom: '2px' }}>Net Profit</span>
+                    <strong style={{ color: '#F59E0B', fontSize: '0.96rem' }}>+₹{ret.profit}</strong>
                   </div>
                   <div>
-                    <span style={{ color: '#8B949E', display: 'block' }}>Sprint Days</span>
-                    <strong style={{ color: '#C9D1D9' }}>{ret.days}</strong>
+                    <span className="micro-label" style={{ display: 'block', marginBottom: '2px' }}>Sprint Days</span>
+                    <strong style={{ color: '#F0F6FC', fontSize: '0.96rem' }}>{ret.days}</strong>
                   </div>
                 </div>
 
@@ -150,9 +150,9 @@ export const CalculatorPage = ({
                   type="button"
                   onClick={() => onInvest(proj, calcAmount)}
                   className="btn-order-cta"
-                  style={{ padding: '8px 14px', fontSize: '0.78rem', marginTop: 'auto', width: '100%' }}
+                  style={{ padding: '10px 14px', fontSize: '0.80rem', marginTop: 'auto', width: '100%', minHeight: '44px' }}
                 >
-                  <Zap size={13} />
+                  <Zap size={14} />
                   <span>Allocate ₹{calcAmount || '500'} Now</span>
                 </button>
               </div>
