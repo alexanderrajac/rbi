@@ -99,7 +99,7 @@ export const Footer = () => {
               </li>
               <li>
                 <button onClick={() => setActiveTab('terminal')} className="btn btn-ghost btn-sm" style={{ padding: 0, color: '#64748B', justifyContent: 'flex-start' }}>
-                  Live Candlestick Terminal
+                  Growth & Financial Analytics
                 </button>
               </li>
               <li>

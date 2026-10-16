@@ -93,7 +93,7 @@ export const Navbar = () => {
                   ROYAL BANK OF INVESTMENT
                 </span>
                 <span className="badge font-mono-numbers" style={{ fontSize: '0.62rem', padding: '2px 7px', background: 'rgba(16, 185, 129, 0.12)', color: '#059669', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                  SYNDICATE TERMINAL
+                  ESCROW BACKED
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '1px' }}>
@@ -103,7 +103,7 @@ export const Navbar = () => {
                 <span style={{ color: '#CBD5E1', fontSize: '0.65rem' }}>•</span>
                 <span className="font-mono-numbers" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '0.70rem', color: '#059669', fontWeight: '700' }}>
                   <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 6px rgba(16, 185, 129, 0.6)' }}></span>
-                  4 Active Ventures
+                  4 Verified Deals
                 </span>
               </div>
             </div>
@@ -117,9 +117,9 @@ export const Navbar = () => {
               style={{ borderRadius: '8px', fontWeight: '700' }}
             >
               <Building2 size={15} />
-              <span>Ventures</span>
+              <span>Projects</span>
               <span className="badge badge-emerald" style={{ fontSize: '0.62rem', padding: '1px 6px', marginLeft: '3px' }}>
-                4 Deals
+                4 Open
               </span>
             </button>
 
@@ -129,10 +129,7 @@ export const Navbar = () => {
               style={{ borderRadius: '8px', fontWeight: '700' }}
             >
               <BarChart3 size={15} />
-              <span>Live Terminal</span>
-              <span className="badge badge-cyan" style={{ fontSize: '0.60rem', padding: '1px 5px', marginLeft: '2px' }}>
-                Live
-              </span>
+              <span>Growth & Financials</span>
             </button>
 
             <button 
@@ -366,7 +363,7 @@ export const Navbar = () => {
               style={{ justifyContent: 'flex-start', borderRadius: '8px', fontWeight: '700' }}
             >
               <BarChart3 size={16} />
-              <span>Live Candlestick Trading Terminal</span>
+              <span>Growth & Financial Analytics</span>
             </button>
 
             <button 
@@ -470,7 +467,7 @@ export const Navbar = () => {
           className={`mobile-bottom-nav-item ${activeTab === 'terminal' ? 'active' : ''}`}
         >
           <BarChart3 size={18} />
-          <span>Terminal</span>
+          <span>Analytics</span>
         </button>
 
         <button 

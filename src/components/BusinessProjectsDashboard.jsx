@@ -6,7 +6,6 @@ import {
   calculateProjectFinancials, 
   parseNaturalLanguagePlan 
 } from '../data/businessProjectsData';
-import { LiveCandlestickTerminal } from './LiveCandlestickTerminal';
 import { TerminalPage } from './pages/TerminalPage';
 import { CalculatorPage } from './pages/CalculatorPage';
 import { HowItWorksPage } from './pages/HowItWorksPage';
@@ -377,67 +376,70 @@ export const BusinessProjectsDashboard = () => {
           transition={{ duration: 0.35, ease: 'easeOut' }}
         >
           {/* 1. INSTITUTIONAL TRADING DESK HERO TELEMETRY (DARK OBSIDIAN THEME) */}
+          {/* 1. REAL SMALL BUSINESS BACKING HERO */}
           <div 
             className="hero-box-mobile trading-panel-card"
             style={{
               padding: '28px 24px',
               marginBottom: '24px',
-              boxShadow: '0 10px 30px -10px rgba(0, 0, 0, 0.6)'
+              background: '#FFFFFF',
+              border: '1px solid #E2E8F0',
+              boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
               <div style={{ maxWidth: '860px', width: '100%' }}>
                 
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(0, 245, 155, 0.08)', border: '1px solid rgba(0, 245, 155, 0.3)', borderRadius: '20px', padding: '4px 12px', marginBottom: '14px', maxWidth: '100%' }}>
-                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#00F59B', boxShadow: '0 0 8px #00F59B', flexShrink: 0 }}></span>
-                  <span className="font-mono-numbers" style={{ fontSize: '0.72rem', fontWeight: '700', color: '#00F59B', letterSpacing: '0.04em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    RBI SOVEREIGN TRADING DESK • ESCROW RING-FENCED • ZERO DEFAULT
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#ECFDF5', border: '1px solid #A7F3D0', borderRadius: '20px', padding: '5px 14px', marginBottom: '14px', maxWidth: '100%' }}>
+                  <ShieldCheck size={16} className="text-emerald-600" />
+                  <span style={{ fontSize: '0.74rem', fontWeight: '700', color: '#065F46', letterSpacing: '-0.01em' }}>
+                    100% Escrow Protection • Verified Local Businesses • Pre-Agreed Fixed Returns
                   </span>
                 </div>
 
-                <h1 className="hero-heading-mobile" style={{ fontSize: '2.1rem', fontWeight: '900', color: '#F0F6FC', margin: '0 0 10px 0', letterSpacing: '-0.03em', lineHeight: '1.2' }}>
-                  Invest in Real-World Business Ventures
+                <h1 className="hero-heading-mobile" style={{ fontSize: '2.1rem', fontWeight: '900', color: '#0F172A', margin: '0 0 10px 0', letterSpacing: '-0.03em', lineHeight: '1.2' }}>
+                  Invest in Real Small Business Ventures
                 </h1>
-                <p style={{ color: '#8B949E', fontSize: '0.94rem', margin: '0 0 20px 0', lineHeight: '1.6' }}>
-                  Direct capital allocation into 4 verified businesses across <strong style={{ color: '#E6EDF3' }}>Food Delivery & Cloud Kitchen</strong>, <strong style={{ color: '#E6EDF3' }}>Carpentry Service Marketplaces</strong>, and <strong style={{ color: '#E6EDF3' }}>Sustainable Eco-Friendly Manufacturing</strong>. Every rupee spent is audited, milestones trigger escrow disbursement, and investors receive direct sprint return settlements.
+                <p style={{ color: '#475569', fontSize: '0.94rem', margin: '0 0 20px 0', lineHeight: '1.6' }}>
+                  Back verified local enterprises across <strong>Food Delivery & Cloud Kitchens</strong>, <strong>Custom Craftsmanship</strong>, and <strong>Eco-Friendly Manufacturing</strong>. Every rupee spent is audited, milestones trigger escrow disbursement, and backers receive guaranteed sprint return settlements.
                 </p>
 
-                {/* High-Density Key Trading Telemetry Numbers */}
+                {/* Key Summary Numbers */}
                 <div className="responsive-stat-grid">
-                  <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Active Businesses</div>
-                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#F0F6FC', marginTop: '2px' }}>4 Open Deals</div>
+                  <div style={{ background: '#FFFFFF', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)' }}>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: '700' }}>Active Ventures</div>
+                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0F172A', marginTop: '2px' }}>4 Open Deals</div>
                   </div>
-                  <div className="card-pulse-bullish" style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(0, 245, 155, 0.4)' }}>
-                    <div style={{ fontSize: '0.70rem', color: '#00F59B', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Total Capital Raised</div>
-                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#00F59B', marginTop: '2px' }}>₹{animatedRaised.toLocaleString('en-IN')}</div>
+                  <div style={{ background: '#ECFDF5', padding: '14px 18px', borderRadius: '12px', border: '1px solid #A7F3D0', boxShadow: '0 2px 8px rgba(16, 185, 129, 0.06)' }}>
+                    <div style={{ fontSize: '0.72rem', color: '#059669', fontWeight: '700' }}>Total Capital Raised</div>
+                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#059669', marginTop: '2px' }}>₹{animatedRaised.toLocaleString('en-IN')}</div>
                   </div>
-                  <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Target Capital Goal</div>
-                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#F59E0B', marginTop: '2px' }}>₹{animatedTarget.toLocaleString('en-IN')}</div>
+                  <div style={{ background: '#FFFFFF', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)' }}>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: '700' }}>Target Capital Goal</div>
+                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#D97706', marginTop: '2px' }}>₹{animatedTarget.toLocaleString('en-IN')}</div>
                   </div>
-                  <div style={{ background: '#161B22', padding: '14px 18px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <div style={{ fontSize: '0.70rem', color: '#8B949E', textTransform: 'uppercase', fontWeight: '700', letterSpacing: '0.04em' }}>Verified Backers</div>
-                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#38BDF8', marginTop: '2px' }}>{animatedInvestors} Investors</div>
+                  <div style={{ background: '#FFFFFF', padding: '14px 18px', borderRadius: '12px', border: '1px solid #E2E8F0', boxShadow: '0 2px 8px rgba(15, 23, 42, 0.03)' }}>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: '700' }}>Verified Backers</div>
+                    <div className="font-mono-numbers" style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0284C7', marginTop: '2px' }}>{animatedInvestors} Investors</div>
                   </div>
                 </div>
               </div>
 
-              {/* Admin Approval Quick Gate - STRICTLY SOVEREIGN ADMIN */}
+              {/* Admin Approval Quick Gate */}
               {isAdminLoggedIn && (
-                <div style={{ background: '#161B22', border: '1px solid rgba(245, 158, 11, 0.35)', borderRadius: '14px', padding: '18px', minWidth: '240px' }}>
-                  <div style={{ fontSize: '0.72rem', fontWeight: '800', color: '#F59E0B', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>
+                <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '14px', padding: '18px', minWidth: '240px' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: '800', color: '#B45309', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>
                     Admin Verification Desk
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                    <span className="badge font-mono-numbers" style={{ fontSize: '0.78rem', padding: '4px 10px', background: pendingInvestments.length > 0 ? 'rgba(245, 158, 11, 0.15)' : 'rgba(0, 245, 155, 0.15)', color: pendingInvestments.length > 0 ? '#F59E0B' : '#00F59B', border: '1px solid currentColor' }}>
+                    <span className="badge font-mono-numbers" style={{ fontSize: '0.78rem', padding: '4px 10px', background: pendingInvestments.length > 0 ? '#FEF3C7' : '#ECFDF5', color: pendingInvestments.length > 0 ? '#B45309' : '#059669', border: '1px solid currentColor' }}>
                       {pendingInvestments.length} Pending Approval
                     </span>
                   </div>
                   <button
                     onClick={() => setIsAdminApprovalModalOpen(true)}
                     className="btn btn-sm"
-                    style={{ width: '100%', borderRadius: '8px', fontWeight: '700', gap: '6px', background: '#F59E0B', color: '#0B0E14' }}
+                    style={{ width: '100%', borderRadius: '8px', fontWeight: '700', gap: '6px', background: '#F59E0B', color: '#0F172A' }}
                   >
                     <UserCheck size={15} />
                     <span>Review Submissions</span>
@@ -448,7 +450,7 @@ export const BusinessProjectsDashboard = () => {
           </div>
 
       {/* ========================================================================= */}
-      {/* 3. FILTER & SEARCH BAR */}
+      {/* 2. FILTER & SEARCH BAR */}
       {/* ========================================================================= */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '24px' }}>
         
@@ -456,7 +458,7 @@ export const BusinessProjectsDashboard = () => {
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {[
             { id: 'ALL', label: 'All Businesses (4)' },
-            { id: 'Food', label: 'Food Delivery' },
+            { id: 'Food Tech', label: 'Food & Beverage' },
             { id: 'Marketplace', label: 'Marketplaces' },
             { id: 'Manufacturing', label: 'Product Manufacturing' },
             { id: 'Eco-Friendly', label: 'Eco-Friendly Products' }
@@ -464,15 +466,14 @@ export const BusinessProjectsDashboard = () => {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className="font-mono-numbers"
               style={{
                 padding: '7px 14px',
                 borderRadius: '8px',
-                fontSize: '0.78rem',
+                fontSize: '0.80rem',
                 fontWeight: '700',
-                border: selectedCategory === cat.id ? '1px solid #38BDF8' : '1px solid rgba(255, 255, 255, 0.08)',
-                background: selectedCategory === cat.id ? 'rgba(56, 189, 248, 0.15)' : '#161B22',
-                color: selectedCategory === cat.id ? '#38BDF8' : '#8B949E',
+                border: selectedCategory === cat.id ? '1px solid #10B981' : '1px solid #E2E8F0',
+                background: selectedCategory === cat.id ? '#ECFDF5' : '#FFFFFF',
+                color: selectedCategory === cat.id ? '#059669' : '#64748B',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease'
               }}
@@ -484,7 +485,7 @@ export const BusinessProjectsDashboard = () => {
 
         {/* Search Input */}
         <div style={{ position: 'relative' }}>
-          <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#6E7681' }} />
+          <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
           <input 
             type="text"
             placeholder="Search business ventures..."
@@ -493,10 +494,10 @@ export const BusinessProjectsDashboard = () => {
             style={{
               padding: '8px 14px 8px 34px',
               borderRadius: '8px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              background: '#161B22',
+              border: '1px solid #E2E8F0',
+              background: '#FFFFFF',
               fontSize: '0.82rem',
-              color: '#F0F6FC',
+              color: '#0F172A',
               outline: 'none',
               minWidth: '240px'
             }}
@@ -559,11 +560,12 @@ export const BusinessProjectsDashboard = () => {
                     
                     {/* Floating Badges over Image */}
                     <div style={{ position: 'absolute', top: '12px', left: '12px', display: 'flex', gap: '6px', alignItems: 'center' }}>
-                      <span className="badge font-mono-numbers" style={{ fontSize: '0.66rem', padding: '3px 9px', background: 'rgba(255, 255, 255, 0.95)', color: '#059669', fontWeight: '800', backdropFilter: 'blur(8px)', borderRadius: '6px', boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }}>
-                        ● OPEN FOR SYNDICATE
+                      <span style={{ fontSize: '0.68rem', padding: '4px 10px', background: 'rgba(255, 255, 255, 0.96)', color: '#059669', fontWeight: '700', backdropFilter: 'blur(8px)', borderRadius: '9999px', boxShadow: '0 2px 6px rgba(0,0,0,0.12)', display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10B981' }}></span>
+                        Accepting Backers
                       </span>
-                      <span className="font-mono-numbers" style={{ fontSize: '0.66rem', color: '#0284C7', background: 'rgba(255, 255, 255, 0.95)', padding: '3px 8px', borderRadius: '6px', fontWeight: '800', backdropFilter: 'blur(8px)', boxShadow: '0 2px 6px rgba(0,0,0,0.15)' }}>
-                        [{tickerCode}]
+                      <span style={{ fontSize: '0.68rem', color: '#0369A1', background: 'rgba(255, 255, 255, 0.96)', padding: '4px 10px', borderRadius: '9999px', fontWeight: '700', backdropFilter: 'blur(8px)', boxShadow: '0 2px 6px rgba(0,0,0,0.12)' }}>
+                        Verified Business
                       </span>
                     </div>
 
@@ -834,7 +836,7 @@ export const BusinessProjectsDashboard = () => {
                 </div>
               </div>
 
-              {/* Card Footer: PRIMARY "EXECUTE BACKING ORDER" + DETAILED OVERVIEW BUTTON */}
+              {/* Card Footer: PRIMARY "BACK THIS VENTURE" + "VIEW UNIT ECONOMICS" */}
               <div style={{ padding: '0 18px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <button 
                   type="button"
@@ -843,11 +845,12 @@ export const BusinessProjectsDashboard = () => {
                   style={{
                     width: '100%',
                     padding: '12px',
-                    fontSize: '0.88rem'
+                    fontSize: '0.90rem',
+                    borderRadius: '10px'
                   }}
                 >
                   <Building2 size={16} />
-                  <span>Execute Backing Order (Min {formatMoney(financials.minInvestment)})</span>
+                  <span>Back This Venture (from {formatMoney(financials.minInvestment)})</span>
                 </button>
 
                 <button 
@@ -856,17 +859,18 @@ export const BusinessProjectsDashboard = () => {
                   className="btn-secondary-trading"
                   style={{
                     width: '100%',
-                    padding: '8px',
-                    fontSize: '0.78rem',
+                    padding: '9px',
+                    fontSize: '0.80rem',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '6px',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    borderRadius: '10px'
                   }}
                 >
-                  <FileText size={13} style={{ color: '#D97706' }} />
-                  <span>Audit Terms & Unit Economics</span>
+                  <FileText size={14} style={{ color: '#0284C7' }} />
+                  <span>View Unit Economics & Costs</span>
                 </button>
               </div>
 
@@ -875,17 +879,17 @@ export const BusinessProjectsDashboard = () => {
         })}
       </div>
 
-          {/* Platform Ecosystem Launchpad */}
-          <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <span className="badge font-mono-numbers" style={{ fontSize: '0.68rem', padding: '3px 10px', background: 'rgba(56, 189, 248, 0.12)', color: '#38BDF8', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-                PLATFORM ECOSYSTEM
+          {/* Platform Tools & Analytics Hub */}
+          <div style={{ marginTop: '48px', paddingTop: '32px', borderTop: '1px solid #E2E8F0' }}>
+            <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+              <span style={{ fontSize: '0.72rem', padding: '4px 14px', background: '#F1F5F9', color: '#0F172A', border: '1px solid #CBD5E1', borderRadius: '9999px', fontWeight: '700' }}>
+                EXPLORE PLATFORM TOOLS
               </span>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: '800', color: '#F0F6FC', margin: '6px 0 4px 0' }}>
-                Dedicated Investor Desks & Tools
+              <h3 style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0F172A', margin: '8px 0 6px 0', letterSpacing: '-0.02em' }}>
+                Investor Hub & Financial Features
               </h3>
-              <p style={{ color: '#8B949E', fontSize: '0.84rem', margin: 0 }}>
-                Access deep financial tools without single-page scroll clutter
+              <p style={{ color: '#475569', fontSize: '0.88rem', margin: 0 }}>
+                Transparent analytics, return calculations, and legal escrow security
               </p>
             </div>
 
@@ -893,39 +897,39 @@ export const BusinessProjectsDashboard = () => {
               <div 
                 onClick={() => setActiveTab('terminal')}
                 className="trading-panel-card"
-                style={{ padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px' }}
+                style={{ padding: '22px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '14px', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#E0F2FE', color: '#0284C7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <TrendingUp size={20} />
                   </div>
-                  <span className="badge badge-cyan font-mono-numbers" style={{ fontSize: '0.62rem' }}>LIVE ENGINE</span>
+                  <span style={{ fontSize: '0.66rem', fontWeight: '700', padding: '3px 8px', background: '#E0F2FE', color: '#0369A1', borderRadius: '6px' }}>METRICS & UNIT ECONOMICS</span>
                 </div>
-                <h4 style={{ color: '#F0F6FC', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>Live Candlestick Terminal</h4>
-                <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
-                  Full-screen TradingView style candlestick charts, order books, and real-time execution depth.
+                <h4 style={{ color: '#0F172A', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>Growth & Financial Analytics</h4>
+                <p style={{ color: '#475569', fontSize: '0.82rem', margin: 0, lineHeight: '1.5' }}>
+                  Compare venture unit economics, revenue trajectories, escrow disbursement schedules, and performance metrics.
                 </p>
-                <span style={{ color: '#38BDF8', fontSize: '0.78rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                  Open Trading Terminal →
+                <span style={{ color: '#0284C7', fontSize: '0.80rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  Open Analytics Hub →
                 </span>
               </div>
 
               <div 
                 onClick={() => setActiveTab('calculator')}
                 className="trading-panel-card"
-                style={{ padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px' }}
+                style={{ padding: '22px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '14px', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(0, 245, 155, 0.15)', color: '#00F59B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#DCFCE7', color: '#16A34A', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Calculator size={20} />
                   </div>
-                  <span className="badge badge-emerald font-mono-numbers" style={{ fontSize: '0.62rem' }}>SIMULATOR</span>
+                  <span style={{ fontSize: '0.66rem', fontWeight: '700', padding: '3px 8px', background: '#DCFCE7', color: '#15803D', borderRadius: '6px' }}>SIMULATOR</span>
                 </div>
-                <h4 style={{ color: '#F0F6FC', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>Return Calculator</h4>
-                <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
-                  Calculate exact profit multiples, compounding returns, and sprint payout dates on any order size.
+                <h4 style={{ color: '#0F172A', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>Return Calculator</h4>
+                <p style={{ color: '#475569', fontSize: '0.82rem', margin: 0, lineHeight: '1.5' }}>
+                  Calculate exact profit multiples, compounding returns, and sprint payout dates on any order size from ₹500.
                 </p>
-                <span style={{ color: '#00F59B', fontSize: '0.78rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ color: '#16A34A', fontSize: '0.80rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                   Calculate Net Returns →
                 </span>
               </div>
@@ -933,19 +937,19 @@ export const BusinessProjectsDashboard = () => {
               <div 
                 onClick={() => setActiveTab('escrow')}
                 className="trading-panel-card"
-                style={{ padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px' }}
+                style={{ padding: '22px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '14px', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(245, 158, 11, 0.15)', color: '#F59E0B', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#FEF3C7', color: '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <ShieldCheck size={20} />
                   </div>
-                  <span className="badge badge-gold font-mono-numbers" style={{ fontSize: '0.62rem' }}>100% ESCROW</span>
+                  <span style={{ fontSize: '0.66rem', fontWeight: '700', padding: '3px 8px', background: '#FEF3C7', color: '#B45309', borderRadius: '6px' }}>100% ESCROW</span>
                 </div>
-                <h4 style={{ color: '#F0F6FC', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>Escrow & Protection</h4>
-                <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
-                  Segregated bank rails, milestone-gated capital disbursement, and legally enforceable contracts.
+                <h4 style={{ color: '#0F172A', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>Escrow & Legal Protection</h4>
+                <p style={{ color: '#475569', fontSize: '0.82rem', margin: 0, lineHeight: '1.5' }}>
+                  Segregated bank rails, milestone-gated capital disbursement, and legally enforceable syndicate agreements.
                 </p>
-                <span style={{ color: '#F59E0B', fontSize: '0.78rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ color: '#D97706', fontSize: '0.80rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                   Read Security Charter →
                 </span>
               </div>
@@ -953,19 +957,19 @@ export const BusinessProjectsDashboard = () => {
               <div 
                 onClick={() => setActiveTab('portfolio')}
                 className="trading-panel-card"
-                style={{ padding: '20px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px' }}
+                style={{ padding: '22px', cursor: 'pointer', display: 'flex', flexDirection: 'column', gap: '10px', background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '14px', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(168, 85, 247, 0.15)', color: '#A855F7', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#F3E8FF', color: '#9333EA', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <Layers size={20} />
                   </div>
-                  <span className="badge font-mono-numbers" style={{ fontSize: '0.62rem', background: 'rgba(168, 85, 247, 0.15)', color: '#A855F7', border: '1px solid rgba(168, 85, 247, 0.3)' }}>CERTIFICATES</span>
+                  <span style={{ fontSize: '0.66rem', fontWeight: '700', padding: '3px 8px', background: '#F3E8FF', color: '#7E22CE', borderRadius: '6px' }}>PORTFOLIO</span>
                 </div>
-                <h4 style={{ color: '#F0F6FC', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>My Portfolio</h4>
-                <p style={{ color: '#8B949E', fontSize: '0.80rem', margin: 0, lineHeight: '1.5' }}>
+                <h4 style={{ color: '#0F172A', margin: 0, fontSize: '1.05rem', fontWeight: '800' }}>My Allocations & Proofs</h4>
+                <p style={{ color: '#475569', fontSize: '0.82rem', margin: 0, lineHeight: '1.5' }}>
                   Track active allocations, review approval status, and print tamper-evident digital certificates.
                 </p>
-                <span style={{ color: '#A855F7', fontSize: '0.78rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ color: '#9333EA', fontSize: '0.80rem', fontWeight: '700', marginTop: 'auto', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                   View My Holdings →
                 </span>
               </div>
@@ -1318,7 +1322,7 @@ export const BusinessProjectsDashboard = () => {
                   <span>Submit Payment Proof for Escrow Verification</span>
                 </button>
 
-                <div style={{ textAlign: 'center', fontSize: '0.72rem', color: '#8B949E' }}>
+                <div style={{ textAlign: 'center', fontSize: '0.74rem', color: '#475569', fontWeight: '500' }}>
                   🔒 Admin verifies UTR against bank escrow ledger before confirming certificate.
                 </div>
 

@@ -857,24 +857,28 @@ body {
 }
 
 .card-pulse-bullish {
-  animation: pulse-bullish 2.2s infinite ease-in-out;
+  /* Clean static border with gentle shadow, no flickering sci-fi pulse */
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08) !important;
 }
 
 .card-pulse-bearish {
-  animation: pulse-bearish 2.2s infinite ease-in-out;
+  border-color: rgba(225, 29, 72, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.08) !important;
 }
 
-/* Execution CTA Buttons with Vibrant FinTech Emerald Gradient */
+/* Friendly CTA Buttons with High-Quality FinTech Emerald Gradient */
 .btn-order-cta {
   background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
   border: 1px solid #059669 !important;
   color: #FFFFFF !important;
-  font-family: 'JetBrains Mono', monospace !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 0.88rem !important;
   font-weight: 700 !important;
-  letter-spacing: 0.03em !important;
-  text-transform: uppercase !important;
-  border-radius: 10px !important;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.30) !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25) !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   display: inline-flex !important;
   align-items: center !important;
@@ -885,7 +889,7 @@ body {
 
 .btn-order-cta:hover {
   background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45) !important;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35) !important;
   transform: translateY(-1px) !important;
 }
 
@@ -893,10 +897,11 @@ body {
   background: #FFFFFF !important;
   border: 1px solid #CBD5E1 !important;
   color: #0F172A !important;
-  font-family: 'JetBrains Mono', monospace !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
   font-weight: 600 !important;
-  border-radius: 10px !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
+  text-transform: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
   transition: all 0.2s ease !important;
 }
 
@@ -906,22 +911,20 @@ body {
   color: #0F172A !important;
 }
 
-/* Modular Technical Grid Card */
+/* Clean Modern Card */
 .trading-panel-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 16px;
+  border-radius: 18px;
   position: relative;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
-  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
-              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), 
-              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .trading-panel-card:hover {
-  border-color: #38BDF8;
-  box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.12), 0 0 20px rgba(56, 189, 248, 0.15);
-  transform: translateY(-3px);
+  border-color: #CBD5E1;
+  box-shadow: 0 12px 28px -4px rgba(15, 23, 42, 0.08);
+  transform: translateY(-2px);
 }
 
 /* Custom scrollbar */
