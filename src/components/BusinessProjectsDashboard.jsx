@@ -452,10 +452,10 @@ export const BusinessProjectsDashboard = () => {
       {/* ========================================================================= */}
       {/* 2. FILTER & SEARCH BAR */}
       {/* ========================================================================= */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '24px' }}>
+      <div className="filter-search-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px', marginBottom: '24px' }}>
         
         {/* Category Pills */}
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <div className="category-pills-scroll">
           {[
             { id: 'ALL', label: 'All Businesses (4)' },
             { id: 'Food Tech', label: 'Food & Beverage' },
@@ -467,7 +467,7 @@ export const BusinessProjectsDashboard = () => {
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
               style={{
-                padding: '7px 14px',
+                padding: '8px 14px',
                 borderRadius: '8px',
                 fontSize: '0.80rem',
                 fontWeight: '700',
@@ -475,7 +475,8 @@ export const BusinessProjectsDashboard = () => {
                 background: selectedCategory === cat.id ? '#ECFDF5' : '#FFFFFF',
                 color: selectedCategory === cat.id ? '#059669' : '#64748B',
                 cursor: 'pointer',
-                transition: 'all 0.15s ease'
+                transition: 'all 0.15s ease',
+                whiteSpace: 'nowrap'
               }}
             >
               {cat.label}
@@ -484,7 +485,7 @@ export const BusinessProjectsDashboard = () => {
         </div>
 
         {/* Search Input */}
-        <div style={{ position: 'relative' }}>
+        <div className="search-input-wrapper" style={{ position: 'relative' }}>
           <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }} />
           <input 
             type="text"
@@ -492,18 +493,17 @@ export const BusinessProjectsDashboard = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
-              padding: '8px 14px 8px 34px',
+              padding: '9px 14px 9px 34px',
               borderRadius: '8px',
               border: '1px solid #E2E8F0',
               background: '#FFFFFF',
-              fontSize: '0.82rem',
+              fontSize: '0.86rem',
               color: '#0F172A',
               outline: 'none',
-              minWidth: '240px'
+              width: '100%'
             }}
           />
         </div>
-
       </div>
 
       {/* ========================================================================= */}
@@ -1081,7 +1081,7 @@ export const BusinessProjectsDashboard = () => {
                 </button>
               </div>
 
-              <form onSubmit={handleConfirmInvestment} style={{ display: 'flex', flexDirection: 'column', gap: '16px', maxHeight: '75vh', overflowY: 'auto', paddingRight: '4px' }}>
+              <form onSubmit={handleConfirmInvestment} className="modal-form-scroll" style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingRight: '4px' }}>
                 
                 {/* Amount Selector */}
                 <div>
@@ -1634,7 +1634,7 @@ export const BusinessProjectsDashboard = () => {
                 </button>
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', maxHeight: '70vh', overflowY: 'auto', paddingRight: '4px' }}>
+              <div className="modal-form-scroll" style={{ display: 'flex', flexDirection: 'column', gap: '18px', paddingRight: '4px' }}>
                 
                 {/* 1. Executive Summary */}
                 <div>
